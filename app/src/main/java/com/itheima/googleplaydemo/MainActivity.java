@@ -6,22 +6,28 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout mDrawerLayout;
+    @BindView(R.id.main_content)
+    FrameLayout mMainContent;
+    @BindView(R.id.main_left_menu)
+    FrameLayout mMainLeftMenu;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
     private ActionBarDrawerToggle mToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initView();
+        ButterKnife.bind(this);
         initActionBar();
-    }
-
-    private void initView() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
     private void initActionBar() {
@@ -34,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
 //        actionBar.setDisplayUseLogoEnabled(true);//设置icon/logo的优先级，true为logo优先，false为icon优先，默认false.
 //        actionBar.setDisplayShowHomeEnabled(true);//设置可以显示icon/log
         actionBar.setDisplayHomeAsUpEnabled(true);//设置back按钮是否可见
-
         initActionBarDrawerLayoutToggle();
     }
 
