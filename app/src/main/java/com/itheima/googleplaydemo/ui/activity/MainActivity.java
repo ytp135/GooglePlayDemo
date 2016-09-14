@@ -3,7 +3,7 @@ package com.itheima.googleplaydemo.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     };*/
 
 
-    public class MyPagerAdapter extends FragmentPagerAdapter {
+/*    public class MyPagerAdapter extends FragmentPagerAdapter {
 
         private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
                 "Top New Free", "Trending" };
@@ -129,6 +129,31 @@ public class MainActivity extends AppCompatActivity {
             LogUtils.d(TAG, "getItem: " + position);
             return SimpleFragment.newInstance(position);
         }
+    }*/
 
+    private class MyPagerAdapter extends FragmentStatePagerAdapter {
+
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
+                "Top New Free", "Trending" };
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return TITLES[position];
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            LogUtils.d(TAG, "getItem: " + position);
+            return SimpleFragment.newInstance(position);
+        }
+
+        @Override
+        public int getCount() {
+            return TITLES.length;
+        }
     }
 }
