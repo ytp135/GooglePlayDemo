@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -27,8 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_content)
     LinearLayout mMainContent;
-    @BindView(R.id.main_left_menu)
-    FrameLayout mMainLeftMenu;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @BindView(R.id.pager_sliding_tab_strip)
