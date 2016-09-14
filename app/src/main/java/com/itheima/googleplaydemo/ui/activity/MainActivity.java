@@ -1,12 +1,21 @@
-package com.itheima.googleplaydemo;
+package com.itheima.googleplaydemo.ui.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+
+import com.astuetz.PagerSlidingTabStrip;
+import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.ui.fragment.SimpleFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -14,11 +23,15 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_content)
-    FrameLayout mMainContent;
+    LinearLayout mMainContent;
     @BindView(R.id.main_left_menu)
     FrameLayout mMainLeftMenu;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @BindView(R.id.pager_sliding_tab_strip)
+    PagerSlidingTabStrip mPagerSlidingTabStrip;
+    @BindView(R.id.vp)
+    ViewPager mVp;
 
     private ActionBarDrawerToggle mToggle;
 
@@ -27,7 +40,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        initView();
         initActionBar();
+    }
+
+    private void initView() {
+        mVp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        mPagerSlidingTabStrip.setViewPager(mVp);
     }
 
     private void initActionBar() {
@@ -81,4 +100,31 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };*/
+
+
+    public class MyPagerAdapter extends FragmentPagerAdapter {
+
+        private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
+                "Top New Free", "Trending" };
+
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return TITLES[position];
+        }
+
+        @Override
+        public int getCount() {
+            return TITLES.length;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return SimpleFragment.newInstance(position);
+        }
+
+    }
 }
