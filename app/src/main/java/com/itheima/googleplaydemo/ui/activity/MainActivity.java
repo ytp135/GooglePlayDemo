@@ -1,9 +1,12 @@
 package com.itheima.googleplaydemo.ui.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     PagerSlidingTabStrip mPagerSlidingTabStrip;
     @BindView(R.id.vp)
     ViewPager mVp;
+    @BindView(R.id.navigation)
+    NavigationView mNavigationView;
 
     private ActionBarDrawerToggle mToggle;
 
@@ -42,6 +47,18 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initView();
         initActionBar();
+        initEvent();
+    }
+
+    private void initEvent() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                mNavigationView.setCheckedItem(item.getItemId());
+                return false;
+            }
+        });
     }
 
     private void initView() {

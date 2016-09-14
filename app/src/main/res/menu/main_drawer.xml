@@ -3,34 +3,42 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/menu_home"
             android:icon="@drawable/ic_home"
             android:checked="true"
             android:title="@string/tv_home" />
         <item
+            android:id="@+id/menu_setting"
             android:icon="@drawable/ic_setting"
             android:title="@string/tv_setting" />
 
         <item
+            android:id="@+id/menu_theme"
             android:icon="@drawable/ic_theme"
             android:title="@string/tv_theme" />
 
         <item
+            android:id="@+id/menu_scans"
             android:icon="@drawable/ic_scans"
             android:title="@string/tv_scans" />
 
         <item
+            android:id="@+id/menu_feedback"
             android:icon="@drawable/ic_feedback"
             android:title="@string/tv_feedback" />
 
         <item
+            android:id="@+id/menu_updates"
             android:icon="@drawable/ic_updates"
             android:title="@string/tv_updates" />
 
         <item
+            android:id="@+id/menu_about"
             android:icon="@drawable/ic_about"
             android:title="@string/tv_about" />
 
         <item
+            android:id="@+id/menu_exit"
             android:icon="@drawable/ic_exit"
             android:title="@string/tv_exit" />
 
