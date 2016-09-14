@@ -16,11 +16,14 @@ import android.widget.LinearLayout;
 import com.astuetz.PagerSlidingTabStrip;
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.ui.fragment.SimpleFragment;
+import com.itheima.googleplaydemo.utils.LogUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     @BindView(R.id.main_content)
     LinearLayout mMainContent;
@@ -123,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            LogUtils.d(TAG, "getItem: " + position);
             return SimpleFragment.newInstance(position);
         }
 
