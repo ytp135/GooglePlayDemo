@@ -17,7 +17,13 @@ import android.widget.LinearLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.itheima.googleplaydemo.R;
-import com.itheima.googleplaydemo.ui.fragment.BaseFragment;
+import com.itheima.googleplaydemo.ui.fragment.AppFragment;
+import com.itheima.googleplaydemo.ui.fragment.CategoryFragment;
+import com.itheima.googleplaydemo.ui.fragment.GameFragment;
+import com.itheima.googleplaydemo.ui.fragment.HomeFragment;
+import com.itheima.googleplaydemo.ui.fragment.LeaderBoardFragment;
+import com.itheima.googleplaydemo.ui.fragment.RecommendFragment;
+import com.itheima.googleplaydemo.ui.fragment.SubjectFragment;
 import com.itheima.googleplaydemo.utils.LogUtils;
 
 import butterknife.BindView;
@@ -147,6 +153,14 @@ public class MainActivity extends AppCompatActivity {
 
     private class MyPagerAdapter extends FragmentStatePagerAdapter {
 
+        private static final int FRAGMENT_HOME = 0;
+        private static final int FRAGMENT_APP = 1;
+        private static final int FRAGMENT_GAME = 2;
+        private static final int FRAGMENT_SUBJECT = 3;
+        private static final int FRAGMENT_RECOMMEND = 4;
+        private static final int FRAGMENT_CATEGORY = 5;
+        private static final int FRAGMENT_LEADER_BOARD = 6;
+
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -162,7 +176,24 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             LogUtils.d(TAG, "getItem: " + position);
 //            return SimpleFragment.newInstance(position);
-            return BaseFragment.newInstance();
+//            return BaseFragment.newInstance();
+            switch (position) {
+                case FRAGMENT_HOME:
+                    return new HomeFragment();
+                case FRAGMENT_APP:
+                    return new AppFragment();
+                case FRAGMENT_GAME:
+                    return new GameFragment();
+                case FRAGMENT_SUBJECT:
+                    return new SubjectFragment();
+                case FRAGMENT_RECOMMEND:
+                    return new RecommendFragment();
+                case FRAGMENT_CATEGORY:
+                    return new CategoryFragment();
+                case FRAGMENT_LEADER_BOARD:
+                    return new LeaderBoardFragment();
+            }
+            return null;
         }
 
         @Override
