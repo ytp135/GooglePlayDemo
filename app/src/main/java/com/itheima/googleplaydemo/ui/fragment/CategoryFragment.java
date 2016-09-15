@@ -1,5 +1,7 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
+import android.widget.BaseAdapter;
+
 /**
  * 创建者: Leon
  * 创建时间: 2016/9/15 13:13
@@ -11,5 +13,10 @@ public class CategoryFragment extends BaseListFragment {
     @Override
     protected void startLoadData() {
 
+    }
+
+    @Override
+    protected BaseAdapter getAdapter() {
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 /**
@@ -16,6 +17,9 @@ public abstract class BaseListFragment extends BaseFragment {
     @Override
     protected View onCreateContentView() {
         mListView = new ListView(getContext());
+        mListView.setAdapter(getAdapter());
         return mListView;
     }
+
+    protected abstract BaseAdapter getAdapter();
 }
