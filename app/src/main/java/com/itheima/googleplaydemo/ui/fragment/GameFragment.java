@@ -8,4 +8,8 @@ package com.itheima.googleplaydemo.ui.fragment;
 public class GameFragment extends BaseListFragment {
     private static final String TAG = "GameFragment";
 
+    @Override
+    protected void startLoadData() {
+
+    }
 }

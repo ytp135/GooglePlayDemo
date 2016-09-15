@@ -8,4 +8,8 @@ package com.itheima.googleplaydemo.ui.fragment;
 public class HomeFragment extends BaseListFragment {
     private static final String TAG = "HomeFragment";
 
+    @Override
+    protected void startLoadData() {
+
+    }
 }

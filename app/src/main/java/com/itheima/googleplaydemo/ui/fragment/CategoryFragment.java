@@ -7,4 +7,9 @@ package com.itheima.googleplaydemo.ui.fragment;
  */
 public class CategoryFragment extends BaseListFragment {
     private static final String TAG = "CategoryFragment";
+
+    @Override
+    protected void startLoadData() {
+
+    }
 }
