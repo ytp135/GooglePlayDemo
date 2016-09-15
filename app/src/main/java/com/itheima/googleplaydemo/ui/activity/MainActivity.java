@@ -151,8 +151,7 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
         }
 
-        private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
-                "Top New Free", "Trending" };
+        private final String[] TITLES = getResources().getStringArray(R.array.main_titles);
 
         @Override
         public CharSequence getPageTitle(int position) {
