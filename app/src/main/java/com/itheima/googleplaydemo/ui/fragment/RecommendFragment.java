@@ -17,7 +17,7 @@ public class RecommendFragment extends BaseFragment {
     }
 
     @Override
-    protected View getContentView() {
+    protected View onCreateContentView() {
         TextView textView = new TextView(getContext());
         textView.setText(TAG);
         return textView;

@@ -61,7 +61,7 @@ public abstract class BaseFragment extends Fragment {
         mLoadingEmpty.setVisibility(View.GONE);
         mLoadingError.setVisibility(View.GONE);
 
-        mBaseView.addView(getContentView());
+        mBaseView.addView(onCreateContentView());
     }
 
     /**
@@ -86,6 +86,6 @@ public abstract class BaseFragment extends Fragment {
      * 子类必须实现该方法提供内容的视图
      * @return
      */
-    protected abstract View getContentView();
+    protected abstract View onCreateContentView();
 
 }
