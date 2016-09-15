@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.itheima.googleplaydemo.R;
-import com.itheima.googleplaydemo.ui.fragment.SimpleFragment;
+import com.itheima.googleplaydemo.ui.fragment.BaseFragment;
 import com.itheima.googleplaydemo.utils.LogUtils;
 
 import butterknife.BindView;
@@ -161,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             LogUtils.d(TAG, "getItem: " + position);
-            return SimpleFragment.newInstance(position);
+//            return SimpleFragment.newInstance(position);
+            return BaseFragment.newInstance();
         }
 
         @Override
