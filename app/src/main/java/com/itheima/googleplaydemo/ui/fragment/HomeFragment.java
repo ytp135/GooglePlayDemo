@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.ui.widget.LoopView;
 
 /**
  * 创建者: Leon
@@ -50,4 +51,9 @@ public class HomeFragment extends BaseListFragment {
             return view;
         }
     };
+
+    @Override
+    protected View getHeaderView() {
+        return new LoopView(getContext());
+    }
 }

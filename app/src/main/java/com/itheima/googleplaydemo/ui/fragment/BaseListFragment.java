@@ -17,9 +17,16 @@ public abstract class BaseListFragment extends BaseFragment {
     @Override
     protected View onCreateContentView() {
         mListView = new ListView(getContext());
+        if (getHeaderView() != null) {
+            mListView.addHeaderView(getHeaderView());
+        }
         mListView.setAdapter(getAdapter());
         return mListView;
     }
 
     protected abstract BaseAdapter getAdapter();
+
+    protected View getHeaderView() {
+        return null;
+    }
 }
