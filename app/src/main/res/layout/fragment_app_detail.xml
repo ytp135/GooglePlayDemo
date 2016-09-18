@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"/>
             <!--应用描述-->
+            <include layout="@layout/app_detail_des" />
 
         </LinearLayout>
 
