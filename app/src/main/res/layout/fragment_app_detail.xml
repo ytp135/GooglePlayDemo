@@ -16,6 +16,10 @@
             <!--应用信息-->
             <include layout="@layout/app_detail_info"/>
             <!--应用安全-->
+            <include layout="@layout/app_detail_security"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"/>
             <!--应用截图-->
             <!--应用描述-->
 
