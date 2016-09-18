@@ -1,0 +1,110 @@
+package com.itheima.googleplaydemo.ui.fragment;
+
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.ui.widget.FlowLayout;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * 创建者: Leon
+ * 创建时间: 2016/9/15 13:13
+ * 描述： TODO
+ */
+public class LeaderBoardFragment extends BaseFragment {
+    private static final String TAG = "LeaderBoardFragment";
+
+    private List<String> mDataList;
+
+    @Override
+    protected void startLoadData() {
+        mockDataList();
+        onDataLoadedSuccess();
+    }
+
+    private void mockDataList() {
+        mDataList = new ArrayList<String>();
+        for (int i = 0; i < 60; i++) {
+            mDataList.add(i + "黑马程序员");
+        }
+    }
+
+    @Override
+    protected View onCreateContentView() {
+        ScrollView scrollView = new ScrollView(getContext());
+        //流式布局
+        FlowLayout fl = new FlowLayout(getContext());
+
+        //给fl添加应有的孩子
+
+        for (int i = 0; i < mDataList.size(); i++) {
+            final String data = mDataList.get(i);
+
+
+            TextView tv = new TextView(getContext());
+            tv.setText(data);
+            tv.setTextColor(Color.WHITE);
+
+            tv.setGravity(Gravity.CENTER);
+            int padding = getResources().getDimensionPixelOffset(R.dimen.leader_board_text_padding);
+            tv.setPadding(padding, padding, padding, padding);
+
+            //设置圆角背景
+            GradientDrawable normalBg = new GradientDrawable();
+
+            //设置圆角
+            normalBg.setCornerRadius(10);
+            //设置颜色
+            Random random = new Random();
+            int alpha = 255;
+            int red = random.nextInt(190) + 30;//30-220
+            int green = random.nextInt(190) + 30;//30-220
+            int blue = random.nextInt(190) + 30;//30-220
+            int argb = Color.argb(alpha, red, green, blue);
+            normalBg.setColor(argb);
+
+            //按下去的图片
+            GradientDrawable pressedBg = new GradientDrawable();
+            pressedBg.setColor(Color.DKGRAY);
+            pressedBg.setCornerRadius(10);
+
+            StateListDrawable selectorBg = new StateListDrawable();
+
+            //按下去的状态
+            selectorBg.addState(new int[]{android.R.attr.state_pressed}, pressedBg);
+
+            //默认状态
+            selectorBg.addState(new int[]{}, normalBg);
+
+            tv.setBackgroundDrawable(selectorBg);
+
+            //设置tv可以点击
+            tv.setClickable(true);
+
+            fl.addView(tv);
+
+            //给textView设置点击事件
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getContext(), data, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+
+        scrollView.addView(fl);
+
+        return scrollView;
+    }
+}
