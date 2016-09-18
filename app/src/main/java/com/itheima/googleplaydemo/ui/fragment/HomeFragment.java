@@ -1,7 +1,9 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
+import android.content.Intent;
 import android.view.View;
 
+import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
 import com.itheima.googleplaydemo.ui.widget.LoopView;
 
 /**
@@ -20,5 +22,11 @@ public class HomeFragment extends BaseAppListFragment {
     @Override
     protected View getHeaderView() {
         return new LoopView(getContext());
+    }
+
+    @Override
+    protected void onListItemClick(int i) {
+        Intent intent = new Intent(getContext(), AppDetailActivity.class);
+        startActivity(intent);
     }
 }

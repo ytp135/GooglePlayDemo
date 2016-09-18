@@ -44,5 +44,4 @@ public abstract class BaseAppListFragment extends BaseListFragment {
             return view;
         }
     };
-
 }

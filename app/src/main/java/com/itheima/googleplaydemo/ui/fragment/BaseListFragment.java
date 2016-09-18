@@ -1,6 +1,7 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -21,12 +22,22 @@ public abstract class BaseListFragment extends BaseFragment {
             mListView.addHeaderView(getHeaderView());
         }
         mListView.setAdapter(getAdapter());
+        mListView.setOnItemClickListener(mOnItemClickListener);
         return mListView;
     }
+
+    private AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            onListItemClick(i);
+        }
+    };
 
     protected abstract BaseAdapter getAdapter();
 
     protected View getHeaderView() {
         return null;
     }
+
+    protected void onListItemClick(int i) {};
 }
