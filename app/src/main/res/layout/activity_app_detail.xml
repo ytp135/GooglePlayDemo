@@ -5,4 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <fragment
+        android:id="@+id/fragment_app_detail"
+        class="com.itheima.googleplaydemo.ui.fragment.AppDetailFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
 </LinearLayout>
