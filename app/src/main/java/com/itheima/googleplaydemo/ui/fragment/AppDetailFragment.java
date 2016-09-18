@@ -23,4 +23,5 @@ public class AppDetailFragment extends BaseFragment {
         View content = LayoutInflater.from(getContext()).inflate(R.layout.fragment_app_detail, null);
         return content;
     }
+
 }

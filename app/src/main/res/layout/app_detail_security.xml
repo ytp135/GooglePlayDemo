@@ -14,6 +14,7 @@
 
         <!--标签容器-->
         <LinearLayout
+            android:id="@+id/app_detail_security_tags"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -32,6 +33,7 @@
 
         <!--箭头-->
         <ImageView
+            android:id="@+id/app_detail_security_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -41,6 +43,7 @@
 
 
     <LinearLayout
+        android:id="@+id/app_detail_security_des"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
