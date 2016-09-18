@@ -1,6 +1,9 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
+import android.view.LayoutInflater;
 import android.view.View;
+
+import com.itheima.googleplaydemo.R;
 
 /**
  * 创建者: Leon
@@ -12,10 +15,12 @@ public class AppDetailFragment extends BaseFragment {
 
     @Override
     protected void startLoadData() {
+        onDataLoadedSuccess();
     }
 
     @Override
     protected View onCreateContentView() {
-        return null;
+        View content = LayoutInflater.from(getContext()).inflate(R.layout.fragment_app_detail, null);
+        return content;
     }
 }
