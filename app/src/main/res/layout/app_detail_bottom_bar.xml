@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/detail_bottom_bg"
+    android:gravity="center_vertical"
+    android:padding="8dp">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/detail_btn_selector"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:text="收藏"/>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:background="@drawable/progress_btn_selector"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="下载"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/detail_btn_selector"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:text="分享"/>
+
+</LinearLayout>

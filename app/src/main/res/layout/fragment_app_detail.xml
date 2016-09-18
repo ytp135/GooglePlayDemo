@@ -4,7 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/app_detail_bottom_bar"
+        layout="@layout/app_detail_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
     <ScrollView
+        android:layout_above="@id/app_detail_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
