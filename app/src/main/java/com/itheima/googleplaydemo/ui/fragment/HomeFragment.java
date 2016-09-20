@@ -3,6 +3,7 @@ package com.itheima.googleplaydemo.ui.fragment;
 import android.content.Intent;
 import android.view.View;
 
+import com.itheima.googleplaydemo.network.NetworkDataLoader;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
 import com.itheima.googleplaydemo.ui.widget.LoopView;
 
@@ -16,7 +17,8 @@ public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected void startLoadData() {
-        onDataLoadedSuccess();
+//        onDataLoadedSuccess();
+        NetworkDataLoader.getInstance().loadHomeData();
     }
 
     @Override
