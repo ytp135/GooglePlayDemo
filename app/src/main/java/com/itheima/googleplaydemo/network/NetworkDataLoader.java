@@ -1,6 +1,8 @@
 package com.itheima.googleplaydemo.network;
 
+import com.google.gson.Gson;
 import com.itheima.googleplaydemo.app.Constant;
+import com.itheima.googleplaydemo.network.bean.HomeBean;
 import com.itheima.googleplaydemo.utils.LogUtils;
 import com.itheima.googleplaydemo.utils.concurrent.ThreadPoolProxyFactory;
 
@@ -19,11 +21,13 @@ public class NetworkDataLoader {
     private static final String TAG = "NetworkDataLoader";
     private static NetworkDataLoader sNetworkDataLoader;
     private OkHttpClient mOkHttpClient;
+    private Gson mGson;
 
     public static synchronized NetworkDataLoader getInstance() {
         if (sNetworkDataLoader == null) {
             sNetworkDataLoader = new NetworkDataLoader();
             sNetworkDataLoader.mOkHttpClient = new OkHttpClient();
+            sNetworkDataLoader.mGson = new Gson();
         }
         return sNetworkDataLoader;
     }
@@ -59,12 +63,12 @@ public class NetworkDataLoader {
         @Override
         public void run() {
             try {
-                LogUtils.d(TAG, "run: " + Thread.currentThread().getName());
                 //发起同步请求
                 Request request = new Request.Builder().get().url(mUrl).build();
                 Response response = mOkHttpClient.newCall(request).execute();
-                String result = response.body().toString();
-                LogUtils.d(TAG, "loadHomeData: " + result);
+                String result = response.body().string();
+                HomeBean bean = mGson.fromJson(result, HomeBean.class);
+                LogUtils.d(TAG, "loadHomeData: " + bean.getList().get(0).getName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
