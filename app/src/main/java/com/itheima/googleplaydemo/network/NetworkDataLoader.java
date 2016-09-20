@@ -2,11 +2,10 @@ package com.itheima.googleplaydemo.network;
 
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.utils.LogUtils;
+import com.itheima.googleplaydemo.utils.concurrent.ThreadPoolProxyFactory;
 
 import java.io.IOException;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,7 +17,6 @@ import okhttp3.Response;
  */
 public class NetworkDataLoader {
     private static final String TAG = "NetworkDataLoader";
-
     private static NetworkDataLoader sNetworkDataLoader;
     private OkHttpClient mOkHttpClient;
 
@@ -32,7 +30,7 @@ public class NetworkDataLoader {
 
     public void loadHomeData() {
         String url = Constant.URL_HOME + "?index=0";
-        //发起异步请求
+/*        //发起异步请求
         Request request = new Request.Builder().get().url(url).build();
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -44,7 +42,10 @@ public class NetworkDataLoader {
                 String result = response.body().string();
                 LogUtils.d(TAG, "onResponse: " + result);
             }
-        });
+        });*/
+//        new Thread(new RequestTask(url)).start();
+//        new ThreadPoolProxy().execute(new RequestTask(url));
+        ThreadPoolProxyFactory.getNormalThreadPoolProxy().execute(new RequestTask(url));
     }
 
     private class RequestTask implements Runnable {
@@ -58,6 +59,7 @@ public class NetworkDataLoader {
         @Override
         public void run() {
             try {
+                LogUtils.d(TAG, "run: " + Thread.currentThread().getName());
                 //发起同步请求
                 Request request = new Request.Builder().get().url(mUrl).build();
                 Response response = mOkHttpClient.newCall(request).execute();
