@@ -1,8 +1,11 @@
 package com.itheima.googleplaydemo.network;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.google.gson.Gson;
 import com.itheima.googleplaydemo.app.Constant;
-import com.itheima.googleplaydemo.network.bean.HomeBean;
+import com.itheima.googleplaydemo.bean.HomeBean;
 import com.itheima.googleplaydemo.utils.LogUtils;
 import com.itheima.googleplaydemo.utils.concurrent.ThreadPoolProxyFactory;
 
@@ -23,6 +26,8 @@ public class NetworkDataLoader {
     private OkHttpClient mOkHttpClient;
     private Gson mGson;
 
+    private NetworkListener mNetworkListener;
+
     public static synchronized NetworkDataLoader getInstance() {
         if (sNetworkDataLoader == null) {
             sNetworkDataLoader = new NetworkDataLoader();
@@ -32,7 +37,7 @@ public class NetworkDataLoader {
         return sNetworkDataLoader;
     }
 
-    public void loadHomeData() {
+    public void loadHomeData(NetworkListener listener) {
         String url = Constant.URL_HOME + "?index=0";
 /*        //发起异步请求
         Request request = new Request.Builder().get().url(url).build();
@@ -49,6 +54,7 @@ public class NetworkDataLoader {
         });*/
 //        new Thread(new RequestTask(url)).start();
 //        new ThreadPoolProxy().execute(new RequestTask(url));
+        mNetworkListener = listener;
         ThreadPoolProxyFactory.getNormalThreadPoolProxy().execute(new RequestTask(url));
     }
 
@@ -67,10 +73,19 @@ public class NetworkDataLoader {
                 Request request = new Request.Builder().get().url(mUrl).build();
                 Response response = mOkHttpClient.newCall(request).execute();
                 String result = response.body().string();
-                HomeBean bean = mGson.fromJson(result, HomeBean.class);
-                LogUtils.d(TAG, "loadHomeData: " + bean.getList().get(0).getName());
+                final HomeBean bean = mGson.fromJson(result, HomeBean.class);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mNetworkListener.onResponse(bean);
+                        LogUtils.d(TAG, "loadHomeData: " + bean.getList().get(0).getName());
+
+                    }
+                });
+
             } catch (IOException e) {
                 e.printStackTrace();
+                mNetworkListener.onFailure(e.getLocalizedMessage());
             }
         }
     }

@@ -3,9 +3,14 @@ package com.itheima.googleplaydemo.ui.fragment;
 import android.content.Intent;
 import android.view.View;
 
+import com.itheima.googleplaydemo.bean.AppListItem;
 import com.itheima.googleplaydemo.network.NetworkDataLoader;
+import com.itheima.googleplaydemo.network.NetworkListener;
+import com.itheima.googleplaydemo.bean.HomeBean;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
 import com.itheima.googleplaydemo.ui.widget.LoopView;
+
+import java.util.List;
 
 /**
  * 创建者: Leon
@@ -15,11 +20,31 @@ import com.itheima.googleplaydemo.ui.widget.LoopView;
 public class HomeFragment extends BaseAppListFragment {
     private static final String TAG = "HomeFragment";
 
+    private HomeBean mHomeBean;
+
     @Override
     protected void startLoadData() {
 //        onDataLoadedSuccess();
-        NetworkDataLoader.getInstance().loadHomeData();
+        NetworkDataLoader.getInstance().loadHomeData(mHomeBeanNetworkListener);
     }
+
+    private NetworkListener<HomeBean> mHomeBeanNetworkListener = new NetworkListener<HomeBean>() {
+        @Override
+        public void onResponse(HomeBean result) {
+            mHomeBean = result;
+            onDataLoadedSuccess();
+        }
+
+        @Override
+        public void onFailure(String error) {
+
+        }
+
+        @Override
+        public void onEmpty() {
+
+        }
+    };
 
     @Override
     protected View getHeaderView() {
@@ -30,5 +55,10 @@ public class HomeFragment extends BaseAppListFragment {
     protected void onListItemClick(int i) {
         Intent intent = new Intent(getContext(), AppDetailActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected List<AppListItem> getListData() {
+        return mHomeBean.getList();
     }
 }
