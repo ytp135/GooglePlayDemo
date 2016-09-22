@@ -25,6 +25,8 @@ public class AppListAdapter extends BaseAdapter {
     private static final int ITEM_TYPE_NORMAL = 0;
     private static final int ITEM_TYPE_LOADING = 1;
 
+    private OnLoadMoreListener mOnLoadMoreListener;
+
 
     public AppListAdapter(List<AppListItem> list, Context context) {
         mDataList = list;
@@ -70,6 +72,10 @@ public class AppListAdapter extends BaseAdapter {
             } else {
                 viewHolder = (ListLoadingItemViewHolder) convertView.getTag();
             }
+            if (mOnLoadMoreListener != null) {
+                mOnLoadMoreListener.onLoadMore();
+            }
+
         }
 
         return convertView;
@@ -105,5 +111,13 @@ public class AppListAdapter extends BaseAdapter {
     @Override
     public int getViewTypeCount() {
         return 2;
+    }
+
+    public interface OnLoadMoreListener {
+        void onLoadMore();
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener listener) {
+        mOnLoadMoreListener = listener;
     }
 }

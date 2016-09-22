@@ -17,13 +17,17 @@ public abstract class BaseListFragment extends BaseFragment {
 
     private ListView mListView;
 
+    private BaseAdapter mBaseAdapter;
+
     @Override
     protected View onCreateContentView() {
         mListView = new ListView(getContext());
-        if (getHeaderView() != null) {
-            mListView.addHeaderView(getHeaderView());
+        mBaseAdapter = onCreateAdapter();
+        View header = onCreateHeaderView();
+        if (header != null) {
+            mListView.addHeaderView(header);
         }
-        mListView.setAdapter(getAdapter());
+        mListView.setAdapter(mBaseAdapter);
         mListView.setOnItemClickListener(mOnItemClickListener);
         mListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
         onCustomListView();
@@ -37,9 +41,9 @@ public abstract class BaseListFragment extends BaseFragment {
         }
     };
 
-    protected abstract BaseAdapter getAdapter();
+    protected abstract BaseAdapter onCreateAdapter();
 
-    protected View getHeaderView() {
+    protected View onCreateHeaderView() {
         return null;
     }
 
@@ -51,4 +55,9 @@ public abstract class BaseListFragment extends BaseFragment {
         mListView.setDivider(new ColorDrawable(Color.TRANSPARENT));
         mListView.setDividerHeight(height);
     }
+
+    protected BaseAdapter getAdapter() {
+        return mBaseAdapter;
+    }
+
 }

@@ -8,6 +8,7 @@ import com.itheima.googleplaydemo.bean.HomeBean;
 import com.itheima.googleplaydemo.network.HomeRequest;
 import com.itheima.googleplaydemo.network.NetworkListener;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
+import com.itheima.googleplaydemo.utils.LogUtils;
 import com.itheima.googleplaydemo.widget.LoopView;
 
 import java.util.List;
@@ -28,6 +29,30 @@ public class HomeFragment extends BaseAppListFragment {
         new HomeRequest(0, mHomeBeanNetworkListener).execute();
     }
 
+    @Override
+    public void onLoadMore() {
+        new HomeRequest(mHomeBean.getList().size(), mLoadMoreNetworkListener).execute();
+    }
+
+    private NetworkListener<HomeBean> mLoadMoreNetworkListener = new NetworkListener<HomeBean>() {
+        @Override
+        public void onResponse(HomeBean result) {
+            LogUtils.d(TAG, "onResponse: ");
+            mHomeBean.getList().addAll(result.getList());
+            getAdapter().notifyDataSetChanged();
+        }
+
+        @Override
+        public void onFailure(String error) {
+
+        }
+
+        @Override
+        public void onEmpty() {
+
+        }
+    };
+
     private NetworkListener<HomeBean> mHomeBeanNetworkListener = new NetworkListener<HomeBean>() {
         @Override
         public void onResponse(HomeBean result) {
@@ -47,7 +72,7 @@ public class HomeFragment extends BaseAppListFragment {
     };
 
     @Override
-    protected View getHeaderView() {
+    protected View onCreateHeaderView() {
         return new LoopView(getContext());
     }
 
@@ -61,4 +86,5 @@ public class HomeFragment extends BaseAppListFragment {
     protected List<AppListItem> getListData() {
         return mHomeBean.getList();
     }
+
 }

@@ -21,7 +21,7 @@ public class SubjectFragment extends BaseListFragment {
     }
 
     @Override
-    protected BaseAdapter getAdapter() {
+    protected BaseAdapter onCreateAdapter() {
         return mBaseAdapter;
     }
 

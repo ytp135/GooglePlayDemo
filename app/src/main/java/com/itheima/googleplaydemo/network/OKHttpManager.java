@@ -2,6 +2,7 @@ package com.itheima.googleplaydemo.network;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 
 import com.itheima.googleplaydemo.utils.concurrent.ThreadPoolProxyFactory;
 
@@ -17,6 +18,7 @@ import okhttp3.Response;
  * 描述： TODO
  */
 public class OKHttpManager {
+
     private static final String TAG = "OKHttpManager";
     private static OKHttpManager sOKHttpManager;
     private OkHttpClient mOkHttpClient;
@@ -47,6 +49,7 @@ public class OKHttpManager {
         @Override
         public void run() {
             try {
+                SystemClock.sleep(2000);//模拟网络延时
                 //发起同步请求
                 Request request = new Request.Builder().get().url(mRequest.getUrl()).build();
                 Response response = mOkHttpClient.newCall(request).execute();
