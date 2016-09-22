@@ -1,5 +1,7 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -23,6 +25,7 @@ public abstract class BaseListFragment extends BaseFragment {
         }
         mListView.setAdapter(getAdapter());
         mListView.setOnItemClickListener(mOnItemClickListener);
+        onCustomListView();
         return mListView;
     }
 
@@ -40,4 +43,11 @@ public abstract class BaseListFragment extends BaseFragment {
     }
 
     protected void onListItemClick(int i) {};
+
+    protected void onCustomListView(){};
+
+    protected void setListDivider(int height) {
+        mListView.setDivider(new ColorDrawable(Color.TRANSPARENT));
+        mListView.setDividerHeight(height);
+    }
 }

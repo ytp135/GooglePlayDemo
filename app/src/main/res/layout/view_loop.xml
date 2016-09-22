@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     
-    <com.itheima.googleplaydemo.ui.widget.LoopViewPager
+    <com.itheima.googleplaydemo.widget.LoopViewPager
         android:id="@+id/vp"
         android:layout_width="match_parent"
         android:layout_height="180dp">
-    </com.itheima.googleplaydemo.ui.widget.LoopViewPager>
+    </com.itheima.googleplaydemo.widget.LoopViewPager>
     
     <LinearLayout
         android:id="@+id/dots_container"

@@ -1,19 +1,15 @@
 package com.itheima.googleplaydemo.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
-import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.bean.AppListItem;
+import com.itheima.googleplaydemo.widget.AppListItemView;
+import com.itheima.googleplaydemo.widget.LoadingListItemView;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * 创建者: Leon
@@ -21,10 +17,13 @@ import butterknife.ButterKnife;
  * 描述： TODO
  */
 public class AppListAdapter extends BaseAdapter {
-    private static final String TAG = "AppListAdapter";
 
+    private static final String TAG = "AppListAdapter";
     private List<AppListItem> mDataList;
     private Context mContext;
+
+    private static final int ITEM_TYPE_NORMAL = 0;
+    private static final int ITEM_TYPE_LOADING = 1;
 
 
     public AppListAdapter(List<AppListItem> list, Context context) {
@@ -37,7 +36,7 @@ public class AppListAdapter extends BaseAdapter {
         if (mDataList == null) {
             return 0;
         }
-        return mDataList.size();
+        return mDataList.size() + 1;
     }
 
     @Override
@@ -52,33 +51,59 @@ public class AppListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder vh = null;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_app_item, null);
-            vh = new ViewHolder(convertView);
-            convertView.setTag(vh);
+        if (getItemViewType(position) == ITEM_TYPE_NORMAL) {
+            ListItemViewHolder vh = null;
+            if (convertView == null) {
+                convertView = new AppListItemView(mContext);
+                vh = new ListItemViewHolder((AppListItemView) convertView);
+                convertView.setTag(vh);
+            } else {
+                vh = (ListItemViewHolder) convertView.getTag();
+            }
+           vh.mAppListItemView.bindView(mDataList.get(position));
         } else {
-            vh = (ViewHolder) convertView.getTag();
+            ListLoadingItemViewHolder viewHolder = null;
+            if (convertView == null) {
+                convertView = new LoadingListItemView(mContext);
+                viewHolder = new ListLoadingItemViewHolder((LoadingListItemView) convertView);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ListLoadingItemViewHolder) convertView.getTag();
+            }
         }
-        AppListItem item = mDataList.get(position);
-        vh.mAppName.setText(item.getName());
-        vh.mAppSize.setText(String.valueOf(item.getSize()));
-        vh.mAppDes.setText(item.getDes());
+
         return convertView;
     }
 
-    public class ViewHolder {
+    public class ListItemViewHolder {
 
-        @BindView(R.id.app_name)
-        TextView mAppName;
-        @BindView(R.id.app_size)
-        TextView mAppSize;
-        @BindView(R.id.app_des)
-        TextView mAppDes;
+        private AppListItemView mAppListItemView;
 
-        public ViewHolder(View root) {
-            ButterKnife.bind(this, root);
+        public ListItemViewHolder(AppListItemView root) {
+            mAppListItemView = root;
         }
+    }
 
+    public class ListLoadingItemViewHolder {
+
+        private LoadingListItemView mListLoadingItemView;
+
+        public ListLoadingItemViewHolder(LoadingListItemView root) {
+            mListLoadingItemView = root;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == getCount() - 1) {
+            return ITEM_TYPE_LOADING;
+        } else {
+            return ITEM_TYPE_NORMAL;
+        }
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
     }
 }

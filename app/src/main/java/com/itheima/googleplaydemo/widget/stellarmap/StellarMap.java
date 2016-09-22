@@ -1,4 +1,4 @@
-package com.itheima.googleplaydemo.ui.widget.stellarmap;
+package com.itheima.googleplaydemo.widget.stellarmap;
 
 import android.content.Context;
 import android.util.AttributeSet;

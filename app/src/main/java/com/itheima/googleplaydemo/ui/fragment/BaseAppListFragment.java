@@ -2,6 +2,7 @@ package com.itheima.googleplaydemo.ui.fragment;
 
 import android.widget.BaseAdapter;
 
+import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.adapter.AppListAdapter;
 import com.itheima.googleplaydemo.bean.AppListItem;
 
@@ -21,4 +22,9 @@ public abstract class BaseAppListFragment extends BaseListFragment {
     }
 
     protected abstract List<AppListItem> getListData();
+
+    @Override
+    protected void onCustomListView() {
+        setListDivider(getResources().getDimensionPixelSize(R.dimen.app_list_divider_height));
+    }
 }

@@ -1,4 +1,4 @@
-package com.itheima.googleplaydemo.ui.widget;
+package com.itheima.googleplaydemo.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

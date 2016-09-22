@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itheima.googleplaydemo.R;
-import com.itheima.googleplaydemo.ui.widget.FlowLayout;
+import com.itheima.googleplaydemo.widget.FlowLayout;
 
 import java.util.ArrayList;
 import java.util.List;

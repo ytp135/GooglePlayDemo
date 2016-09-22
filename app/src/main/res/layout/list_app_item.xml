@@ -1,91 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="10dp">
 
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/app_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/icon"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/app_icon"
             android:orientation="vertical"
             android:padding="10dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="黑马程序员"
+                android:textSize="16sp"/>
 
-                <ImageView
-                    android:id="@+id/app_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:src="@drawable/icon"/>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    android:layout_toRightOf="@id/app_icon">
-
-                    <TextView
-                        android:id="@+id/app_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="黑马程序员"
-                        android:textSize="16sp"/>
-
-                    <RatingBar
-                        android:id="@+id/app_rating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:rating="3"
-                        style="?android:attr/ratingBarStyleSmall"
-                        android:progressDrawable="@drawable/ratingbar_small"/>
-
-                    <TextView
-                        android:id="@+id/app_size"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1.2M"/>
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_download"
-                    android:padding="10dp"
-                    android:layout_alignParentRight="true"/>
-
-
-
-            </RelativeLayout>
-
-            <!--分割线-->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#666666"/>
+            <RatingBar
+                android:id="@+id/app_rating"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressDrawable="@drawable/ratingbar_small"
+                android:rating="3"/>
 
             <TextView
-                android:id="@+id/app_des"
-                android:layout_width="match_parent"
+                android:id="@+id/app_size"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:text="黑马程序员是世界上顶级的IT组织"/>
+                android:text="1.2M"/>
 
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:src="@drawable/ic_download"/>
 
 
+    </RelativeLayout>
+
+    <!--分割线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#666666"/>
+
+    <TextView
+        android:id="@+id/app_des"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="黑马程序员是世界上顶级的IT组织"/>
 
 </LinearLayout>

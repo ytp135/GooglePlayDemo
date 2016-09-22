@@ -8,9 +8,10 @@ import com.itheima.googleplaydemo.bean.HomeBean;
 import com.itheima.googleplaydemo.network.HomeRequest;
 import com.itheima.googleplaydemo.network.NetworkListener;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
-import com.itheima.googleplaydemo.ui.widget.LoopView;
+import com.itheima.googleplaydemo.widget.LoopView;
 
 import java.util.List;
+
 
 /**
  * 创建者: Leon
