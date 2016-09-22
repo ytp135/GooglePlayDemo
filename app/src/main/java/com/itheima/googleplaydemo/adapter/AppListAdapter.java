@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.itheima.googleplaydemo.bean.AppListItem;
+import com.itheima.googleplaydemo.loader.HomeDataLoader;
 import com.itheima.googleplaydemo.widget.AppListItemView;
 import com.itheima.googleplaydemo.widget.LoadingListItemView;
 
@@ -28,8 +29,8 @@ public class AppListAdapter extends BaseAdapter {
     private OnLoadMoreListener mOnLoadMoreListener;
 
 
-    public AppListAdapter(List<AppListItem> list, Context context) {
-        mDataList = list;
+    public AppListAdapter(Context context) {
+        mDataList = HomeDataLoader.getInstance().getListData();
         mContext = context;
     }
 

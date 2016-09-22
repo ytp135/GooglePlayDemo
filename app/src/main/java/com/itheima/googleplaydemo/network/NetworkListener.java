@@ -10,6 +10,4 @@ public interface NetworkListener<T> {
     void onResponse(T result);
 
     void onFailure(String error);
-
-    void onEmpty();
 }

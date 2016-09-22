@@ -1,9 +1,5 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
-import com.itheima.googleplaydemo.bean.AppListItem;
-
-import java.util.List;
-
 /**
  * 创建者: Leon
  * 创建时间: 2016/9/15 13:13
@@ -17,8 +13,4 @@ public class AppFragment extends BaseAppListFragment {
         onDataLoadedSuccess();
     }
 
-    @Override
-    protected List<AppListItem> getListData() {
-        return null;
-    }
 }

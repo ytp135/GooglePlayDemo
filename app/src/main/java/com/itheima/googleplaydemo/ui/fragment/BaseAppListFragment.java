@@ -4,9 +4,6 @@ import android.widget.BaseAdapter;
 
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.adapter.AppListAdapter;
-import com.itheima.googleplaydemo.bean.AppListItem;
-
-import java.util.List;
 
 /**
  * 创建者: Leon
@@ -20,12 +17,10 @@ public abstract class BaseAppListFragment extends BaseListFragment implements Ap
 
     @Override
     protected BaseAdapter onCreateAdapter() {
-        mAppListAdapter = new AppListAdapter(getListData(), getContext());
+        mAppListAdapter = new AppListAdapter(getContext());
         mAppListAdapter.setOnLoadMoreListener(this);
         return mAppListAdapter;
     }
-
-    protected abstract List<AppListItem> getListData();
 
     @Override
     protected void onCustomListView() {
