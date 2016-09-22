@@ -142,4 +142,24 @@ public class LoopView extends RelativeLayout {
         initDots();
         initViewPager();
     }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        postDelayed(mLooper, 3000);
+    }
+
+    private Runnable mLooper = new Runnable() {
+        @Override
+        public void run() {
+            mVp.setCurrentItem(mVp.getCurrentItem() + 1);
+            postDelayed(mLooper, 3000);
+        }
+    };
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeCallbacks(mLooper);
+    }
 }
