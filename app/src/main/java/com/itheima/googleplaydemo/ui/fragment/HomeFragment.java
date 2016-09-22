@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.view.View;
 
 import com.itheima.googleplaydemo.bean.AppListItem;
-import com.itheima.googleplaydemo.network.NetworkDataLoader;
-import com.itheima.googleplaydemo.network.NetworkListener;
 import com.itheima.googleplaydemo.bean.HomeBean;
+import com.itheima.googleplaydemo.network.HomeRequest;
+import com.itheima.googleplaydemo.network.NetworkListener;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
 import com.itheima.googleplaydemo.ui.widget.LoopView;
 
@@ -24,8 +24,7 @@ public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected void startLoadData() {
-//        onDataLoadedSuccess();
-        NetworkDataLoader.getInstance().loadHomeData(mHomeBeanNetworkListener);
+        new HomeRequest(0, mHomeBeanNetworkListener).execute();
     }
 
     private NetworkListener<HomeBean> mHomeBeanNetworkListener = new NetworkListener<HomeBean>() {
@@ -37,12 +36,12 @@ public class HomeFragment extends BaseAppListFragment {
 
         @Override
         public void onFailure(String error) {
-
+            onDataLoadedError();
         }
 
         @Override
         public void onEmpty() {
-
+            onDataLoadedEmpty();
         }
     };
 
