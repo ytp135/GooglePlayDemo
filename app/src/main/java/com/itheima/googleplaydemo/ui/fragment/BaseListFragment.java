@@ -25,6 +25,7 @@ public abstract class BaseListFragment extends BaseFragment {
         }
         mListView.setAdapter(getAdapter());
         mListView.setOnItemClickListener(mOnItemClickListener);
+        mListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
         onCustomListView();
         return mListView;
     }
