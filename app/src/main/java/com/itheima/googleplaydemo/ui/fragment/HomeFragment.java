@@ -3,10 +3,12 @@ package com.itheima.googleplaydemo.ui.fragment;
 import android.content.Intent;
 import android.view.View;
 
+import com.itheima.googleplaydemo.bean.AppListItem;
 import com.itheima.googleplaydemo.loader.HomeDataLoader;
-import com.itheima.googleplaydemo.loader.ListDataLoaderListener;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
 import com.itheima.googleplaydemo.widget.LoopView;
+
+import java.util.List;
 
 
 /**
@@ -14,8 +16,7 @@ import com.itheima.googleplaydemo.widget.LoopView;
  * 创建时间: 2016/9/15 13:13
  * 描述： TODO
  */
-public class HomeFragment extends BaseAppListFragment implements ListDataLoaderListener{
-    private static final String TAG = "HomeFragment";
+public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected void startLoadData() {
@@ -25,6 +26,11 @@ public class HomeFragment extends BaseAppListFragment implements ListDataLoaderL
     @Override
     public void onLoadMore() {
         HomeDataLoader.getInstance().loadMoreData();
+    }
+
+    @Override
+    protected List<AppListItem> getAppList() {
+        return HomeDataLoader.getInstance().getListData();
     }
 
 
@@ -43,7 +49,7 @@ public class HomeFragment extends BaseAppListFragment implements ListDataLoaderL
 
     @Override
     public void onMoreDataLoadSuccess() {
-        getAdapter().notifyDataSetChanged();
+        notifyDataSetChange();
     }
 
     @Override

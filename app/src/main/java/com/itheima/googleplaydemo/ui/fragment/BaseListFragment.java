@@ -60,4 +60,8 @@ public abstract class BaseListFragment extends BaseFragment {
         return mBaseAdapter;
     }
 
+    protected void notifyDataSetChange() {
+        mBaseAdapter.notifyDataSetChanged();
+    }
+
 }
