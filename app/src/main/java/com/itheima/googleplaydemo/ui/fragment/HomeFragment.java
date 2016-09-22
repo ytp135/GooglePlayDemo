@@ -73,7 +73,10 @@ public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected View onCreateHeaderView() {
-        return new LoopView(getContext());
+        LogUtils.d(TAG, "onCreateHeaderView: ");
+        LoopView loopView = new LoopView(getContext());
+        loopView.setData(mHomeBean.getPicture());
+        return loopView;
     }
 
     @Override

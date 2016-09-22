@@ -13,7 +13,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.app.Constant;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,8 +39,12 @@ public class LoopView extends RelativeLayout {
     private int mDotMargin = 5;
     private int mLastPosition = 0;
 
+    private List<String> mImages;
+
+/*
     private int[] mImages = {R.drawable.home01, R.drawable.home02, R.drawable.home03, R.drawable.home04, R.drawable.home05,
             R.drawable.home06, R.drawable.home07, R.drawable.home08};
+*/
 
 
 
@@ -52,7 +60,11 @@ public class LoopView extends RelativeLayout {
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_loop, this);
         ButterKnife.bind(this, this);
-        initDots();
+//        initDots();
+//        initViewPager();
+    }
+
+    private void initViewPager() {
         mVp.setAdapter(mPagerAdapter);
         mVp.setOnPageChangeListener(mOnPageChangeListener);
     }
@@ -61,10 +73,10 @@ public class LoopView extends RelativeLayout {
         DisplayMetrics dm = getResources().getDisplayMetrics();
         mDotSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mDotSize, dm);
         mDotMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mDotMargin, dm);
-        for (int i = 0; i < mImages.length; i++) {
+        for (int i = 0; i < mImages.size(); i++) {
             View dot = new View(getContext());
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(mDotSize, mDotSize);
-            if (i != mImages.length - 1) {
+            if (i != mImages.size() - 1) {
                 layoutParams.rightMargin = mDotMargin;
             }
             dot.setLayoutParams(layoutParams);
@@ -76,7 +88,10 @@ public class LoopView extends RelativeLayout {
     private PagerAdapter mPagerAdapter = new PagerAdapter() {
         @Override
         public int getCount() {
-            return mImages.length;
+            if (mImages == null) {
+                return 0;
+            }
+            return mImages.size();
         }
 
         @Override
@@ -87,8 +102,8 @@ public class LoopView extends RelativeLayout {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             ImageView imageView = new ImageView(getContext());
-            imageView.setImageResource(mImages[position]);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            Glide.with(getContext()).load(Constant.URL_IMAGE + mImages.get(position)).into(imageView);
             container.addView(imageView);
             return imageView;
         }
@@ -121,4 +136,10 @@ public class LoopView extends RelativeLayout {
 
         }
     };
+
+    public void setData(List<String> data) {
+        mImages = data;
+        initDots();
+        initViewPager();
+    }
 }

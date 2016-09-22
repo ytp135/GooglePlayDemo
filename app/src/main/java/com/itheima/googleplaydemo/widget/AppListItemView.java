@@ -8,7 +8,9 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppListItem;
 
 import butterknife.BindView;
@@ -50,5 +52,6 @@ public class AppListItemView extends RelativeLayout {
         mAppName.setText(item.getName());
         mAppDes.setText(item.getDes());
         mAppSize.setText(String.valueOf(item.getSize()));
+        Glide.with(getContext()).load(Constant.URL_IMAGE + item.getIconUrl()).into(mAppIcon);
     }
 }
