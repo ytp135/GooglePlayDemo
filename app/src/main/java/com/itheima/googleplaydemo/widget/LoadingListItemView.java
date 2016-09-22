@@ -1,10 +1,10 @@
 package com.itheima.googleplaydemo.widget;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.itheima.googleplaydemo.R;
@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
  * 创建时间: 2016/9/22 10:44
  * 描述： TODO
  */
-public class LoadingListItemView extends CardView {
+public class LoadingListItemView extends RelativeLayout {
     private static final String TAG = "ListLoadingItemView";
 
     @BindView(R.id.list_loading_item_tv)
