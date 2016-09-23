@@ -2,6 +2,7 @@ package com.itheima.googleplaydemo.loader;
 
 import com.itheima.googleplaydemo.bean.AppListItem;
 import com.itheima.googleplaydemo.network.AppRequest;
+import com.itheima.googleplaydemo.network.GooglePlayRequest;
 import com.itheima.googleplaydemo.network.NetworkListener;
 
 import java.util.List;
@@ -11,13 +12,9 @@ import java.util.List;
  * 创建时间: 2016/9/22 20:28
  * 描述： TODO
  */
-public class AppDataLoader {
+public class AppDataLoader extends ListDataLoader<List<AppListItem>>{
 
     private static AppDataLoader sAppDataLoader;
-
-    private ListDataLoaderListener mListDataLoaderListener;
-
-    private List<AppListItem> mAppListItems;
 
     public static AppDataLoader getInstance() {
         if (sAppDataLoader == null) {
@@ -29,52 +26,26 @@ public class AppDataLoader {
         }
         return sAppDataLoader;
     }
-    public void loadAppData(ListDataLoaderListener listDataLoaderListener) {
-        if (listDataLoaderListener == null) {
-            return;
-        }
-        mListDataLoaderListener = listDataLoaderListener;
 
-        if (mAppListItems != null) {
-            mListDataLoaderListener.onLoadSuccess();
-        } else {
-            new AppRequest(0, mListNetworkListener).execute();
-        }
+
+    @Override
+    protected GooglePlayRequest<List<AppListItem>> onCreateLoadMoreRequest(NetworkListener<List<AppListItem>> listener) {
+        return new AppRequest(getData().size(), listener);
+    }
+
+    @Override
+    protected void onGetMoreData(List<AppListItem> result) {
+        getData().addAll(result);
     }
 
 
-    private NetworkListener<List<AppListItem>> mListNetworkListener = new NetworkListener<List<AppListItem>>() {
-
-        @Override
-        public void onResponse(List<AppListItem> result) {
-            mAppListItems = result;
-            mListDataLoaderListener.onLoadSuccess();
-        }
-
-        @Override
-        public void onFailure(String error) {
-            mListDataLoaderListener.onLoadFailed();
-        }
-    };
-
-    public void loadMoreData() {
-        new AppRequest(mAppListItems.size(), mLoadMoreListener).execute();
+    @Override
+    protected GooglePlayRequest<List<AppListItem>> onCreateRequest(NetworkListener<List<AppListItem>> listener) {
+        return new AppRequest(0, listener);
     }
 
-    private NetworkListener<List<AppListItem>> mLoadMoreListener = new NetworkListener<List<AppListItem>>() {
-        @Override
-        public void onResponse(List<AppListItem> result) {
-            mAppListItems.addAll(result);
-            mListDataLoaderListener.onMoreDataLoadSuccess();
-        }
-
-        @Override
-        public void onFailure(String error) {
-            mListDataLoaderListener.onMoreDataLoadFailed();
-        }
-    };
-
-    public List<AppListItem> getListData() {
-        return mAppListItems;
+    @Override
+    protected boolean checkIfEmpty() {
+        return getData().size() == 0;
     }
 }

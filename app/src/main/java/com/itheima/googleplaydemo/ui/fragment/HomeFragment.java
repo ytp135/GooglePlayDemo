@@ -20,7 +20,7 @@ public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected void startLoadData() {
-        HomeDataLoader.getInstance().loadHomeData(this);
+        HomeDataLoader.getInstance().loadData(this);
     }
 
     @Override
