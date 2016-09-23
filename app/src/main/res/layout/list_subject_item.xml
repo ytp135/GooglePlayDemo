@@ -4,19 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_item_bg_selector"
-    android:padding="10dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <com.itheima.googleplaydemo.widget.RatioLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content">-->
 
         <ImageView
             android:id="@+id/subject_list_item_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/recommend_29"/>
-
     </com.itheima.googleplaydemo.widget.RatioLayout>
 
     <TextView

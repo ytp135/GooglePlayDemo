@@ -61,6 +61,6 @@ public class HomeDataLoader extends ListDataLoader<HomeBean>{
 
     @Override
     protected boolean checkIfEmpty() {
-        return false;
+        return getData().getList().size() == 0;
     }
 }

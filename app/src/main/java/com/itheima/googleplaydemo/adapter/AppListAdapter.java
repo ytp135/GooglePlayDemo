@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class AppListAdapter extends BaseAdapter {
 
-    private static final String TAG = "AppListAdapter";
     private List<AppListItem> mDataList;
     private Context mContext;
 

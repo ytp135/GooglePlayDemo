@@ -7,9 +7,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.app.Constant;
+import com.itheima.googleplaydemo.bean.SubjectBean;
+import com.itheima.googleplaydemo.utils.LogUtils;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * 创建者: Leon
@@ -17,6 +22,7 @@ import butterknife.BindView;
  * 描述： TODO
  */
 public class SubjectListItemView extends RelativeLayout {
+    private static final String TAG = "SubjectListItemView";
 
     @BindView(R.id.subject_list_item_image)
     ImageView mSubjectListItemImage;
@@ -34,5 +40,12 @@ public class SubjectListItemView extends RelativeLayout {
 
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.list_subject_item, this);
+        ButterKnife.bind(this, this);
+    }
+
+    public void bindView(SubjectBean bean) {
+        LogUtils.d(TAG, "bindView: ");
+        mSubjectListItemTitle.setText(bean.getDes());
+        Glide.with(getContext()).load(Constant.URL_IMAGE + bean.getUrl()).into(mSubjectListItemImage);
     }
 }

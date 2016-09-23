@@ -5,7 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.itheima.googleplaydemo.bean.SubjectBean;
 import com.itheima.googleplaydemo.widget.SubjectListItemView;
+
+import java.util.List;
 
 /**
  * 创建者: Leon
@@ -15,14 +18,19 @@ import com.itheima.googleplaydemo.widget.SubjectListItemView;
 public class SubjectListAdapter extends BaseAdapter{
 
     private Context mContext;
+    private List<SubjectBean> mDataList;
 
-    public SubjectListAdapter(Context context) {
+    public SubjectListAdapter(List<SubjectBean> dataList, Context context) {
         mContext = context;
+        mDataList = dataList;
     }
 
     @Override
     public int getCount() {
-        return 30;
+        if (mDataList == null) {
+            return 0;
+        }
+        return mDataList.size();
     }
 
     @Override
@@ -45,6 +53,7 @@ public class SubjectListAdapter extends BaseAdapter{
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.mSubjectListItemView.bindView(mDataList.get(position));
         return convertView;
     }
 
