@@ -21,7 +21,7 @@ public class SubjectFragment extends BaseListFragment implements ListDataLoaderL
 
     @Override
     protected BaseAdapter onCreateAdapter() {
-        return new SubjectListAdapter(SubjectDataLoader.getInstance().getData(), getContext());
+        return new SubjectListAdapter(getContext(), SubjectDataLoader.getInstance().getData());
     }
 
     @Override
