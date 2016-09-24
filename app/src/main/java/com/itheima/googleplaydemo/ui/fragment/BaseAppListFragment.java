@@ -13,7 +13,7 @@ import java.util.List;
  * 创建时间: 2016/9/17 9:59
  * 描述： TODO
  */
-public abstract class BaseAppListFragment extends BaseLoadMoreFragment{
+public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
     private AppListAdapter mAppListAdapter;
 
 

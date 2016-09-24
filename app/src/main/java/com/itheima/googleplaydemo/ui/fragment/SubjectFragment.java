@@ -10,7 +10,7 @@ import com.itheima.googleplaydemo.loader.SubjectDataLoader;
  * 创建时间: 2016/9/15 13:13
  * 描述： TODO
  */
-public class SubjectFragment extends BaseLoadMoreFragment {
+public class SubjectFragment extends BaseLoadMoreListFragment {
 
     @Override
     protected void startLoadData() {

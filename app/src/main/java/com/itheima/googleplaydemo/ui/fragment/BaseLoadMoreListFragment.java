@@ -8,7 +8,7 @@ import com.itheima.googleplaydemo.loader.LoadMoreListener;
  * 创建时间: 2016/9/24 22:46
  * 描述： TODO
  */
-public abstract class BaseLoadMoreFragment extends BaseListFragment
+public abstract class BaseLoadMoreListFragment extends BaseListFragment
         implements BaseLoadMoreListAdapter.OnLoadMoreListener, LoadMoreListener{
 
 
