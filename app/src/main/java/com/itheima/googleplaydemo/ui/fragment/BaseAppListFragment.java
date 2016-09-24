@@ -16,13 +16,12 @@ import java.util.List;
  */
 public abstract class BaseAppListFragment extends BaseListFragment
         implements AppListAdapter.OnLoadMoreListener, ListDataLoaderListener {
-    private static final String TAG = "BaseAppListFragment";
     private AppListAdapter mAppListAdapter;
 
 
     @Override
     protected BaseAdapter onCreateAdapter() {
-        mAppListAdapter = new AppListAdapter(getAppList(), getContext());
+        mAppListAdapter = new AppListAdapter(getContext(), getAppList());
         mAppListAdapter.setOnLoadMoreListener(this);
         return mAppListAdapter;
     }
