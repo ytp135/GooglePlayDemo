@@ -47,12 +47,4 @@ public class HomeFragment extends BaseAppListFragment {
         startActivity(intent);
     }
 
-    @Override
-    public void onMoreDataLoadSuccess() {
-        notifyDataSetChange();
-    }
-
-    @Override
-    public void onMoreDataLoadFailed() {
-    }
 }

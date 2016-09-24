@@ -18,33 +18,8 @@ public class GameFragment extends BaseAppListFragment {
     }
 
     @Override
-    public void onMoreDataLoadSuccess() {
-        notifyDataSetChange();
-    }
-
-    @Override
     public void onLoadMore() {
         GameDataLoader.getInstance().loadMoreData();
-    }
-
-    @Override
-    public void onMoreDataLoadFailed() {
-
-    }
-
-    @Override
-    public void onLoadSuccess() {
-        onDataLoadedSuccess();
-    }
-
-    @Override
-    public void onLoadFailed() {
-        onDataLoadedError();
-    }
-
-    @Override
-    public void onLoadedEmpty() {
-        onDataLoadedEmpty();
     }
 
     @Override

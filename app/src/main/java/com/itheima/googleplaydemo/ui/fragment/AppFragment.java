@@ -28,14 +28,4 @@ public class AppFragment extends BaseAppListFragment {
         return AppDataLoader.getInstance().getData();
     }
 
-    @Override
-    public void onMoreDataLoadSuccess() {
-        getAdapter().notifyDataSetChanged();
-    }
-
-    @Override
-    public void onMoreDataLoadFailed() {
-
-    }
-
 }

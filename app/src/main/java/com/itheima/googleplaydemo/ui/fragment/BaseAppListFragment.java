@@ -14,13 +14,9 @@ import java.util.List;
  * 描述： TODO
  */
 public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
-    private AppListAdapter mAppListAdapter;
-
-
     @Override
     protected BaseAdapter onCreateAdapter() {
-        mAppListAdapter = new AppListAdapter(getContext(), getAppList());
-        return mAppListAdapter;
+       return new AppListAdapter(getContext(), getAppList());
     }
 
     @Override
