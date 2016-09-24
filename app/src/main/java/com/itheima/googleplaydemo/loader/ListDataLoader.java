@@ -10,9 +10,9 @@ import com.itheima.googleplaydemo.network.NetworkListener;
  */
 public abstract class ListDataLoader<T> extends BaseDataLoader<T> {
 
-    private ListDataLoaderListener mListDataLoaderListener;
+    private LoadMoreListener mListDataLoaderListener;
 
-    public void loadData(ListDataLoaderListener listDataLoaderListener) {
+    public void loadData(LoadMoreListener listDataLoaderListener) {
         mListDataLoaderListener = listDataLoaderListener;
         super.loadData(listDataLoaderListener);
     }

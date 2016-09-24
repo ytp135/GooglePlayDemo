@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.loader.DataLoaderListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +23,7 @@ import butterknife.ButterKnife;
  * 创建时间: 2016/9/15 12:04
  * 描述： TODO
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements DataLoaderListener{
     private static final String TAG = "BaseFragment";
 
     @BindView(R.id.loading_progress)
@@ -88,4 +89,19 @@ public abstract class BaseFragment extends Fragment {
      */
     protected abstract View onCreateContentView();
 
+
+    @Override
+    public void onLoadSuccess() {
+        onDataLoadedSuccess();
+    }
+
+    @Override
+    public void onLoadedEmpty() {
+        onDataLoadedEmpty();
+    }
+
+    @Override
+    public void onLoadFailed() {
+        onLoadFailed();
+    }
 }

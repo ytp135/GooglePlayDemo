@@ -55,19 +55,4 @@ public class HomeFragment extends BaseAppListFragment {
     @Override
     public void onMoreDataLoadFailed() {
     }
-
-    @Override
-    public void onLoadSuccess() {
-        onDataLoadedSuccess();
-    }
-
-    @Override
-    public void onLoadFailed() {
-        onDataLoadedError();
-    }
-
-    @Override
-    public void onLoadedEmpty() {
-        onDataLoadedEmpty();
-    }
 }

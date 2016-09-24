@@ -30,7 +30,7 @@ public abstract class BaseListFragment extends BaseFragment{
         mListView.setAdapter(mBaseAdapter);
         mListView.setOnItemClickListener(mOnItemClickListener);
         mListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-        onCustomListView();
+        initListView();
         return mListView;
     }
 
@@ -49,7 +49,7 @@ public abstract class BaseListFragment extends BaseFragment{
 
     protected void onListItemClick(int i) {};
 
-    protected void onCustomListView(){};
+    protected void initListView(){};
 
     protected void setListDivider(int height) {
         mListView.setDivider(new ColorDrawable(Color.TRANSPARENT));

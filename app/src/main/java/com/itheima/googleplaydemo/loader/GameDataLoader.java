@@ -15,7 +15,7 @@ public class GameDataLoader {
 
     private static GameDataLoader sAppDataLoader;
 
-    private ListDataLoaderListener mListDataLoaderListener;
+    private LoadMoreListener mListDataLoaderListener;
 
     private List<AppListItem> mAppListItems;
 
@@ -29,7 +29,7 @@ public class GameDataLoader {
         }
         return sAppDataLoader;
     }
-    public void loadGameData(ListDataLoaderListener listDataLoaderListener) {
+    public void loadGameData(LoadMoreListener listDataLoaderListener) {
         if (listDataLoaderListener == null) {
             return;
         }

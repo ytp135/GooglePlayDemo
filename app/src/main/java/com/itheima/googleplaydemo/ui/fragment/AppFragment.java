@@ -38,18 +38,4 @@ public class AppFragment extends BaseAppListFragment {
 
     }
 
-    @Override
-    public void onLoadSuccess() {
-        onDataLoadedSuccess();
-    }
-
-    @Override
-    public void onLoadFailed() {
-        onDataLoadedError();
-    }
-
-    @Override
-    public void onLoadedEmpty() {
-        onDataLoadedEmpty();
-    }
 }
