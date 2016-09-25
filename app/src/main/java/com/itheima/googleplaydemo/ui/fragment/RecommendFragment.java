@@ -4,9 +4,9 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
+import com.itheima.googleplaydemo.loader.RecommendDataLoader;
 import com.itheima.googleplaydemo.widget.stellarmap.StellarMap;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +20,7 @@ public class RecommendFragment extends BaseFragment {
 
     @Override
     protected void startLoadData() {
-        onDataLoadedSuccess();
+        RecommendDataLoader.getInstance().loadData(this);
     }
 
     @Override
@@ -29,19 +29,19 @@ public class RecommendFragment extends BaseFragment {
         textView.setText(TAG);
         return textView;*/
         StellarMap stellarMap = new StellarMap(getContext());
-        stellarMap.setAdapter(new RecommendAdapter(mockDataList()));
+        stellarMap.setAdapter(new RecommendAdapter(RecommendDataLoader.getInstance().getData()));
         stellarMap.setRegularity(15, 20);
         stellarMap.setGroup(0, false);
         return stellarMap;
     }
 
-    private List<String> mockDataList() {
+/*    private List<String> mockDataList() {
         List<String> data = new ArrayList<String>();
         for (int i = 0; i < 28; i++) {
             data.add(i + "黑马程序员");
         }
         return data;
-    }
+    }*/
 
     private class RecommendAdapter implements StellarMap.Adapter {
 

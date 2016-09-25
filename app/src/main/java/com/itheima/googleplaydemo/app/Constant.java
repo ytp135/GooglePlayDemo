@@ -12,6 +12,7 @@ public class Constant {
     public static final String URL_APP = HOST + "/app";
     public static final String URL_GAME = HOST + "/game";
     public static final String URL_SUBJECT = HOST + "/subject";
+    public static final String URL_RECOMMEND = HOST + "/recommend";
     public static final String URL_IMAGE = HOST + "/image?name=";
 
 }
