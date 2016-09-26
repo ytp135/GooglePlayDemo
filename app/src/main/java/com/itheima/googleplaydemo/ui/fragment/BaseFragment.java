@@ -102,6 +102,6 @@ public abstract class BaseFragment extends Fragment implements DataLoaderListene
 
     @Override
     public void onLoadFailed() {
-        onLoadFailed();
+        onDataLoadedError();
     }
 }
