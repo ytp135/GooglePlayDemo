@@ -43,7 +43,7 @@ public class AppDetailDataLoader extends BaseDataLoader<AppDetailBean> {
     }
 
     @Override
-    protected boolean shouldCache() {
+    protected boolean useCache() {
         return false;
     }
 }

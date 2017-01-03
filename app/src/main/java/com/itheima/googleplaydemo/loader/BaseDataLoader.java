@@ -1,5 +1,7 @@
 package com.itheima.googleplaydemo.loader;
 
+import android.util.Log;
+
 import com.itheima.googleplaydemo.network.GooglePlayRequest;
 import com.itheima.googleplaydemo.network.NetworkListener;
 
@@ -9,13 +11,14 @@ import com.itheima.googleplaydemo.network.NetworkListener;
  * 描述： TODO
  */
 public abstract class BaseDataLoader<T> {
+    private static final String TAG = "BaseDataLoader";
 
     private DataLoaderListener mDataLoaderListener;
 
     private T mData;
 
     public void loadData(DataLoaderListener listener) {
-        if (shouldCache() && mData != null) {
+        if (useCache() && mData != null) {
             listener.onLoadSuccess();
             return;
         }
@@ -31,6 +34,7 @@ public abstract class BaseDataLoader<T> {
     protected NetworkListener<T> mNetworkListener = new NetworkListener<T>() {
         @Override
         public void onResponse(T result) {
+            Log.d(TAG, "onResponse: load data success");
             mData = result;
             if (checkIfEmpty()) {
                 mDataLoaderListener.onLoadedEmpty();
@@ -51,7 +55,7 @@ public abstract class BaseDataLoader<T> {
         return mData;
     }
 
-    protected boolean shouldCache() {
+    protected boolean useCache() {
         return true;
     }
 

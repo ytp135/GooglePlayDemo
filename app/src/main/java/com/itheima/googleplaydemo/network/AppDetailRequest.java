@@ -10,6 +10,6 @@ import com.itheima.googleplaydemo.bean.AppDetailBean;
 public class AppDetailRequest extends GooglePlayRequest<AppDetailBean> {
 
     public AppDetailRequest(String packageName, NetworkListener<AppDetailBean> listener) {
-        super(Constant.URL_DETAIL + "?packagename=" + packageName, listener);
+        super(Constant.URL_DETAIL + "?packageName=" + packageName, listener);
     }
 }

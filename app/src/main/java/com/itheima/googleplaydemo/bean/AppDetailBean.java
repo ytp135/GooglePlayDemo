@@ -29,7 +29,7 @@ public class AppDetailBean {
     private String name;
     private String packageName;
     private String iconUrl;
-    private double stars;
+    private float stars;
     private String downloadNum;
     private String version;
     private String date;
@@ -79,11 +79,11 @@ public class AppDetailBean {
         this.iconUrl = iconUrl;
     }
 
-    public double getStars() {
+    public float getStars() {
         return stars;
     }
 
-    public void setStars(double stars) {
+    public void setStars(float stars) {
         this.stars = stars;
     }
 

@@ -15,9 +15,6 @@ import android.widget.ProgressBar;
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.loader.DataLoaderListener;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * 创建者: Leon
  * 创建时间: 2016/9/15 12:04
@@ -26,13 +23,9 @@ import butterknife.ButterKnife;
 public abstract class BaseFragment extends Fragment implements DataLoaderListener{
     private static final String TAG = "BaseFragment";
 
-    @BindView(R.id.loading_progress)
     ProgressBar mLoadingProgress;
-    @BindView(R.id.loading_empty)
     ImageView mLoadingEmpty;
-    @BindView(R.id.error_btn_retry)
     Button mErrorBtnRetry;
-    @BindView(R.id.loading_error)
     LinearLayout mLoadingError;
     private FrameLayout mBaseView;
 
@@ -40,7 +33,10 @@ public abstract class BaseFragment extends Fragment implements DataLoaderListene
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = (FrameLayout) inflater.inflate(R.layout.fragment_base, null);
-        ButterKnife.bind(this, mBaseView);
+        mLoadingProgress = (ProgressBar) mBaseView.findViewById(R.id.loading_progress);
+        mLoadingEmpty = (ImageView) mBaseView.findViewById(R.id.loading_empty);
+        mErrorBtnRetry = (Button) mBaseView.findViewById(R.id.error_btn_retry);
+        mLoadingError = (LinearLayout) mBaseView.findViewById(R.id.loading_error);
         return mBaseView;
     }
 
