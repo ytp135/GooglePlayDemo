@@ -15,7 +15,7 @@ public abstract class BaseDataLoader<T> {
     private T mData;
 
     public void loadData(DataLoaderListener listener) {
-        if (mData != null) {
+        if (shouldCache() && mData != null) {
             listener.onLoadSuccess();
             return;
         }
@@ -49,6 +49,10 @@ public abstract class BaseDataLoader<T> {
 
     public T getData() {
         return mData;
+    }
+
+    protected boolean shouldCache() {
+        return true;
     }
 
 }

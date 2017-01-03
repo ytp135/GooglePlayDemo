@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.loader.AppDetailDataLoader;
 
 /**
  * 创建者: Leon
@@ -15,13 +16,18 @@ public class AppDetailFragment extends BaseFragment {
 
     @Override
     protected void startLoadData() {
-        onDataLoadedSuccess();
+        String packageName = getActivity().getIntent().getStringExtra("package_name");
+        AppDetailDataLoader.getInstance().loadData(packageName, this);
     }
 
     @Override
     protected View onCreateContentView() {
         View content = LayoutInflater.from(getContext()).inflate(R.layout.fragment_app_detail, null);
+        initView();
         return content;
+    }
+
+    private void initView() {
     }
 
 }

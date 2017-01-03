@@ -7,7 +7,7 @@ package com.itheima.googleplaydemo.app;
  */
 public class Constant {
 
-    public static final String HOST = "http://192.168.56.1:8080/GooglePlayServer";
+    public static final String HOST = "http://10.0.2.2:8080/GooglePlayServer";
     public static final String URL_HOME = HOST + "/home";
     public static final String URL_APP = HOST + "/app";
     public static final String URL_GAME = HOST + "/game";
@@ -16,4 +16,5 @@ public class Constant {
     public static final String URL_CATEGORY = HOST + "/category";
     public static final String URL_IMAGE = HOST + "/image?name=";
 
+    public static final String URL_DETAIL = HOST + "/detail";
 }

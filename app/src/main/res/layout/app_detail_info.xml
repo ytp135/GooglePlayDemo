@@ -13,6 +13,7 @@
 
         <!--图标-->
         <ImageView
+            android:id="@+id/app_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="10dp"
@@ -26,12 +27,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="APP Name"
                 android:textSize="18sp"/>
 
             <RatingBar
+                android:id="@+id/app_rating"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,6 +50,7 @@
 
         <!--下载量-->
         <TextView
+            android:id="@+id/download_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -55,6 +59,7 @@
 
         <!--版本号-->
         <TextView
+            android:id="@+id/version_code"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -69,14 +74,16 @@
 
         <!--时间-->
         <TextView
+            android:id="@+id/time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:text="时间"/>
 
-        <!--版本号-->
+        <!--大小-->
         <TextView
+            android:id="@+id/app_size"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"

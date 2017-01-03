@@ -9,6 +9,7 @@
     android:padding="8dp">
 
     <Button
+        android:id="@+id/favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/detail_btn_selector"
@@ -17,6 +18,7 @@
         android:text="收藏"/>
 
     <Button
+        android:id="@+id/download"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_weight="1"
@@ -28,6 +30,7 @@
         android:text="下载"/>
 
     <Button
+        android:id="@+id/share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/detail_btn_selector"
