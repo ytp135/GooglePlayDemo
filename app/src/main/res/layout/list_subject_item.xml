@@ -9,7 +9,7 @@
 
     <com.itheima.googleplaydemo.widget.RatioLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">-->
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/subject_list_item_image"

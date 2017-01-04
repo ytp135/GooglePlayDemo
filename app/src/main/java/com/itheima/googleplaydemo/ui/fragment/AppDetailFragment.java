@@ -56,6 +56,8 @@ public class AppDetailFragment extends BaseFragment {
     ImageView mAppDetailSecurityArrow;
     @BindView(R.id.app_detail_security_des)
     LinearLayout mAppDetailSecurityDes;
+    @BindView(R.id.app_detail_pic_container)
+    LinearLayout mAppDetailPicContainer;
 
     private boolean securityInfoOpen = false;
 
@@ -76,6 +78,22 @@ public class AppDetailFragment extends BaseFragment {
     private void initView() {
         updateAppInfo();
         updateSafeInfo();
+        updatePicsInfo();
+    }
+
+    private void updatePicsInfo() {
+        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
+        for (int i = 0; i < data.getScreen().size(); i++) {
+            String screen = data.getScreen().get(i);
+            ImageView imageView = new ImageView(getContext());
+            int padding = getResources().getDimensionPixelSize(R.dimen.app_detail_pic_padding);
+            if (i != data.getScreen().size() - 1) {
+                imageView.setPadding(0, 0, padding, 0);
+            }
+            Glide.with(getContext()).load(Constant.URL_IMAGE + screen).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(imageView);
+            mAppDetailPicContainer.addView(imageView);
+        }
+
     }
 
     private void updateSafeInfo() {
