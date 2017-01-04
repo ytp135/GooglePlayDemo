@@ -17,14 +17,14 @@
         android:textSize="14sp"
         android:text="收藏"/>
 
-    <Button
+    <com.itheima.googleplaydemo.widget.ProgressButton
         android:id="@+id/download"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_weight="1"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:background="@drawable/progress_btn_selector"
+        android:background="@drawable/detail_btn_selector"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:text="下载"/>

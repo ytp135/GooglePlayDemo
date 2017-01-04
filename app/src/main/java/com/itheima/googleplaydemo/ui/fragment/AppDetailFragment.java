@@ -19,6 +19,7 @@ import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppDetailBean;
 import com.itheima.googleplaydemo.loader.AppDetailDataLoader;
+import com.itheima.googleplaydemo.widget.ProgressButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +36,7 @@ public class AppDetailFragment extends BaseFragment {
     @BindView(R.id.favorite)
     Button mFavorite;
     @BindView(R.id.download)
-    Button mDownload;
+    ProgressButton mDownload;
     @BindView(R.id.share)
     Button mShare;
     @BindView(R.id.app_icon)
@@ -183,14 +184,12 @@ public class AppDetailFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.favorite, R.id.download, R.id.share, R.id.app_detail_security_arrow, R.id.app_detail_des_arrow})
+    @OnClick({R.id.download, R.id.app_detail_security_arrow, R.id.app_detail_des_arrow})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.favorite:
-                break;
             case R.id.download:
-                break;
-            case R.id.share:
+                mDownload.setMax(100);
+                mDownload.setProgress(10);
                 break;
             case R.id.app_detail_security_arrow:
                 toggleSecurityInfo();
