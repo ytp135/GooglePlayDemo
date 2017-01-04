@@ -1,8 +1,10 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
+import android.animation.ValueAnimator;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,6 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppDetailBean;
@@ -25,6 +28,7 @@ import butterknife.OnClick;
  * 描述： TODO
  */
 public class AppDetailFragment extends BaseFragment {
+    private static final String TAG = "AppDetailFragment";
 
     @BindView(R.id.favorite)
     Button mFavorite;
@@ -53,6 +57,8 @@ public class AppDetailFragment extends BaseFragment {
     @BindView(R.id.app_detail_security_des)
     LinearLayout mAppDetailSecurityDes;
 
+    private boolean securityInfoOpen = false;
+
     @Override
     protected void startLoadData() {
         String packageName = getActivity().getIntent().getStringExtra("package_name");
@@ -69,6 +75,48 @@ public class AppDetailFragment extends BaseFragment {
 
     private void initView() {
         updateAppInfo();
+        updateSafeInfo();
+    }
+
+    private void updateSafeInfo() {
+        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
+        for (int i = 0; i < data.getSafe().size(); i++) {
+            AppDetailBean.SafeBean safeBean = data.getSafe().get(i);
+            //Add tag
+            ImageView tag = new ImageView(getContext());
+            mAppDetailSecurityTags.addView(tag);
+            Glide.with(getContext())
+                    .load(Constant.URL_IMAGE + safeBean.getSafeUrl())
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .into(tag);
+
+            //Add one line description
+            LinearLayout line = new LinearLayout(getContext());
+            ImageView ivDes = new ImageView(getContext());
+            TextView tvDes = new TextView(getContext());
+            tvDes.setText(safeBean.getSafeDes());
+            if (safeBean.getSafeDesColor() == 0) {
+                tvDes.setTextColor(getResources().getColor(R.color.app_detail_safe_normal));
+            } else {
+                tvDes.setTextColor(getResources().getColor(R.color.app_detail_safe_warning));
+            }
+
+            line.addView(ivDes);
+            Glide.with(getContext())
+                    .load(Constant.URL_IMAGE + safeBean.getSafeDesUrl())
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .into(ivDes);
+            line.addView(tvDes);
+
+            mAppDetailSecurityDes.addView(line);
+            collapseAppDetailSecurity();
+        }
+    }
+
+    private void collapseAppDetailSecurity() {
+        ViewGroup.LayoutParams layoutParams = mAppDetailSecurityDes.getLayoutParams();
+        layoutParams.height = 0;
+        mAppDetailSecurityDes.setLayoutParams(layoutParams);
     }
 
     private void updateAppInfo() {
@@ -92,7 +140,7 @@ public class AppDetailFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.favorite, R.id.download, R.id.share})
+    @OnClick({R.id.favorite, R.id.download, R.id.share, R.id.app_detail_security_arrow})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.favorite:
@@ -101,6 +149,37 @@ public class AppDetailFragment extends BaseFragment {
                 break;
             case R.id.share:
                 break;
+            case R.id.app_detail_security_arrow:
+                toggleSecurityInfo();
+                break;
         }
+    }
+
+    private void toggleSecurityInfo() {
+        if (securityInfoOpen) {
+            int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
+            animateSecurityInfo(measuredHeight, 0);
+
+        } else {
+            mAppDetailSecurityDes.measure(0, 0);
+            int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
+            animateSecurityInfo(0, measuredHeight);
+        }
+        securityInfoOpen = !securityInfoOpen;
+
+    }
+
+    private void animateSecurityInfo(int start, int end) {
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
+        valueAnimator.start();
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int animatedValue = (int) animation.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = mAppDetailSecurityDes.getLayoutParams();
+                layoutParams.height = animatedValue;
+                mAppDetailSecurityDes.setLayoutParams(layoutParams);
+            }
+        });
     }
 }
