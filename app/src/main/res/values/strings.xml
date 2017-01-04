@@ -17,4 +17,5 @@
     <string name="download_count">下载量：%s</string>
     <string name="version_code">版本号：%s</string>
     <string name="time">时间：%s</string>
+    <string name="download">下载</string>
 </resources>
