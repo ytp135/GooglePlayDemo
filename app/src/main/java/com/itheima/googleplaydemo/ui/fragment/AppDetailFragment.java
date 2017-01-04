@@ -1,5 +1,6 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
@@ -177,11 +178,17 @@ public class AppDetailFragment extends BaseFragment {
         if (securityInfoOpen) {
             int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
             animateSecurityInfo(measuredHeight, 0);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", -180, 0);
+            objectAnimator.start();
 
         } else {
             mAppDetailSecurityDes.measure(0, 0);
             int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
             animateSecurityInfo(0, measuredHeight);
+
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", 0, -180);
+            objectAnimator.start();
+
         }
         securityInfoOpen = !securityInfoOpen;
 
