@@ -37,7 +37,7 @@ public abstract class BaseListFragment extends BaseFragment{
     private AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            onListItemClick(i);
+            onListItemClick(i - 1);
         }
     };
 

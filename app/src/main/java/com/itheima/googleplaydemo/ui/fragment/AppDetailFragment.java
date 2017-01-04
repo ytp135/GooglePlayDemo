@@ -6,6 +6,7 @@ import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -59,8 +60,16 @@ public class AppDetailFragment extends BaseFragment {
     LinearLayout mAppDetailSecurityDes;
     @BindView(R.id.app_detail_pic_container)
     LinearLayout mAppDetailPicContainer;
+    @BindView(R.id.app_detail_des)
+    TextView mAppDetailDes;
+    @BindView(R.id.app_detail_author)
+    TextView mAppDetailAuthor;
+    @BindView(R.id.app_detail_des_arrow)
+    ImageView mAppDetailDesArrow;
 
     private boolean securityInfoOpen = false;
+    private boolean descriptionOpen = false;
+    private int mAppDetailDesOriginHeight;
 
     @Override
     protected void startLoadData() {
@@ -80,6 +89,21 @@ public class AppDetailFragment extends BaseFragment {
         updateAppInfo();
         updateSafeInfo();
         updatePicsInfo();
+        updateAppDes();
+    }
+
+    private void updateAppDes() {
+        AppDetailBean appDetailBean = AppDetailDataLoader.getInstance().getData();
+        mAppDetailAuthor.setText(appDetailBean.getAuthor());
+        mAppDetailDes.setText(appDetailBean.getDes());
+        mAppDetailDes.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mAppDetailDes.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                mAppDetailDesOriginHeight = mAppDetailDes.getHeight();
+                mAppDetailDes.setLines(7);
+            }
+        });
     }
 
     private void updatePicsInfo() {
@@ -159,7 +183,7 @@ public class AppDetailFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.favorite, R.id.download, R.id.share, R.id.app_detail_security_arrow})
+    @OnClick({R.id.favorite, R.id.download, R.id.share, R.id.app_detail_security_arrow, R.id.app_detail_des_arrow})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.favorite:
@@ -171,20 +195,41 @@ public class AppDetailFragment extends BaseFragment {
             case R.id.app_detail_security_arrow:
                 toggleSecurityInfo();
                 break;
+            case R.id.app_detail_des_arrow:
+                toggleDescription();
+                break;
         }
+    }
+
+    private void toggleDescription() {
+        if (descriptionOpen) {
+            mAppDetailDes.setLines(7);
+            mAppDetailDes.measure(0, 0);
+            int measuredHeight = mAppDetailDes.getMeasuredHeight();
+            animateViewHeight(mAppDetailDes, mAppDetailDesOriginHeight, measuredHeight);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", -180, 0);
+            objectAnimator.start();
+
+        } else {
+            int measuredHeight = mAppDetailDes.getMeasuredHeight();
+            animateViewHeight(mAppDetailDes, measuredHeight, mAppDetailDesOriginHeight);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", 0, -180);
+            objectAnimator.start();
+        }
+        descriptionOpen = !descriptionOpen;
     }
 
     private void toggleSecurityInfo() {
         if (securityInfoOpen) {
             int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
-            animateSecurityInfo(measuredHeight, 0);
+            animateViewHeight(mAppDetailSecurityDes, measuredHeight, 0);
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", -180, 0);
             objectAnimator.start();
 
         } else {
             mAppDetailSecurityDes.measure(0, 0);
             int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
-            animateSecurityInfo(0, measuredHeight);
+            animateViewHeight(mAppDetailSecurityDes, 0, measuredHeight);
 
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", 0, -180);
             objectAnimator.start();
@@ -194,17 +239,18 @@ public class AppDetailFragment extends BaseFragment {
 
     }
 
-    private void animateSecurityInfo(int start, int end) {
+    private void animateViewHeight(final View view, int start, int end) {
         ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
         valueAnimator.start();
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int animatedValue = (int) animation.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = mAppDetailSecurityDes.getLayoutParams();
+                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                 layoutParams.height = animatedValue;
-                mAppDetailSecurityDes.setLayoutParams(layoutParams);
+                view.setLayoutParams(layoutParams);
             }
         });
     }
+
 }
