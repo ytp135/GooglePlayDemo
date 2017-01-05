@@ -1,24 +1,20 @@
 package com.itheima.googleplaydemo.network;
 
+import android.os.Environment;
+
 /**
  * Created by Leon on 2017/1/5.
  */
 
 public class DownloadInfo {
 
+    public static String DOWNLOAD_DIRECTORY = Environment.getExternalStorageDirectory() + "/Android/data/com.itheima.googleplaydemo/apk/";
+
     private String packageName;
     private String downloadUrl;
     private String appName;
     private int downloadStatus = DownloadManager.STATE_UN_DOWNLOAD;
 
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
 
     public String getDownloadUrl() {
         return downloadUrl;

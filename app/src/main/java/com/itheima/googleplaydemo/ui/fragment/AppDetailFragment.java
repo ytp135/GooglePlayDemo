@@ -193,10 +193,7 @@ public class AppDetailFragment extends BaseFragment {
                 mDownload.setMax(100);
                 mDownload.setProgress(10);
                 AppDetailBean data = AppDetailDataLoader.getInstance().getData();
-                DownloadInfo downloadInfo = new DownloadInfo();
-                downloadInfo.setAppName(data.getPackageName());
-                downloadInfo.setPackageName(getContext().getPackageName());
-                downloadInfo.setDownloadUrl(data.getDownloadUrl());
+                DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), data);
                 DownloadManager.getInstance().download(downloadInfo);
                 break;
             case R.id.app_detail_security_arrow:
