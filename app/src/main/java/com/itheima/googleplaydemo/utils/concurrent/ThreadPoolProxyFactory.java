@@ -9,16 +9,28 @@ public class ThreadPoolProxyFactory {
 
     private static final String TAG = "ThreadPoolProxyFactory";
 
-    private static ThreadPoolProxy mThreadPoolProxy;
+    private static ThreadPoolProxy mNormalThreadPoolProxy;
+    private static ThreadPoolProxy mDownloadThreadPoolProxy;
 
     public static ThreadPoolProxy getNormalThreadPoolProxy() {
-        if (mThreadPoolProxy == null) {
+        if (mNormalThreadPoolProxy == null) {
             synchronized (ThreadPoolProxyFactory.class) {
-                if (mThreadPoolProxy == null) {
-                    mThreadPoolProxy = new ThreadPoolProxy();
+                if (mNormalThreadPoolProxy == null) {
+                    mNormalThreadPoolProxy = new ThreadPoolProxy();
                 }
             }
         }
-        return mThreadPoolProxy;
+        return mNormalThreadPoolProxy;
+    }
+
+    public static ThreadPoolProxy getDownloadThreadPoolProxy() {
+        if (mDownloadThreadPoolProxy == null) {
+            synchronized (ThreadPoolProxyFactory.class) {
+                if (mDownloadThreadPoolProxy == null) {
+                    mDownloadThreadPoolProxy = new ThreadPoolProxy(5, 5);
+                }
+            }
+        }
+        return mDownloadThreadPoolProxy;
     }
 }

@@ -15,6 +15,7 @@ public class Constant {
     public static final String URL_RECOMMEND = HOST + "/recommend";
     public static final String URL_CATEGORY = HOST + "/category";
     public static final String URL_IMAGE = HOST + "/image?name=";
+    public static final String URL_DOWNLOAD = HOST + "/download?name=";
 
     public static final String URL_DETAIL = HOST + "/detail";
 }

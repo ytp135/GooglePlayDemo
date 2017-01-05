@@ -19,6 +19,8 @@ import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppDetailBean;
 import com.itheima.googleplaydemo.loader.AppDetailDataLoader;
+import com.itheima.googleplaydemo.network.DownloadInfo;
+import com.itheima.googleplaydemo.network.DownloadManager;
 import com.itheima.googleplaydemo.widget.ProgressButton;
 
 import butterknife.BindView;
@@ -190,6 +192,12 @@ public class AppDetailFragment extends BaseFragment {
             case R.id.download:
                 mDownload.setMax(100);
                 mDownload.setProgress(10);
+                AppDetailBean data = AppDetailDataLoader.getInstance().getData();
+                DownloadInfo downloadInfo = new DownloadInfo();
+                downloadInfo.setAppName(data.getPackageName());
+                downloadInfo.setPackageName(getContext().getPackageName());
+                downloadInfo.setDownloadUrl(data.getDownloadUrl());
+                DownloadManager.getInstance().download(downloadInfo);
                 break;
             case R.id.app_detail_security_arrow:
                 toggleSecurityInfo();
