@@ -6,6 +6,11 @@ package com.itheima.googleplaydemo.network;
 
 public class DownloadInfo {
 
+    private String packageName;
+    private String downloadUrl;
+    private String appName;
+    private int downloadStatus = DownloadManager.STATE_UN_DOWNLOAD;
+
 
     public String getPackageName() {
         return packageName;
@@ -23,10 +28,6 @@ public class DownloadInfo {
         this.downloadUrl = downloadUrl;
     }
 
-    private String packageName;
-    private String downloadUrl;
-    private String appName;
-
 
     public String getApkName() {
         return appName;
@@ -36,4 +37,11 @@ public class DownloadInfo {
         this.appName = appName;
     }
 
+    public int getDownloadStatus() {
+        return downloadStatus;
+    }
+
+    public void setDownloadStatus(int downloadStatus) {
+        this.downloadStatus = downloadStatus;
+    }
 }

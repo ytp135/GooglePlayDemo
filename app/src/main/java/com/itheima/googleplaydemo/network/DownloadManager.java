@@ -1,7 +1,6 @@
 package com.itheima.googleplaydemo.network;
 
 import android.os.Environment;
-import android.util.Log;
 
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.utils.concurrent.ThreadPoolProxyFactory;
@@ -30,6 +29,14 @@ public class DownloadManager {
 
     private OkHttpClient mOkHttpClient;
 
+    public static final int STATE_UN_DOWNLOAD = 0;//未下载
+    public static final int STATE_DOWNLOADING = 1;//下载中
+    public static final int STATE_PAUSE = 2;//暂停下载
+    public static final int STATE_WAITING = 3;//等待下载
+    public static final int STATE_FAILED = 4;//下载失败
+    public static final int STATE_DOWNLOADED = 5;//下载完成
+    public static final int STATE_INSTALLED = 6;//已安装
+
     private DownloadManager() {
         mOkHttpClient = new OkHttpClient();
     }
@@ -48,6 +55,7 @@ public class DownloadManager {
 
     public void download(DownloadInfo downloadInfo) {
         DownloadTask downloadTask = new DownloadTask(downloadInfo);
+        downloadInfo.setDownloadStatus(STATE_WAITING);
         ThreadPoolProxyFactory.getDownloadThreadPoolProxy().execute(downloadTask);
     }
 
@@ -61,6 +69,7 @@ public class DownloadManager {
 
         @Override
         public void run() {
+            mDownloadInfo.setDownloadStatus(STATE_DOWNLOADING);
             String url = Constant.URL_DOWNLOAD + mDownloadInfo.getDownloadUrl();
             Request request = new Request.Builder().url(url).get().build();
             String directory = Environment.getExternalStorageDirectory() + DOWNLOAD_DIR + mDownloadInfo.getPackageName() + "/apk/";
@@ -84,11 +93,14 @@ public class DownloadManager {
                         while ((len = inputStream.read(buffer)) != -1) {
                             fileOutputStream.write(buffer, 0, len);
                         }
-                        Log.d(TAG, "run: download finish");
+                        mDownloadInfo.setDownloadStatus(STATE_DOWNLOADED);
                     }
+                } else {
+                    mDownloadInfo.setDownloadStatus(STATE_FAILED);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                mDownloadInfo.setDownloadStatus(STATE_FAILED);
                 if (inputStream != null) {
                     closeStream(inputStream);
                 }
