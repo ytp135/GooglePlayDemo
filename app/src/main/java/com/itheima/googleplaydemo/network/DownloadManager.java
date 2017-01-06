@@ -141,6 +141,15 @@ public class DownloadManager {
         context.startActivity(intent);
     }
 
+    /**
+     * D/InstallAppProgress: Installation error code: -113
+     *
+     * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.1.1_r1/android/content/pm/PackageManager.java#PackageManager.0INSTALL_FAILED_INVALID_APK
+     *
+     *
+     * @param context
+     * @param downloadInfo
+     */
     public void installApk(Context context, DownloadInfo downloadInfo) {
         File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, downloadInfo.getApkName());
         if (file.exists()) {
