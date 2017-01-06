@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">GooglePlayDemo</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
+    <string name="open">打开</string>
+    <string name="close">关闭</string>
 
     <string name="tv_home">首页</string>
     <string name="tv_setting">设置</string>
@@ -18,4 +18,8 @@
     <string name="version_code">版本号：%s</string>
     <string name="time">时间：%s</string>
     <string name="download">下载</string>
+    <string name="continue_download">继续下载</string>
+    <string name="waiting">等待中</string>
+    <string name="retry">重试</string>
+    <string name="install">安装</string>
 </resources>

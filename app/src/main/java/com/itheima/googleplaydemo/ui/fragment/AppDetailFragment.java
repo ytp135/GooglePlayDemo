@@ -93,6 +93,35 @@ public class AppDetailFragment extends BaseFragment {
         updateSafeInfo();
         updatePicsInfo();
         updateAppDes();
+        updateDownloadButton();
+    }
+
+    private void updateDownloadButton() {
+        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
+        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), data);
+        switch (downloadInfo.getDownloadStatus()) {
+            case DownloadManager.STATE_UN_DOWNLOAD:
+                mDownload.setText(R.string.download);
+                break;
+            case DownloadManager.STATE_DOWNLOADING:
+
+                break;
+            case DownloadManager.STATE_DOWNLOADED:
+                mDownload.setText(R.string.install);
+                break;
+            case DownloadManager.STATE_PAUSE:
+                mDownload.setText(R.string.continue_download);
+                break;
+            case DownloadManager.STATE_WAITING:
+                mDownload.setText(R.string.waiting);
+                break;
+            case DownloadManager.STATE_INSTALLED:
+                mDownload.setText(R.string.open);
+                break;
+            case DownloadManager.STATE_FAILED:
+                mDownload.setText(R.string.retry);
+                break;
+        }
     }
 
     private void updateAppDes() {
