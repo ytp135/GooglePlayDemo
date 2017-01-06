@@ -3,6 +3,7 @@ package com.itheima.googleplaydemo.ui.fragment;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,9 @@ import com.itheima.googleplaydemo.network.DownloadInfo;
 import com.itheima.googleplaydemo.network.DownloadManager;
 import com.itheima.googleplaydemo.widget.ProgressButton;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,7 +36,7 @@ import butterknife.OnClick;
  * 创建时间: 2016/9/18 12:04
  * 描述： TODO
  */
-public class AppDetailFragment extends BaseFragment {
+public class AppDetailFragment extends BaseFragment implements Observer{
     private static final String TAG = "AppDetailFragment";
 
     @BindView(R.id.favorite)
@@ -73,11 +77,12 @@ public class AppDetailFragment extends BaseFragment {
     private boolean securityInfoOpen = false;
     private boolean descriptionOpen = false;
     private int mAppDetailDesOriginHeight;
+    private String mPackageName;
 
     @Override
     protected void startLoadData() {
-        String packageName = getActivity().getIntent().getStringExtra("package_name");
-        AppDetailDataLoader.getInstance().loadData(packageName, this);
+        mPackageName = getActivity().getIntent().getStringExtra("package_name");
+        AppDetailDataLoader.getInstance().loadData(mPackageName, this);
     }
 
     @Override
@@ -98,6 +103,7 @@ public class AppDetailFragment extends BaseFragment {
 
     private void updateDownloadButton() {
         AppDetailBean data = AppDetailDataLoader.getInstance().getData();
+        DownloadManager.getInstance().addObserver(data.getPackageName(), this);
         DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), data);
         switch (downloadInfo.getDownloadStatus()) {
             case DownloadManager.STATE_UN_DOWNLOAD:
@@ -309,4 +315,15 @@ public class AppDetailFragment extends BaseFragment {
         });
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        DownloadInfo downloadInfo = (DownloadInfo) arg;
+        Log.d(TAG, "update: " + downloadInfo.getPackageName());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DownloadManager.getInstance().removeObserver(mPackageName);
+    }
 }

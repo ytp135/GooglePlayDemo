@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observer;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -26,7 +27,7 @@ import okhttp3.Response;
  * Created by Leon on 2017/1/5.
  */
 
-public class DownloadManager {
+public class DownloadManager{
 
     private static final String TAG = "DownloadManager";
     private static DownloadManager sDownloadManager;
@@ -41,7 +42,9 @@ public class DownloadManager {
     public static final int STATE_DOWNLOADED = 5;//下载完成
     public static final int STATE_INSTALLED = 6;//已安装
 
-    public Map<String, DownloadInfo> mStringDownloadInfoMap = new HashMap<String, DownloadInfo>();
+    private Map<String, DownloadInfo> mStringDownloadInfoMap = new HashMap<String, DownloadInfo>();
+
+    private Map<String, Observer> mDownloadObservers = new HashMap<String, Observer>();
 
     private DownloadManager() {
         mOkHttpClient = new OkHttpClient();
@@ -62,6 +65,7 @@ public class DownloadManager {
     public void download(DownloadInfo downloadInfo) {
         DownloadTask downloadTask = new DownloadTask(downloadInfo);
         downloadInfo.setDownloadStatus(STATE_WAITING);
+        mStringDownloadInfoMap.put(downloadInfo.getPackageName(), downloadInfo);
         ThreadPoolProxyFactory.getDownloadThreadPoolProxy().execute(downloadTask);
     }
 
@@ -169,7 +173,6 @@ public class DownloadManager {
 
         @Override
         public void run() {
-            mDownloadInfo.setDownloadStatus(STATE_DOWNLOADING);
             Request request = new Request.Builder().url(mDownloadInfo.getDownloadUrl()).get().build();
             File directoryFile = new File(DownloadInfo.DOWNLOAD_DIRECTORY);
             if (!directoryFile.exists()) {
@@ -189,15 +192,17 @@ public class DownloadManager {
                         int len = -1;
                         while ((len = inputStream.read(buffer)) != -1) {
                             fileOutputStream.write(buffer, 0, len);
+                            updateStatus(STATE_DOWNLOADING);
+
                         }
-                        mDownloadInfo.setDownloadStatus(STATE_DOWNLOADED);
+                        updateStatus(STATE_DOWNLOADED);
                     }
                 } else {
-                    mDownloadInfo.setDownloadStatus(STATE_FAILED);
+                    updateStatus(STATE_FAILED);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                mDownloadInfo.setDownloadStatus(STATE_FAILED);
+                updateStatus(STATE_FAILED);
                 if (inputStream != null) {
                     closeStream(inputStream);
                 }
@@ -206,7 +211,13 @@ public class DownloadManager {
                 }
             }
         }
+
+        private void updateStatus(int status) {
+            mDownloadInfo.setDownloadStatus(status);
+            notifyObservers(mDownloadInfo);
+        }
     }
+
 
     private void closeStream(Closeable closeable) {
         try {
@@ -215,4 +226,20 @@ public class DownloadManager {
             e.printStackTrace();
         }
     }
+
+    public void addObserver(String packageName, Observer observer) {
+        mDownloadObservers.put(packageName, observer);
+    }
+
+    public void removeObserver(String packageName) {
+        mDownloadObservers.remove(packageName);
+    }
+
+    private void notifyObservers(DownloadInfo downloadInfo) {
+        Observer observer = mDownloadObservers.get(downloadInfo.getPackageName());
+        if (observer != null) {
+            observer.update(null, downloadInfo);
+        }
+    }
+
 }
