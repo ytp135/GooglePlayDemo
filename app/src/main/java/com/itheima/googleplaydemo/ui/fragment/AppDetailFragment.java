@@ -104,7 +104,6 @@ public class AppDetailFragment extends BaseFragment {
                 mDownload.setText(R.string.download);
                 break;
             case DownloadManager.STATE_DOWNLOADING:
-
                 break;
             case DownloadManager.STATE_DOWNLOADED:
                 mDownload.setText(R.string.install);
@@ -219,17 +218,41 @@ public class AppDetailFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.download:
-                mDownload.setMax(100);
-                mDownload.setProgress(10);
-                AppDetailBean data = AppDetailDataLoader.getInstance().getData();
-                DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), data);
-                DownloadManager.getInstance().download(downloadInfo);
+                handleDownloadClick();
                 break;
             case R.id.app_detail_security_arrow:
                 toggleSecurityInfo();
                 break;
             case R.id.app_detail_des_arrow:
                 toggleDescription();
+                break;
+        }
+    }
+
+    private void handleDownloadClick() {
+        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
+        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), data);
+        switch (downloadInfo.getDownloadStatus()) {
+            case DownloadManager.STATE_UN_DOWNLOAD:
+                DownloadManager.getInstance().download(downloadInfo);
+                break;
+            case DownloadManager.STATE_DOWNLOADING:
+                DownloadManager.getInstance().pauseDownload(downloadInfo);
+                break;
+            case DownloadManager.STATE_DOWNLOADED:
+                DownloadManager.getInstance().installApk(getContext(), downloadInfo);
+                break;
+            case DownloadManager.STATE_PAUSE:
+                DownloadManager.getInstance().download(downloadInfo);
+                break;
+            case DownloadManager.STATE_WAITING:
+                DownloadManager.getInstance().cancelDownload(downloadInfo);
+                break;
+            case DownloadManager.STATE_INSTALLED:
+                DownloadManager.getInstance().openApp(getContext(), downloadInfo);
+                break;
+            case DownloadManager.STATE_FAILED:
+                DownloadManager.getInstance().download(downloadInfo);
                 break;
         }
     }

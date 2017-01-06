@@ -10,6 +10,14 @@ public class DownloadInfo {
 
     public static String DOWNLOAD_DIRECTORY = Environment.getExternalStorageDirectory() + "/Android/data/com.itheima.googleplaydemo/apk/";
 
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
     private String packageName;
     private String downloadUrl;
     private String appName;

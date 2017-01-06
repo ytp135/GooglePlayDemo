@@ -1,7 +1,9 @@
 package com.itheima.googleplaydemo.network;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppDetailBean;
@@ -106,6 +108,7 @@ public class DownloadManager {
         String appFileName = item.getPackageName() + ".apk";
         File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
         downloadInfo.setAppName(appFileName);
+        downloadInfo.setPackageName(item.getPackageName());
 
         if (isInstalled(context, item.getPackageName())) {
             downloadInfo.setDownloadStatus(STATE_INSTALLED);
@@ -123,6 +126,28 @@ public class DownloadManager {
 
         downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
         return downloadInfo;
+    }
+
+    public void pauseDownload(DownloadInfo downloadInfo) {
+
+    }
+
+    public void cancelDownload(DownloadInfo downloadInfo) {
+
+    }
+
+    public void openApp(Context context, DownloadInfo downloadInfo) {
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(downloadInfo.getPackageName());
+        context.startActivity(intent);
+    }
+
+    public void installApk(Context context, DownloadInfo downloadInfo) {
+        File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, downloadInfo.getApkName());
+        if (file.exists()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            context.startActivity(intent);
+        }
     }
 
     public class DownloadTask implements Runnable {
