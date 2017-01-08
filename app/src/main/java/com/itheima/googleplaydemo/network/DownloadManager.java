@@ -68,7 +68,10 @@ public class DownloadManager{
         Log.d(TAG, "download: start download");
         DownloadTask downloadTask = new DownloadTask(downloadInfo);
         downloadInfo.setDownloadStatus(STATE_WAITING);
+        downloadInfo.setDownloadTask(downloadTask);
         mStringDownloadInfoMap.put(downloadInfo.getPackageName(), downloadInfo);
+
+        notifyObservers(downloadInfo);
         ThreadPoolProxyFactory.getDownloadThreadPoolProxy().execute(downloadTask);
     }
 
@@ -146,7 +149,9 @@ public class DownloadManager{
     }
 
     public void cancelDownload(DownloadInfo downloadInfo) {
-
+        ThreadPoolProxyFactory.getDownloadThreadPoolProxy().remove(downloadInfo.getDownloadTask());
+        downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
+        notifyObservers(downloadInfo);
     }
 
     public void openApp(Context context, DownloadInfo downloadInfo) {

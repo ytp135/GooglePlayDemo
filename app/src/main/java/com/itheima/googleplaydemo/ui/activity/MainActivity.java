@@ -1,8 +1,11 @@
 package com.itheima.googleplaydemo.ui.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -14,6 +17,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.itheima.googleplaydemo.R;
@@ -54,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
         initView();
         initActionBar();
         initEvent();
+        checkStoragePermission();
+    }
+
+    private void checkStoragePermission() {
+        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        ActivityCompat.requestPermissions(this, permissions, 0);
     }
 
     private void initEvent() {
@@ -199,6 +209,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return TITLES.length;
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 0:
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 }

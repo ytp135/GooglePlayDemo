@@ -25,6 +25,16 @@ public class DownloadInfo {
 
     private int max;
 
+    public Runnable getDownloadTask() {
+        return downloadTask;
+    }
+
+    public void setDownloadTask(Runnable downloadTask) {
+        this.downloadTask = downloadTask;
+    }
+
+    private Runnable downloadTask;
+
     public int getProgress() {
         return progress;
     }

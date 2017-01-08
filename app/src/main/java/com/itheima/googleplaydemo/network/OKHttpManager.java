@@ -2,7 +2,6 @@ package com.itheima.googleplaydemo.network;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.itheima.googleplaydemo.utils.concurrent.ThreadPoolProxyFactory;
@@ -50,7 +49,7 @@ public class OKHttpManager {
         @Override
         public void run() {
             try {
-                SystemClock.sleep(2000);//模拟网络延时
+//                SystemClock.sleep(2000);//模拟网络延时
                 //发起同步请求
                 String url = mRequest.getUrl();
                 Log.d(TAG, "run: request url " + url);

@@ -338,8 +338,8 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         DownloadManager.getInstance().removeObserver(mPackageName);
     }
 }
