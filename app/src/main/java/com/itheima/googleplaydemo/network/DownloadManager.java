@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppDetailBean;
 import com.itheima.googleplaydemo.bean.AppListItem;
+import com.itheima.googleplaydemo.utils.URLUtils;
 import com.itheima.googleplaydemo.utils.concurrent.ThreadPoolProxyFactory;
 
 import java.io.Closeable;
@@ -63,6 +65,7 @@ public class DownloadManager{
 
 
     public void download(DownloadInfo downloadInfo) {
+        Log.d(TAG, "download: start download");
         DownloadTask downloadTask = new DownloadTask(downloadInfo);
         downloadInfo.setDownloadStatus(STATE_WAITING);
         mStringDownloadInfoMap.put(downloadInfo.getPackageName(), downloadInfo);
@@ -107,13 +110,17 @@ public class DownloadManager{
 
     public DownloadInfo getDownloadInfo(Context context, AppDetailBean item) {
         DownloadInfo downloadInfo = new DownloadInfo();
-        String downloadUrl = Constant.URL_DOWNLOAD + item.getDownloadUrl();
-        downloadInfo.setDownloadUrl(downloadUrl);
         String appFileName = item.getPackageName() + ".apk";
         File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
         downloadInfo.setAppName(appFileName);
         downloadInfo.setPackageName(item.getPackageName());
         downloadInfo.setMax(item.getSize());
+        long initRange = 0;
+        if (file.exists()) {
+            initRange = file.length();
+        }
+        downloadInfo.setProgress((int) initRange);
+        downloadInfo.setDownloadUrl(item.getDownloadUrl());
 
         if (isInstalled(context, item.getPackageName())) {
             downloadInfo.setDownloadStatus(STATE_INSTALLED);
@@ -175,25 +182,37 @@ public class DownloadManager{
 
         @Override
         public void run() {
-            Request request = new Request.Builder().url(mDownloadInfo.getDownloadUrl()).get().build();
-            File directoryFile = new File(DownloadInfo.DOWNLOAD_DIRECTORY);
-            if (!directoryFile.exists()) {
-                directoryFile.mkdirs();
-            }
             InputStream inputStream = null;
             FileOutputStream fileOutputStream = null;
             try {
+                File directoryFile = new File(DownloadInfo.DOWNLOAD_DIRECTORY);
+                if (!directoryFile.exists()) {
+                    directoryFile.mkdirs();
+                }
+                File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, mDownloadInfo.getApkName());
+                long initRange = 0;
+                boolean success = true;
+                if (file.exists()) {
+                    Log.d(TAG, "run: file exist");
+                    initRange = file.length();
+                    mDownloadInfo.setProgress((int) initRange);
+                } else {
+                    success = file.createNewFile();
+                }
+                String url = URLUtils.getDownloadURL(mDownloadInfo.getDownloadUrl(), initRange);
+                Log.d(TAG, "run: " + url);
+                Request request = new Request.Builder().url(url).get().build();
                 Response response = mOkHttpClient.newCall(request).execute();
                 if (response.isSuccessful()) {
+                    Log.d(TAG, "run: get success response");
                     inputStream = response.body().byteStream();
-                    File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, mDownloadInfo.getApkName());
-                    boolean success = file.createNewFile();
                     if (success) {
                         fileOutputStream = new FileOutputStream(file, true);
                         byte[] buffer = new byte[1024];
                         int len = -1;
                         while ((len = inputStream.read(buffer)) != -1) {
                             if (mDownloadInfo.getDownloadStatus() == STATE_PAUSE) {
+                                Log.d(TAG, "run: pause, quite run" );
                                 return;
                             }
                             fileOutputStream.write(buffer, 0, len);
@@ -201,6 +220,9 @@ public class DownloadManager{
                             mDownloadInfo.setProgress(progress);
                             updateStatus(STATE_DOWNLOADING);
 
+                            if (progress == mDownloadInfo.getMax()) {
+                                break;
+                            }
                         }
                         updateStatus(STATE_DOWNLOADED);
                     }
