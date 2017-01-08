@@ -134,7 +134,8 @@ public class DownloadManager{
     }
 
     public void pauseDownload(DownloadInfo downloadInfo) {
-
+        downloadInfo.setDownloadStatus(STATE_PAUSE);
+        notifyObservers(downloadInfo);
     }
 
     public void cancelDownload(DownloadInfo downloadInfo) {
@@ -192,6 +193,9 @@ public class DownloadManager{
                         byte[] buffer = new byte[1024];
                         int len = -1;
                         while ((len = inputStream.read(buffer)) != -1) {
+                            if (mDownloadInfo.getDownloadStatus() == STATE_PAUSE) {
+                                return;
+                            }
                             fileOutputStream.write(buffer, 0, len);
                             int progress = mDownloadInfo.getProgress() + len;
                             mDownloadInfo.setProgress(progress);
