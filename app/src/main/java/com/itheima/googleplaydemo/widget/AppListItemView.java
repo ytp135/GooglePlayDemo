@@ -62,25 +62,6 @@ public class AppListItemView extends RelativeLayout {
 
         //获取下载情况
         DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), item);
-        updateProgressView(downloadInfo.getDownloadStatus());
-    }
-
-    private void updateProgressView(int downloadStatus) {
-        switch (downloadStatus) {
-            case DownloadManager.STATE_UN_DOWNLOAD:
-                break;
-            case DownloadManager.STATE_DOWNLOADED:
-                break;
-            case DownloadManager.STATE_DOWNLOADING:
-                break;
-            case DownloadManager.STATE_FAILED:
-                break;
-            case DownloadManager.STATE_INSTALLED:
-                break;
-            case DownloadManager.STATE_PAUSE:
-                break;
-            case DownloadManager.STATE_WAITING:
-                break;
-        }
+        mDownloadProgressView.bindView(downloadInfo);
     }
 }

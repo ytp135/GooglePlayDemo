@@ -26,4 +26,10 @@ public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
     }
 
     protected abstract List<AppListItem> getAppList();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAdapter().notifyDataSetChanged();
+    }
 }
