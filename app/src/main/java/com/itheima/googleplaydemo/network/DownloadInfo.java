@@ -23,6 +23,26 @@ public class DownloadInfo {
     private String appName;
     private int downloadStatus = DownloadManager.STATE_UN_DOWNLOAD;
 
+    private int max;
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    private int progress;
+
 
     public String getDownloadUrl() {
         return downloadUrl;

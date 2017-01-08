@@ -24,7 +24,7 @@ public class ProgressButton extends Button {
 
     public void setProgress(float progress) {
         mProgress = progress;
-        invalidate();
+        postInvalidate();
     }
 
     public float getMax() {
@@ -36,6 +36,8 @@ public class ProgressButton extends Button {
     }
 
     private float mProgress;
+
+    private boolean enableProgress = true;
 
     public ProgressButton(Context context) {
         this(context, null);
@@ -49,9 +51,16 @@ public class ProgressButton extends Button {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int right = (int) ((mProgress / mMax) * getWidth());
-        mDrawable.setBounds(0, 0, right, getHeight());
-        mDrawable.draw(canvas);
+        if (enableProgress) {
+            int right = (int) ((mProgress / mMax) * getWidth());
+            mDrawable.setBounds(0, 0, right, getHeight());
+            mDrawable.draw(canvas);
+        }
         super.onDraw(canvas);
+    }
+
+    public void clearProgress() {
+        enableProgress = false;
+        invalidate();
     }
 }

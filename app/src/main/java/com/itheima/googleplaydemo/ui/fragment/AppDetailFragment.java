@@ -3,7 +3,6 @@ package com.itheima.googleplaydemo.ui.fragment;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,25 +93,37 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     }
 
     private void initView() {
-        updateAppInfo();
-        updateSafeInfo();
-        updatePicsInfo();
-        updateAppDes();
-        updateDownloadButton();
+        initAppInfo();
+        initSafeInfo();
+        initPicsInfo();
+        initAppDes();
+        initDownloadButton();
     }
 
-    private void updateDownloadButton() {
+    private void initDownloadButton() {
         AppDetailBean data = AppDetailDataLoader.getInstance().getData();
         DownloadManager.getInstance().addObserver(data.getPackageName(), this);
         DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), data);
+        updateDownloadButton(downloadInfo);
+    }
+
+    private void updateDownloadButton(DownloadInfo downloadInfo) {
+        mDownload.setBackgroundResource(R.drawable.selector_app_detail_bottom_normal);
         switch (downloadInfo.getDownloadStatus()) {
             case DownloadManager.STATE_UN_DOWNLOAD:
                 mDownload.setText(R.string.download);
                 break;
             case DownloadManager.STATE_DOWNLOADING:
+                mDownload.setBackgroundResource(R.drawable.selector_app_detail_bottom_downloading);
+                mDownload.setMax(downloadInfo.getMax());
+                mDownload.setProgress(downloadInfo.getProgress());
+                int ration = (int) (downloadInfo.getProgress() * 1.0f / downloadInfo.getMax() * 100);
+                String progress = String.format(getString(R.string.download_progress), ration);
+                mDownload.setText(progress);
                 break;
             case DownloadManager.STATE_DOWNLOADED:
                 mDownload.setText(R.string.install);
+                mDownload.clearProgress();
                 break;
             case DownloadManager.STATE_PAUSE:
                 mDownload.setText(R.string.continue_download);
@@ -129,7 +140,7 @@ public class AppDetailFragment extends BaseFragment implements Observer{
         }
     }
 
-    private void updateAppDes() {
+    private void initAppDes() {
         AppDetailBean appDetailBean = AppDetailDataLoader.getInstance().getData();
         mAppDetailAuthor.setText(appDetailBean.getAuthor());
         mAppDetailDes.setText(appDetailBean.getDes());
@@ -143,7 +154,7 @@ public class AppDetailFragment extends BaseFragment implements Observer{
         });
     }
 
-    private void updatePicsInfo() {
+    private void initPicsInfo() {
         AppDetailBean data = AppDetailDataLoader.getInstance().getData();
         for (int i = 0; i < data.getScreen().size(); i++) {
             String screen = data.getScreen().get(i);
@@ -158,7 +169,7 @@ public class AppDetailFragment extends BaseFragment implements Observer{
 
     }
 
-    private void updateSafeInfo() {
+    private void initSafeInfo() {
         AppDetailBean data = AppDetailDataLoader.getInstance().getData();
         for (int i = 0; i < data.getSafe().size(); i++) {
             AppDetailBean.SafeBean safeBean = data.getSafe().get(i);
@@ -199,7 +210,7 @@ public class AppDetailFragment extends BaseFragment implements Observer{
         mAppDetailSecurityDes.setLayoutParams(layoutParams);
     }
 
-    private void updateAppInfo() {
+    private void initAppInfo() {
         AppDetailBean data = AppDetailDataLoader.getInstance().getData();
         String iconUrl = Constant.URL_IMAGE + data.getIconUrl();
         Glide.with(getContext()).load(iconUrl).into(mAppIcon);
@@ -317,8 +328,13 @@ public class AppDetailFragment extends BaseFragment implements Observer{
 
     @Override
     public void update(Observable o, Object arg) {
-        DownloadInfo downloadInfo = (DownloadInfo) arg;
-        Log.d(TAG, "update: " + downloadInfo.getPackageName());
+        final DownloadInfo downloadInfo = (DownloadInfo) arg;
+        post(new Runnable() {
+            @Override
+            public void run() {
+                updateDownloadButton(downloadInfo);
+            }
+        });
     }
 
     @Override

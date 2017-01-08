@@ -1,6 +1,7 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ public abstract class BaseFragment extends Fragment implements DataLoaderListene
     Button mErrorBtnRetry;
     LinearLayout mLoadingError;
     private FrameLayout mBaseView;
+
+    private Handler mHandler = new Handler();
 
     @Nullable
     @Override
@@ -99,5 +102,9 @@ public abstract class BaseFragment extends Fragment implements DataLoaderListene
     @Override
     public void onLoadFailed() {
         onDataLoadedError();
+    }
+
+    protected void post(Runnable runnable) {
+        mHandler.post(runnable);
     }
 }

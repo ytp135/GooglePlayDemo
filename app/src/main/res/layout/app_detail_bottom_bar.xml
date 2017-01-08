@@ -24,7 +24,7 @@
         android:layout_weight="1"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:background="@drawable/detail_btn_selector"
+        android:background="@drawable/selector_app_detail_bottom_normal"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:text="下载"/>

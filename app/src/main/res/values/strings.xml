@@ -22,4 +22,5 @@
     <string name="waiting">等待中</string>
     <string name="retry">重试</string>
     <string name="install">安装</string>
+    <string name="download_progress">%d%%</string>
 </resources>

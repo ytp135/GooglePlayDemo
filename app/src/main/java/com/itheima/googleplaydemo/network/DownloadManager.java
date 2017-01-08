@@ -113,6 +113,7 @@ public class DownloadManager{
         File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
         downloadInfo.setAppName(appFileName);
         downloadInfo.setPackageName(item.getPackageName());
+        downloadInfo.setMax(item.getSize());
 
         if (isInstalled(context, item.getPackageName())) {
             downloadInfo.setDownloadStatus(STATE_INSTALLED);
@@ -192,6 +193,8 @@ public class DownloadManager{
                         int len = -1;
                         while ((len = inputStream.read(buffer)) != -1) {
                             fileOutputStream.write(buffer, 0, len);
+                            int progress = mDownloadInfo.getProgress() + len;
+                            mDownloadInfo.setProgress(progress);
                             updateStatus(STATE_DOWNLOADING);
 
                         }
