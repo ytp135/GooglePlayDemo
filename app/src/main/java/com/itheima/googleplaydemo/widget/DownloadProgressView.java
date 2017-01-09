@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -85,7 +86,21 @@ public class DownloadProgressView extends FrameLayout implements Observer{
     }
 
     public void bindView(DownloadInfo downloadInfo) {
+        if (mDownloadInfo != null) {
+            DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
+            Log.d(TAG, "bindView: remove previous observer");
+        }
         mDownloadInfo = downloadInfo;
+        DownloadManager.getInstance().addObserver(mDownloadInfo.getPackageName(), this);
+        updateStatus(downloadInfo);
+    }
+
+    private void updateStatus(DownloadInfo downloadInfo) {
+        Log.d(TAG, "updateStatus: " + downloadInfo.getDownloadStatus());
+        //当移除之前的观察者后，还有残留的runnable没有执行，这里过滤掉之前的runnable
+        if (!downloadInfo.getPackageName().equals(mDownloadInfo.getPackageName())) {
+            return;
+        }
         switch (downloadInfo.getDownloadStatus()) {
             case DownloadManager.STATE_UN_DOWNLOAD:
                 mDownloadText.setText(R.string.download);
@@ -97,7 +112,8 @@ public class DownloadProgressView extends FrameLayout implements Observer{
                 enableProgress = false;
                 break;
             case DownloadManager.STATE_DOWNLOADING:
-                mDownloadText.setText(R.string.pause);
+                int progress = (int) (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getMax() * 100);
+                mDownloadText.setText(String.format(getResources().getString(R.string.download_progress), progress));
                 mDownload.setImageResource(R.drawable.ic_pause);
                 enableProgress = true;
                 break;
@@ -121,7 +137,6 @@ public class DownloadProgressView extends FrameLayout implements Observer{
     }
 
     private void handleDownloadClick() {
-        DownloadManager.getInstance().addObserver(mDownloadInfo.getPackageName(), this);
         switch (mDownloadInfo.getDownloadStatus()) {
             case DownloadManager.STATE_UN_DOWNLOAD:
                 DownloadManager.getInstance().download(mDownloadInfo);
@@ -158,7 +173,7 @@ public class DownloadProgressView extends FrameLayout implements Observer{
         post(new Runnable() {
             @Override
             public void run() {
-                bindView((DownloadInfo) arg);
+                updateStatus((DownloadInfo) arg);
             }
         });
     }
