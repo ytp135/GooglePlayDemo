@@ -30,6 +30,8 @@ public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getAdapter().notifyDataSetChanged();
+        if (getAdapter() != null) {
+            getAdapter().notifyDataSetChanged();
+        }
     }
 }

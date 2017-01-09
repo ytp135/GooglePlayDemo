@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
 
-import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppDetailBean;
 import com.itheima.googleplaydemo.bean.AppListItem;
 import com.itheima.googleplaydemo.utils.URLUtils;
@@ -77,11 +76,17 @@ public class DownloadManager{
 
     public DownloadInfo getDownloadInfo(Context context, AppListItem item) {
         DownloadInfo downloadInfo = new DownloadInfo();
-        String downloadUrl = Constant.URL_DOWNLOAD + item.getDownloadUrl();
-        downloadInfo.setDownloadUrl(downloadUrl);
         String appFileName = item.getPackageName() + ".apk";
         File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
         downloadInfo.setAppName(appFileName);
+        downloadInfo.setPackageName(item.getPackageName());
+        downloadInfo.setMax(item.getSize());
+        long initRange = 0;
+        if (file.exists()) {
+            initRange = file.length();
+        }
+        downloadInfo.setProgress((int) initRange);
+        downloadInfo.setDownloadUrl(item.getDownloadUrl());
 
         if (isInstalled(context, item.getPackageName())) {
             downloadInfo.setDownloadStatus(STATE_INSTALLED);

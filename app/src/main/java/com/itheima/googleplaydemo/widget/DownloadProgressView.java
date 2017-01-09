@@ -15,6 +15,9 @@ import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.network.DownloadInfo;
 import com.itheima.googleplaydemo.network.DownloadManager;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -23,38 +26,22 @@ import butterknife.OnClick;
  * Created by Leon on 2017/1/4.
  */
 
-public class DownloadProgressView extends FrameLayout {
+public class DownloadProgressView extends FrameLayout implements Observer{
 
     private static final String TAG = "DownloadProgressView";
 
     @BindView(R.id.download)
     ImageView mDownload;
     @BindView(R.id.download_info)
-    TextView mDownloadInfo;
+    TextView mDownloadText;
 
 
     private Paint mPaint;
     private RectF mRectF;
 
-    private float mMax;
+    private DownloadInfo mDownloadInfo;
 
-    public float getProgress() {
-        return mProgress;
-    }
-
-    public void setProgress(float progress) {
-        mProgress = progress;
-    }
-
-    public float getMax() {
-        return mMax;
-    }
-
-    public void setMax(float max) {
-        mMax = max;
-    }
-
-    private float mProgress;
+    private boolean enableProgress;
 
     public DownloadProgressView(Context context) {
         this(context, null);
@@ -70,10 +57,9 @@ public class DownloadProgressView extends FrameLayout {
         ButterKnife.bind(this, this);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setStrokeWidth(3);
+        mPaint.setStrokeWidth(5);
         mPaint.setColor(Color.BLUE);
         mPaint.setStyle(Paint.Style.STROKE);
-
         mRectF = new RectF();
         setWillNotDraw(false);
     }
@@ -81,50 +67,99 @@ public class DownloadProgressView extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int left = mDownload.getLeft();
-        int top = mDownload.getTop();
-        int right = mDownload.getRight();
-        int bottom = mDownload.getBottom();
-        mRectF.set(left, top, right, bottom);
-        float sweepAngle = (mProgress / mMax) * 360;
-        canvas.drawArc(mRectF, -90, sweepAngle, false, mPaint);
+        if (enableProgress) {
+            int left = mDownload.getLeft() -3;
+            int top = mDownload.getTop() - 3;
+            int right = mDownload.getRight() + 3;
+            int bottom = mDownload.getBottom() + 3;
+            mRectF.set(left, top, right, bottom);
+            float sweepAngle = (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getMax()) * 360;
+            canvas.drawArc(mRectF, -90, sweepAngle, false, mPaint);
+        }
         super.onDraw(canvas);
     }
 
     @OnClick(R.id.download)
     public void onClick() {
+        handleDownloadClick();
     }
 
     public void bindView(DownloadInfo downloadInfo) {
+        mDownloadInfo = downloadInfo;
         switch (downloadInfo.getDownloadStatus()) {
             case DownloadManager.STATE_UN_DOWNLOAD:
-                mDownloadInfo.setText(R.string.download);
+                mDownloadText.setText(R.string.download);
                 mDownload.setImageResource(R.drawable.ic_download);
                 break;
             case DownloadManager.STATE_DOWNLOADED:
-                mDownloadInfo.setText(R.string.install);
+                mDownloadText.setText(R.string.install);
                 mDownload.setImageResource(R.drawable.ic_install);
+                enableProgress = false;
                 break;
             case DownloadManager.STATE_DOWNLOADING:
-//                mDownloadInfo.setText(R.string.down);
+                mDownloadText.setText(R.string.pause);
                 mDownload.setImageResource(R.drawable.ic_pause);
+                enableProgress = true;
                 break;
             case DownloadManager.STATE_FAILED:
-                mDownloadInfo.setText(R.string.retry);
+                mDownloadText.setText(R.string.retry);
                 mDownload.setImageResource(R.drawable.ic_redownload);
                 break;
             case DownloadManager.STATE_INSTALLED:
-                mDownloadInfo.setText(R.string.open);
+                mDownloadText.setText(R.string.open);
                 mDownload.setImageResource(R.drawable.ic_install);
                 break;
             case DownloadManager.STATE_PAUSE:
-                mDownloadInfo.setText(R.string.continue_download);
+                mDownloadText.setText(R.string.continue_download);
                 mDownload.setImageResource(R.drawable.ic_download);
                 break;
             case DownloadManager.STATE_WAITING:
-                mDownloadInfo.setText(R.string.waiting);
+                mDownloadText.setText(R.string.waiting);
                 mDownload.setImageResource(R.drawable.ic_cancel);
                 break;
         }
+    }
+
+    private void handleDownloadClick() {
+        DownloadManager.getInstance().addObserver(mDownloadInfo.getPackageName(), this);
+        switch (mDownloadInfo.getDownloadStatus()) {
+            case DownloadManager.STATE_UN_DOWNLOAD:
+                DownloadManager.getInstance().download(mDownloadInfo);
+                break;
+            case DownloadManager.STATE_DOWNLOADING:
+                DownloadManager.getInstance().pauseDownload(mDownloadInfo);
+                break;
+            case DownloadManager.STATE_DOWNLOADED:
+                DownloadManager.getInstance().installApk(getContext(), mDownloadInfo);
+                break;
+            case DownloadManager.STATE_PAUSE:
+                DownloadManager.getInstance().download(mDownloadInfo);
+                break;
+            case DownloadManager.STATE_WAITING:
+                DownloadManager.getInstance().cancelDownload(mDownloadInfo);
+                break;
+            case DownloadManager.STATE_INSTALLED:
+                DownloadManager.getInstance().openApp(getContext(), mDownloadInfo);
+                break;
+            case DownloadManager.STATE_FAILED:
+                DownloadManager.getInstance().download(mDownloadInfo);
+                break;
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
+    }
+
+    @Override
+    public void update(Observable o, final Object arg) {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                bindView((DownloadInfo) arg);
+            }
+        });
     }
 }

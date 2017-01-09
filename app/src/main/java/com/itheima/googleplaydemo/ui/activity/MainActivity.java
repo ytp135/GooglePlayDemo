@@ -62,8 +62,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkStoragePermission() {
-        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        ActivityCompat.requestPermissions(this, permissions, 0);
+        int result = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_DENIED) {
+            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            ActivityCompat.requestPermissions(this, permissions, 0);
+        }
     }
 
     private void initEvent() {
