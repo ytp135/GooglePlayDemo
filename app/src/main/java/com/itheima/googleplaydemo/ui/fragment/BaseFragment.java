@@ -29,7 +29,6 @@ public abstract class BaseFragment extends Fragment implements DataLoaderListene
     Button mErrorBtnRetry;
     LinearLayout mLoadingError;
     private FrameLayout mBaseView;
-
     private Handler mHandler = new Handler();
 
     @Nullable
@@ -40,6 +39,12 @@ public abstract class BaseFragment extends Fragment implements DataLoaderListene
         mLoadingEmpty = (ImageView) mBaseView.findViewById(R.id.loading_empty);
         mErrorBtnRetry = (Button) mBaseView.findViewById(R.id.error_btn_retry);
         mLoadingError = (LinearLayout) mBaseView.findViewById(R.id.loading_error);
+        mErrorBtnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startLoadData();
+            }
+        });
         return mBaseView;
     }
 
