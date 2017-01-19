@@ -26,11 +26,8 @@ dependencies {
     compile 'com.android.support:design:25.1.0'
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    //    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-    compile project(path: ':library')
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.google.code.gson:gson:2.4'
-
     compile 'com.github.bumptech.glide:glide:3.7.0'
     testCompile 'junit:junit:4.12'
 }

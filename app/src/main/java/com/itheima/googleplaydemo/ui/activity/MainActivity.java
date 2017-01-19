@@ -4,10 +4,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +18,6 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.ui.fragment.AppFragment;
 import com.itheima.googleplaydemo.ui.fragment.CategoryFragment;
@@ -38,14 +38,15 @@ public class MainActivity extends BaseActivity {
     LinearLayout mMainContent;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    @BindView(R.id.pager_sliding_tab_strip)
-    PagerSlidingTabStrip mPagerSlidingTabStrip;
     @BindView(R.id.vp)
     ViewPager mVp;
     @BindView(R.id.navigation)
     NavigationView mNavigationView;
     @BindView(R.id.tool_bar)
     Toolbar mToolbar;
+    @BindView(R.id.tab_layout)
+    TabLayout mTabLayout;
+
 
     private ActionBarDrawerToggle mToggle;
 
@@ -84,7 +85,7 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         mVp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-        mPagerSlidingTabStrip.setViewPager(mVp);
+        mTabLayout.setupWithViewPager(mVp);
     }
 
     private void initActionBar() {
@@ -109,33 +110,7 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-/*    public class MyPagerAdapter extends FragmentPagerAdapter {
-
-        private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
-                "Top New Free", "Trending" };
-
-        public MyPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return TITLES[position];
-        }
-
-        @Override
-        public int getCount() {
-            return TITLES.length;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            LogUtils.d(TAG, "getItem: " + position);
-            return SimpleFragment.newInstance(position);
-        }
-    }*/
-
-    private class MyPagerAdapter extends FragmentStatePagerAdapter {
+    private class MyPagerAdapter extends FragmentPagerAdapter {
 
         private static final int FRAGMENT_HOME = 0;
         private static final int FRAGMENT_APP = 1;
