@@ -4,11 +4,16 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
-import com.itheima.googleplaydemo.loader.RecommendDataLoader;
+import com.itheima.googleplaydemo.network.HeiMaRetrofit;
 import com.itheima.googleplaydemo.widget.stellarmap.StellarMap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 创建者: Leon
@@ -16,32 +21,39 @@ import java.util.Random;
  * 描述： TODO
  */
 public class RecommendFragment extends BaseFragment {
-    private static final String TAG = "RecommendFragment";
+
+    private List<String> mData = new ArrayList<String>();
+
 
     @Override
-    protected void startLoadData() {
-        RecommendDataLoader.getInstance().loadData(this);
+    protected void startLoadData(){
+        Call<List<String>> listCall = HeiMaRetrofit.getInstance().getApi().listRecommend();
+        listCall.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                mData = response.body();
+                if (mData.size() == 0) {
+                    onDataLoadedEmpty();
+                } else {
+                    onDataLoadedSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
     }
 
     @Override
     protected View onCreateContentView() {
-/*        TextView textView = new TextView(getContext());
-        textView.setText(TAG);
-        return textView;*/
         StellarMap stellarMap = new StellarMap(getContext());
-        stellarMap.setAdapter(new RecommendAdapter(RecommendDataLoader.getInstance().getData()));
+        stellarMap.setAdapter(new RecommendAdapter(mData));
         stellarMap.setRegularity(15, 20);
         stellarMap.setGroup(0, false);
         return stellarMap;
     }
-
-/*    private List<String> mockDataList() {
-        List<String> data = new ArrayList<String>();
-        for (int i = 0; i < 28; i++) {
-            data.add(i + "黑马程序员");
-        }
-        return data;
-    }*/
 
     private class RecommendAdapter implements StellarMap.Adapter {
 
