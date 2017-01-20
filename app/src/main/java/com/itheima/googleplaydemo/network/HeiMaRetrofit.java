@@ -16,7 +16,7 @@ public class HeiMaRetrofit {
 
     private final Api mApi;
 
-    private static final String HOST = "http://10.0.2.2:8080/GooglePlayServer/";
+    public static final String HOST = "http://10.0.2.2:8080/GooglePlayServer/";
 
     private static Gson gson = new GsonBuilder()
             .setLenient()

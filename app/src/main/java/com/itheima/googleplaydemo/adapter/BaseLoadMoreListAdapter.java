@@ -55,17 +55,17 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
     }
 
     @Override
-    protected void onBindViewHolder(ViewHolder viewHolder, int position) {
+    protected void onBindViewHolder(ViewHolder viewHolder, T item) {
         if (viewHolder.holdView instanceof LoadingListItemView) {
             if (mOnLoadMoreListener != null) {
                 mOnLoadMoreListener.onLoadMore();
             }
         } else {
-            onBindNormalViewHolder(viewHolder, position);
+            onBindNormalViewHolder(viewHolder, item);
         }
     }
 
-    protected abstract void onBindNormalViewHolder(ViewHolder viewHolder, int position);
+    protected abstract void onBindNormalViewHolder(ViewHolder viewHolder, T item);
 
     protected abstract ViewHolder onCreateNormalItemViewHolder();
 

@@ -20,10 +20,9 @@ public class AppListAdapter extends BaseLoadMoreListAdapter<AppListItem> {
     }
 
     @Override
-    protected void onBindNormalViewHolder(ViewHolder viewHolder, int position) {
-        ((AppListItemView)(viewHolder.holdView)).bindView(mDataList.get(position));
+    protected void onBindNormalViewHolder(ViewHolder viewHolder, AppListItem item) {
+        ((AppListItemView)(viewHolder.holdView)).bindView(item);
     }
-
 
     public class ListItemViewHolder extends ViewHolder{
         public ListItemViewHolder(AppListItemView v) {
