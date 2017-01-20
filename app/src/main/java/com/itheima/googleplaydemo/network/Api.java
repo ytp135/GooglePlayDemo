@@ -13,4 +13,7 @@ public interface Api {
 
     @GET("recommend")
     Call<List<String>> listRecommend();
+
+    @GET("hot")
+    Call<List<String>> listHot();
 }

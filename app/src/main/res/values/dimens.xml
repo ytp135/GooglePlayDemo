@@ -7,4 +7,5 @@
     <dimen name="leader_board_text_padding">5dp</dimen>
     <dimen name="app_list_divider_height">8dp</dimen>
     <dimen name="app_detail_pic_padding">8dp</dimen>
+    <dimen name="padding">8dp</dimen>
 </resources>

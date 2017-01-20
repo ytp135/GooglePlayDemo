@@ -10,11 +10,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.network.HeiMaRetrofit;
 import com.itheima.googleplaydemo.widget.FlowLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 创建者: Leon
@@ -28,23 +32,33 @@ public class LeaderBoardFragment extends BaseFragment {
 
     @Override
     protected void startLoadData() {
-        mockDataList();
-        onDataLoadedSuccess();
+        Call<List<String>> listCall = HeiMaRetrofit.getInstance().getApi().listHot();
+        listCall.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                mDataList = response.body();
+                if (mDataList.size() == 0) {
+                    onDataLoadedEmpty();
+                } else {
+                    onDataLoadedSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
     }
 
-    private void mockDataList() {
-        mDataList = new ArrayList<String>();
-        for (int i = 0; i < 60; i++) {
-            mDataList.add(i + "黑马程序员");
-        }
-    }
 
     @Override
     protected View onCreateContentView() {
         ScrollView scrollView = new ScrollView(getContext());
         //流式布局
         FlowLayout fl = new FlowLayout(getContext());
-
+        int padding = getResources().getDimensionPixelOffset(R.dimen.padding);
+        fl.setPadding(padding, padding, padding, padding);
         //给fl添加应有的孩子
 
         for (int i = 0; i < mDataList.size(); i++) {
@@ -56,7 +70,6 @@ public class LeaderBoardFragment extends BaseFragment {
             tv.setTextColor(Color.WHITE);
 
             tv.setGravity(Gravity.CENTER);
-            int padding = getResources().getDimensionPixelOffset(R.dimen.leader_board_text_padding);
             tv.setPadding(padding, padding, padding, padding);
 
             //设置圆角背景

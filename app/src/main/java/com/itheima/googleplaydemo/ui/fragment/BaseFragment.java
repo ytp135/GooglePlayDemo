@@ -22,7 +22,6 @@ import com.itheima.googleplaydemo.loader.DataLoaderListener;
  * 描述： TODO
  */
 public abstract class BaseFragment extends Fragment implements DataLoaderListener{
-    private static final String TAG = "BaseFragment";
 
     ProgressBar mLoadingProgress;
     ImageView mLoadingEmpty;
