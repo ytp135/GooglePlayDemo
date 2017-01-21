@@ -16,7 +16,6 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
 
     private static final int ITEM_TYPE_NORMAL = 0;
     private static final int ITEM_TYPE_LOAD_MORE = 1;
-    private OnLoadMoreListener mOnLoadMoreListener;
 
     public BaseLoadMoreListAdapter(Context context, List<T> dataList) {
         super(context, dataList);
@@ -55,17 +54,14 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
     }
 
     @Override
-    protected void onBindViewHolder(ViewHolder viewHolder, T item) {
+    protected void onBindViewHolder(ViewHolder viewHolder, int position) {
         if (viewHolder.holdView instanceof LoadingListItemView) {
-            if (mOnLoadMoreListener != null) {
-                mOnLoadMoreListener.onLoadMore();
-            }
         } else {
-            onBindNormalViewHolder(viewHolder, item);
+            onBindNormalViewHolder(viewHolder, position);
         }
     }
 
-    protected abstract void onBindNormalViewHolder(ViewHolder viewHolder, T item);
+    protected abstract void onBindNormalViewHolder(ViewHolder viewHolder, int position);
 
     protected abstract ViewHolder onCreateNormalItemViewHolder();
 
@@ -76,15 +72,5 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
             super(v);
         }
     }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore();
-    }
-
-    public void setOnLoadMoreListener(OnLoadMoreListener listener) {
-        mOnLoadMoreListener = listener;
-    }
-
-
 
 }

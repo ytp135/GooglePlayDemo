@@ -51,11 +51,11 @@ public abstract class BaseListAdapter<T> extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        onBindViewHolder(viewHolder, mDataList.get(position));
+        onBindViewHolder(viewHolder, position);
         return convertView;
     }
 
-    protected abstract void onBindViewHolder(ViewHolder viewHolder, T item);
+    protected abstract void onBindViewHolder(ViewHolder viewHolder, int position);
 
     protected abstract ViewHolder onCreateViewHolder(int position);
 

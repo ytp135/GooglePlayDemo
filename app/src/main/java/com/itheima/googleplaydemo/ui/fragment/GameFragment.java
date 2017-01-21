@@ -14,16 +14,15 @@ public class GameFragment extends BaseAppListFragment {
 
     @Override
     protected void startLoadData() {
-        GameDataLoader.getInstance().loadGameData(this);
-    }
-
-    @Override
-    public void onLoadMore() {
-        GameDataLoader.getInstance().loadMoreData();
     }
 
     @Override
     protected List<AppListItem> getAppList() {
         return GameDataLoader.getInstance().getListData();
+    }
+
+    @Override
+    protected void onStartLoadMore() {
+
     }
 }

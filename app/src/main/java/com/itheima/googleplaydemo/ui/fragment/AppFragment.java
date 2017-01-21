@@ -18,14 +18,14 @@ public class AppFragment extends BaseAppListFragment {
         AppDataLoader.getInstance().loadData(this);
     }
 
-    @Override
-    public void onLoadMore() {
-        AppDataLoader.getInstance().loadMoreData();
-    }
 
     @Override
     protected List<AppListItem> getAppList() {
         return AppDataLoader.getInstance().getData();
     }
 
+    @Override
+    protected void onStartLoadMore() {
+
+    }
 }

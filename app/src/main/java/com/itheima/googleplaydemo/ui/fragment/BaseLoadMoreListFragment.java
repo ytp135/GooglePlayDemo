@@ -1,30 +1,34 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
-import com.itheima.googleplaydemo.adapter.BaseLoadMoreListAdapter;
-import com.itheima.googleplaydemo.loader.LoadMoreListener;
+import android.widget.AbsListView;
 
 /**
  * 创建者: Leon
  * 创建时间: 2016/9/24 22:46
  * 描述： TODO
  */
-public abstract class BaseLoadMoreListFragment extends BaseListFragment
-        implements BaseLoadMoreListAdapter.OnLoadMoreListener, LoadMoreListener{
+public abstract class BaseLoadMoreListFragment extends BaseListFragment{
 
 
     @Override
     protected void initListView() {
         super.initListView();
-        ((BaseLoadMoreListAdapter)getAdapter()).setOnLoadMoreListener(this);
+        getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == SCROLL_STATE_IDLE) {
+                    if (view.getLastVisiblePosition() == getAdapter().getCount() - 1) {
+                        onStartLoadMore();
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
     }
 
-    @Override
-    public void onMoreDataLoadFailed() {
-
-    }
-
-    @Override
-    public void onMoreDataLoadSuccess() {
-        notifyDataSetChange();
-    }
+    protected abstract void onStartLoadMore();
 }

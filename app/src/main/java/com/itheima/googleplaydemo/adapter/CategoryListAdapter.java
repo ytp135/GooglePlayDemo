@@ -20,8 +20,8 @@ public class CategoryListAdapter extends BaseListAdapter<CategoryBean> {
     }
 
     @Override
-    protected void onBindViewHolder(ViewHolder viewHolder, CategoryBean item) {
-        ((CategoryItemView)viewHolder.holdView).bindView(item);
+    protected void onBindViewHolder(ViewHolder viewHolder, int postion) {
+        ((CategoryItemView)viewHolder.holdView).bindView(getDataList().get(postion));
     }
 
     @Override

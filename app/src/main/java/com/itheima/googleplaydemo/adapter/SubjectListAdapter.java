@@ -21,8 +21,8 @@ public class SubjectListAdapter extends BaseLoadMoreListAdapter<SubjectBean> {
     }
 
     @Override
-    protected void onBindNormalViewHolder(ViewHolder viewHolder, SubjectBean item) {
-        ((SubjectListItemView)viewHolder.holdView).bindView(item);
+    protected void onBindNormalViewHolder(ViewHolder viewHolder, int postion) {
+        ((SubjectListItemView)viewHolder.holdView).bindView(getDataList().get(postion));
     }
 
     @Override

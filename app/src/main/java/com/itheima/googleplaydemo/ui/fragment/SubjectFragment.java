@@ -3,7 +3,15 @@ package com.itheima.googleplaydemo.ui.fragment;
 import android.widget.BaseAdapter;
 
 import com.itheima.googleplaydemo.adapter.SubjectListAdapter;
-import com.itheima.googleplaydemo.loader.SubjectDataLoader;
+import com.itheima.googleplaydemo.bean.SubjectBean;
+import com.itheima.googleplaydemo.network.HeiMaRetrofit;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 创建者: Leon
@@ -12,18 +20,44 @@ import com.itheima.googleplaydemo.loader.SubjectDataLoader;
  */
 public class SubjectFragment extends BaseLoadMoreListFragment {
 
+    private List<SubjectBean> mSubjects = new ArrayList<SubjectBean>();
+
     @Override
     protected void startLoadData() {
-        SubjectDataLoader.getInstance().loadData(this);
+        Call<List<SubjectBean>> listCall = HeiMaRetrofit.getInstance().getApi().listSubject(0);
+        listCall.enqueue(new Callback<List<SubjectBean>>() {
+            @Override
+            public void onResponse(Call<List<SubjectBean>> call, Response<List<SubjectBean>> response) {
+                mSubjects.addAll(response.body());
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<List<SubjectBean>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
     }
 
     @Override
     protected BaseAdapter onCreateAdapter() {
-        return new SubjectListAdapter(getContext(), SubjectDataLoader.getInstance().getData());
+        return new SubjectListAdapter(getContext(), mSubjects);
     }
 
     @Override
-    public void onLoadMore() {
-        SubjectDataLoader.getInstance().loadMoreData();
+    protected void onStartLoadMore() {
+        Call<List<SubjectBean>> listCall = HeiMaRetrofit.getInstance().getApi().listSubject(mSubjects.size());
+        listCall.enqueue(new Callback<List<SubjectBean>>() {
+            @Override
+            public void onResponse(Call<List<SubjectBean>> call, Response<List<SubjectBean>> response) {
+                mSubjects.addAll(response.body());
+                getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<SubjectBean>> call, Throwable t) {
+
+            }
+        });
     }
 }

@@ -64,4 +64,8 @@ public abstract class BaseListFragment extends BaseFragment{
         mBaseAdapter.notifyDataSetChanged();
     }
 
+    public ListView getListView() {
+        return mListView;
+    }
+
 }

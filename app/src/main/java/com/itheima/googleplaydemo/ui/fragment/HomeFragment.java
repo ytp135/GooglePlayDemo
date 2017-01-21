@@ -23,10 +23,6 @@ public class HomeFragment extends BaseAppListFragment {
         HomeDataLoader.getInstance().loadData(this);
     }
 
-    @Override
-    public void onLoadMore() {
-        HomeDataLoader.getInstance().loadMoreData();
-    }
 
     @Override
     protected List<AppListItem> getAppList() {
@@ -48,4 +44,8 @@ public class HomeFragment extends BaseAppListFragment {
         startActivity(intent);
     }
 
+    @Override
+    protected void onStartLoadMore() {
+
+    }
 }
