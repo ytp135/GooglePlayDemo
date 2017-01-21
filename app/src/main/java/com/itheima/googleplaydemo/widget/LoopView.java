@@ -141,6 +141,7 @@ public class LoopView extends RelativeLayout {
         mImages = data;
         initDots();
         initViewPager();
+        mPagerAdapter.notifyDataSetChanged();
     }
 
     @Override

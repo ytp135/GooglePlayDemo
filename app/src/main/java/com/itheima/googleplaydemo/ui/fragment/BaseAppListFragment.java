@@ -29,6 +29,7 @@ public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
         setListDivider(getResources().getDimensionPixelSize(R.dimen.app_list_divider_height));
     }
 
+
     @Override
     public void onResume() {
         super.onResume();

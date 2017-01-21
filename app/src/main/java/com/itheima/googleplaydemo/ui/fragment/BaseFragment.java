@@ -21,7 +21,7 @@ import com.itheima.googleplaydemo.R;
  * 描述： TODO
  */
 public abstract class BaseFragment extends Fragment {
-
+    private static final String TAG = "BaseFragment";
     ProgressBar mLoadingProgress;
     ImageView mLoadingEmpty;
     Button mErrorBtnRetry;

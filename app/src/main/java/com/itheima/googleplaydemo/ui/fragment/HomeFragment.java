@@ -1,7 +1,6 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 
 import com.itheima.googleplaydemo.bean.HomeBean;
@@ -30,6 +29,8 @@ public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected void startLoadData() {
+        mLooperDataList.clear();
+        getAppList().clear();
         Call<HomeBean> listCall = HeiMaRetrofit.getInstance().getApi().listHome(0);
         listCall.enqueue(new Callback<HomeBean>() {
             @Override

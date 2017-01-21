@@ -18,6 +18,7 @@ public class GameFragment extends BaseAppListFragment {
 
     @Override
     protected void startLoadData() {
+        getAppList().clear();
         Call<List<AppListItem>> listCall = HeiMaRetrofit.getInstance().getApi().listGames(0);
         listCall.enqueue(new Callback<List<AppListItem>>() {
             @Override
