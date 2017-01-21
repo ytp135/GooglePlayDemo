@@ -18,9 +18,9 @@ import com.bumptech.glide.request.target.Target;
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppDetailBean;
-import com.itheima.googleplaydemo.loader.AppDetailDataLoader;
 import com.itheima.googleplaydemo.network.DownloadInfo;
 import com.itheima.googleplaydemo.network.DownloadManager;
+import com.itheima.googleplaydemo.network.HeiMaRetrofit;
 import com.itheima.googleplaydemo.widget.ProgressButton;
 
 import java.util.Observable;
@@ -29,6 +29,9 @@ import java.util.Observer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 创建者: Leon
@@ -36,7 +39,6 @@ import butterknife.OnClick;
  * 描述： TODO
  */
 public class AppDetailFragment extends BaseFragment implements Observer{
-    private static final String TAG = "AppDetailFragment";
 
     @BindView(R.id.favorite)
     Button mFavorite;
@@ -78,10 +80,24 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     private int mAppDetailDesOriginHeight;
     private String mPackageName;
 
+    private AppDetailBean mAppDetailBean;
+
     @Override
     protected void startLoadData() {
         mPackageName = getActivity().getIntent().getStringExtra("package_name");
-        AppDetailDataLoader.getInstance().loadData(mPackageName, this);
+        Call<AppDetailBean> appDetailBeanCall = HeiMaRetrofit.getInstance().getApi().appDetail(mPackageName);
+        appDetailBeanCall.enqueue(new Callback<AppDetailBean>() {
+            @Override
+            public void onResponse(Call<AppDetailBean> call, Response<AppDetailBean> response) {
+                mAppDetailBean = response.body();
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<AppDetailBean> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
     }
 
     @Override
@@ -101,9 +117,8 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     }
 
     private void initDownloadButton() {
-        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
-        DownloadManager.getInstance().addObserver(data.getPackageName(), this);
-        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), data);
+        DownloadManager.getInstance().addObserver(mAppDetailBean.getPackageName(), this);
+        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), mAppDetailBean);
         updateDownloadButton(downloadInfo);
     }
 
@@ -141,9 +156,8 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     }
 
     private void initAppDes() {
-        AppDetailBean appDetailBean = AppDetailDataLoader.getInstance().getData();
-        mAppDetailAuthor.setText(appDetailBean.getAuthor());
-        mAppDetailDes.setText(appDetailBean.getDes());
+        mAppDetailAuthor.setText(mAppDetailBean.getAuthor());
+        mAppDetailDes.setText(mAppDetailBean.getDes());
         mAppDetailDes.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -155,12 +169,11 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     }
 
     private void initPicsInfo() {
-        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
-        for (int i = 0; i < data.getScreen().size(); i++) {
-            String screen = data.getScreen().get(i);
+        for (int i = 0; i < mAppDetailBean.getScreen().size(); i++) {
+            String screen = mAppDetailBean.getScreen().get(i);
             ImageView imageView = new ImageView(getContext());
             int padding = getResources().getDimensionPixelSize(R.dimen.app_detail_pic_padding);
-            if (i != data.getScreen().size() - 1) {
+            if (i != mAppDetailBean.getScreen().size() - 1) {
                 imageView.setPadding(0, 0, padding, 0);
             }
             Glide.with(getContext()).load(Constant.URL_IMAGE + screen).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(imageView);
@@ -170,9 +183,8 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     }
 
     private void initSafeInfo() {
-        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
-        for (int i = 0; i < data.getSafe().size(); i++) {
-            AppDetailBean.SafeBean safeBean = data.getSafe().get(i);
+        for (int i = 0; i < mAppDetailBean.getSafe().size(); i++) {
+            AppDetailBean.SafeBean safeBean = mAppDetailBean.getSafe().get(i);
             //Add tag
             ImageView tag = new ImageView(getContext());
             mAppDetailSecurityTags.addView(tag);
@@ -211,22 +223,21 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     }
 
     private void initAppInfo() {
-        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
-        String iconUrl = Constant.URL_IMAGE + data.getIconUrl();
+        String iconUrl = Constant.URL_IMAGE + mAppDetailBean.getIconUrl();
         Glide.with(getContext()).load(iconUrl).into(mAppIcon);
-        mAppName.setText(data.getName());
-        mAppRating.setRating(data.getStars());
+        mAppName.setText(mAppDetailBean.getName());
+        mAppRating.setRating(mAppDetailBean.getStars());
 
-        String downloadCount = String.format(getString(R.string.download_count), data.getDownloadNum());
+        String downloadCount = String.format(getString(R.string.download_count), mAppDetailBean.getDownloadNum());
         mDownloadCount.setText(downloadCount);
 
-        String versionCode = String.format(getString(R.string.version_code), data.getVersion());
+        String versionCode = String.format(getString(R.string.version_code), mAppDetailBean.getVersion());
         mVersionCode.setText(versionCode);
 
-        String timestamp = String.format(getString(R.string.time), data.getDate());
+        String timestamp = String.format(getString(R.string.time), mAppDetailBean.getDate());
         mTime.setText(timestamp);
 
-        String size = String.format(getString(R.string.app_size), Formatter.formatFileSize(getContext(), data.getSize()));
+        String size = String.format(getString(R.string.app_size), Formatter.formatFileSize(getContext(), mAppDetailBean.getSize()));
         mAppSize.setText(size);
 
     }
@@ -247,8 +258,7 @@ public class AppDetailFragment extends BaseFragment implements Observer{
     }
 
     private void handleDownloadClick() {
-        AppDetailBean data = AppDetailDataLoader.getInstance().getData();
-        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), data);
+        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), mAppDetailBean);
         switch (downloadInfo.getDownloadStatus()) {
             case DownloadManager.STATE_UN_DOWNLOAD:
                 DownloadManager.getInstance().download(downloadInfo);
