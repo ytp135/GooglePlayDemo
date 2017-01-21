@@ -1,9 +1,13 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
 import com.itheima.googleplaydemo.bean.AppListItem;
-import com.itheima.googleplaydemo.loader.AppDataLoader;
+import com.itheima.googleplaydemo.network.HeiMaRetrofit;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 创建者: Leon
@@ -11,21 +15,40 @@ import java.util.List;
  * 描述： TODO
  */
 public class AppFragment extends BaseAppListFragment {
-    private static final String TAG = "AppFragment";
 
     @Override
     protected void startLoadData() {
-        AppDataLoader.getInstance().loadData(this);
+        Call<List<AppListItem>> listCall = HeiMaRetrofit.getInstance().getApi().listApps(0);
+        listCall.enqueue(new Callback<List<AppListItem>>() {
+            @Override
+            public void onResponse(Call<List<AppListItem>> call, Response<List<AppListItem>> response) {
+                getAppList().addAll(response.body());
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<List<AppListItem>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
+
     }
 
-
-    @Override
-    protected List<AppListItem> getAppList() {
-        return AppDataLoader.getInstance().getData();
-    }
 
     @Override
     protected void onStartLoadMore() {
+        Call<List<AppListItem>> listCall = HeiMaRetrofit.getInstance().getApi().listApps(getAppList().size());
+        listCall.enqueue(new Callback<List<AppListItem>>() {
+            @Override
+            public void onResponse(Call<List<AppListItem>> call, Response<List<AppListItem>> response) {
+                getAppList().addAll(response.body());
+                getAdapter().notifyDataSetChanged();
+            }
 
+            @Override
+            public void onFailure(Call<List<AppListItem>> call, Throwable t) {
+
+            }
+        });
     }
 }

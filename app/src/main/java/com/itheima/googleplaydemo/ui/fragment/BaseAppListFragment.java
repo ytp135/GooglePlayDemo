@@ -6,6 +6,7 @@ import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.adapter.AppListAdapter;
 import com.itheima.googleplaydemo.bean.AppListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,9 +15,12 @@ import java.util.List;
  * 描述： TODO
  */
 public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
+
+    List<AppListItem> mAppListItems = new ArrayList<AppListItem>();
+
     @Override
     protected BaseAdapter onCreateAdapter() {
-       return new AppListAdapter(getContext(), getAppList());
+       return new AppListAdapter(getContext(), mAppListItems);
     }
 
     @Override
@@ -25,13 +29,15 @@ public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
         setListDivider(getResources().getDimensionPixelSize(R.dimen.app_list_divider_height));
     }
 
-    protected abstract List<AppListItem> getAppList();
-
     @Override
     public void onResume() {
         super.onResume();
         if (getAdapter() != null) {
             getAdapter().notifyDataSetChanged();
         }
+    }
+
+    protected List<AppListItem> getAppList() {
+        return mAppListItems;
     }
 }

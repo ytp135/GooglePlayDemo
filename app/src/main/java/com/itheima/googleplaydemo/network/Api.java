@@ -1,5 +1,6 @@
 package com.itheima.googleplaydemo.network;
 
+import com.itheima.googleplaydemo.bean.AppListItem;
 import com.itheima.googleplaydemo.bean.CategoryBean;
 import com.itheima.googleplaydemo.bean.SubjectBean;
 
@@ -26,4 +27,10 @@ public interface Api {
 
     @GET("subject")
     Call<List<SubjectBean>> listSubject(@Query("index") int index);
+
+    @GET("game")
+    Call<List<AppListItem>> listGames(@Query("index") int index);
+
+    @GET("app")
+    Call<List<AppListItem>> listApps(@Query("index") int index);
 }
