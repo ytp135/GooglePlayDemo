@@ -14,14 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.itheima.googleplaydemo.R;
-import com.itheima.googleplaydemo.loader.DataLoaderListener;
 
 /**
  * 创建者: Leon
  * 创建时间: 2016/9/15 12:04
  * 描述： TODO
  */
-public abstract class BaseFragment extends Fragment implements DataLoaderListener{
+public abstract class BaseFragment extends Fragment {
 
     ProgressBar mLoadingProgress;
     ImageView mLoadingEmpty;
@@ -91,22 +90,6 @@ public abstract class BaseFragment extends Fragment implements DataLoaderListene
      * @return
      */
     protected abstract View onCreateContentView();
-
-
-    @Override
-    public void onLoadSuccess() {
-        onDataLoadedSuccess();
-    }
-
-    @Override
-    public void onLoadedEmpty() {
-        onDataLoadedEmpty();
-    }
-
-    @Override
-    public void onLoadFailed() {
-        onDataLoadedError();
-    }
 
     protected void post(Runnable runnable) {
         mHandler.post(runnable);
