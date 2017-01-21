@@ -1,4 +1,4 @@
-package com.itheima.googleplaydemo.utils.concurrent;
+package com.itheima.googleplaydemo.utils;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -15,42 +15,37 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadPoolProxy {
 
-    private static final String TAG = "ThreadPoolProxy";
     private ThreadPoolExecutor mThreadPoolExecutor;
 
-    private int DEFAULT_CORE_POOL_SIZE = 2;
-    private int DEFAULT_MAXIMUM_POOL_SIZE = 4;
+    private static final int DEFAULT_CORE_POOL_SIZE = 2;
+    private static final int DEFAULT_MAXIMUM_POOL_SIZE = 4;
 
-    private int mCorePoolSize = DEFAULT_CORE_POOL_SIZE;
-    private int mMaximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
+    private static ThreadPoolProxy sThreadPoolProxy;
 
-
+    public static ThreadPoolProxy getInstance() {
+        if (sThreadPoolProxy == null) {
+            synchronized (ThreadPoolProxy.class) {
+                if (sThreadPoolProxy == null) {
+                    sThreadPoolProxy = new ThreadPoolProxy();
+                }
+            }
+        }
+        return sThreadPoolProxy;
+    }
 
 
     /**
      * 初始化线程池
      */
 
-    public ThreadPoolProxy() {
+    private ThreadPoolProxy() {
         long keepAliveTime = 3000;
         TimeUnit unit = TimeUnit.MILLISECONDS;
         BlockingQueue<Runnable> workQueue = new LinkedBlockingDeque<Runnable>();
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
         RejectedExecutionHandler handler = new ThreadPoolExecutor.DiscardPolicy();
-        mThreadPoolExecutor = new ThreadPoolExecutor(mCorePoolSize, mMaximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
+        mThreadPoolExecutor = new ThreadPoolExecutor(DEFAULT_CORE_POOL_SIZE, DEFAULT_MAXIMUM_POOL_SIZE, keepAliveTime, unit, workQueue, threadFactory, handler);
     }
-
-    public ThreadPoolProxy(int corePoolSize, int maximumPoolSize) {
-        int mCorePoolSize = corePoolSize;
-        int mMaximumPoolSize = maximumPoolSize;
-        long keepAliveTime = 3000;
-        TimeUnit unit = TimeUnit.MILLISECONDS;
-        BlockingQueue<Runnable> workQueue = new LinkedBlockingDeque<Runnable>();
-        ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        RejectedExecutionHandler handler = new ThreadPoolExecutor.DiscardPolicy();
-        mThreadPoolExecutor = new ThreadPoolExecutor(mCorePoolSize, mMaximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
-    }
-
 
     /**
      * 执行任务

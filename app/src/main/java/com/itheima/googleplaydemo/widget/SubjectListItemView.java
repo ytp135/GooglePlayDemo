@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide;
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.SubjectBean;
-import com.itheima.googleplaydemo.utils.LogUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +43,6 @@ public class SubjectListItemView extends RelativeLayout {
     }
 
     public void bindView(SubjectBean bean) {
-        LogUtils.d(TAG, "bindView: ");
         mSubjectListItemTitle.setText(bean.getDes());
         Glide.with(getContext()).load(Constant.URL_IMAGE + bean.getUrl()).into(mSubjectListItemImage);
     }

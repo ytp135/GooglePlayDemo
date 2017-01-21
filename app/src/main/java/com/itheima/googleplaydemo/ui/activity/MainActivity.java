@@ -26,7 +26,6 @@ import com.itheima.googleplaydemo.ui.fragment.HomeFragment;
 import com.itheima.googleplaydemo.ui.fragment.LeaderBoardFragment;
 import com.itheima.googleplaydemo.ui.fragment.RecommendFragment;
 import com.itheima.googleplaydemo.ui.fragment.SubjectFragment;
-import com.itheima.googleplaydemo.utils.LogUtils;
 
 import butterknife.BindView;
 
@@ -133,7 +132,6 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            LogUtils.d(TAG, "getItem: " + position);
 //            return SimpleFragment.newInstance(position);
 //            return BaseFragment.newInstance();
             switch (position) {

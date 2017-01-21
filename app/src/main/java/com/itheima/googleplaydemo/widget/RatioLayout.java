@@ -5,8 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.itheima.googleplaydemo.utils.LogUtils;
-
 /**
  * 创建者: Leon
  * 创建时间: 2016/9/23 10:30
@@ -47,7 +45,6 @@ public class RatioLayout extends FrameLayout{
 
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
         }
-        LogUtils.d(TAG, "onMeasure: " + widthSize + " " + heightSize);
         setMeasuredDimension(widthSize, heightSize);
     }
 }

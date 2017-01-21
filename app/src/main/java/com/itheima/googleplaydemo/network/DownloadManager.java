@@ -8,8 +8,8 @@ import android.util.Log;
 
 import com.itheima.googleplaydemo.bean.AppDetailBean;
 import com.itheima.googleplaydemo.bean.AppListItem;
+import com.itheima.googleplaydemo.utils.ThreadPoolProxy;
 import com.itheima.googleplaydemo.utils.URLUtils;
-import com.itheima.googleplaydemo.utils.concurrent.ThreadPoolProxyFactory;
 
 import java.io.Closeable;
 import java.io.File;
@@ -71,7 +71,7 @@ public class DownloadManager{
         mStringDownloadInfoMap.put(downloadInfo.getPackageName(), downloadInfo);
 
         notifyObservers(downloadInfo);
-        ThreadPoolProxyFactory.getDownloadThreadPoolProxy().execute(downloadTask);
+        ThreadPoolProxy.getInstance().execute(downloadTask);
     }
 
     public DownloadInfo getDownloadInfo(Context context, AppListItem item) {
@@ -154,7 +154,7 @@ public class DownloadManager{
     }
 
     public void cancelDownload(DownloadInfo downloadInfo) {
-        ThreadPoolProxyFactory.getDownloadThreadPoolProxy().remove(downloadInfo.getDownloadTask());
+        ThreadPoolProxy.getInstance().remove(downloadInfo.getDownloadTask());
         downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
         notifyObservers(downloadInfo);
     }
@@ -210,7 +210,6 @@ public class DownloadManager{
                     success = file.createNewFile();
                 }
                 String url = URLUtils.getDownloadURL(mDownloadInfo.getDownloadUrl(), initRange);
-                Log.d(TAG, "run: " + url);
                 Request request = new Request.Builder().url(url).get().build();
                 Response response = mOkHttpClient.newCall(request).execute();
                 if (response.isSuccessful()) {
