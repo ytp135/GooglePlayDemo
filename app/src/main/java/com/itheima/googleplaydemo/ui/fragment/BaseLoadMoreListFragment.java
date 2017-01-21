@@ -17,7 +17,7 @@ public abstract class BaseLoadMoreListFragment extends BaseListFragment{
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if (scrollState == SCROLL_STATE_IDLE) {
-                    if (view.getLastVisiblePosition() == getAdapter().getCount() - 1) {
+                    if (view.getLastVisiblePosition() == getLoadMorePosition()) {
                         onStartLoadMore();
                     }
                 }
@@ -31,4 +31,8 @@ public abstract class BaseLoadMoreListFragment extends BaseListFragment{
     }
 
     protected abstract void onStartLoadMore();
+
+    protected int getLoadMorePosition() {
+        return getAdapter().getCount() - 1;
+    }
 }

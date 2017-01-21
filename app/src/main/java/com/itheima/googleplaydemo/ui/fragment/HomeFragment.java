@@ -1,14 +1,20 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 
-import com.itheima.googleplaydemo.bean.AppListItem;
-import com.itheima.googleplaydemo.loader.HomeDataLoader;
+import com.itheima.googleplaydemo.bean.HomeBean;
+import com.itheima.googleplaydemo.network.HeiMaRetrofit;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
 import com.itheima.googleplaydemo.widget.LoopView;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -18,22 +24,33 @@ import java.util.List;
  */
 public class HomeFragment extends BaseAppListFragment {
 
+    private static final String TAG = "HomeFragment";
+
+    private List<String> mLooperDataList = new ArrayList<String>();
+
     @Override
     protected void startLoadData() {
-        HomeDataLoader.getInstance().loadData(this);
-    }
+        Call<HomeBean> listCall = HeiMaRetrofit.getInstance().getApi().listHome(0);
+        listCall.enqueue(new Callback<HomeBean>() {
+            @Override
+            public void onResponse(Call<HomeBean> call, Response<HomeBean> response) {
+                getAppList().addAll(response.body().getList());
+                mLooperDataList.addAll(response.body().getPicture());
+                onDataLoadedSuccess();
+            }
 
-
-    @Override
-    protected List<AppListItem> getAppList() {
-        return HomeDataLoader.getInstance().getListData();
+            @Override
+            public void onFailure(Call<HomeBean> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
     }
 
 
     @Override
     protected View onCreateHeaderView() {
         LoopView loopView = new LoopView(getContext());
-        loopView.setData(HomeDataLoader.getInstance().getLooperData());
+        loopView.setData(mLooperDataList);
         return loopView;
     }
 
@@ -46,6 +63,22 @@ public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected void onStartLoadMore() {
+        Call<HomeBean> listCall = HeiMaRetrofit.getInstance().getApi().listHome(getAppList().size());
+        listCall.enqueue(new Callback<HomeBean>() {
+            @Override
+            public void onResponse(Call<HomeBean> call, Response<HomeBean> response) {
+                getAppList().addAll(response.body().getList());
+                getAdapter().notifyDataSetChanged();
+            }
 
+            @Override
+            public void onFailure(Call<HomeBean> call, Throwable t) {
+            }
+        });
+    }
+
+    @Override
+    protected int getLoadMorePosition() {
+        return getAdapter().getCount();
     }
 }
