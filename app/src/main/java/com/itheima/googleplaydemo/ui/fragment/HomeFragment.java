@@ -1,5 +1,6 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -7,6 +8,7 @@ import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.HomeBean;
 import com.itheima.googleplaydemo.network.HeiMaRetrofit;
+import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
 import com.leon.loopviewpagerlib.Banner;
 
 import java.util.ArrayList;
@@ -71,6 +73,13 @@ public class HomeFragment extends BaseAppListFragment {
             public void onFailure(Call<HomeBean> call, Throwable t) {
             }
         });
+    }
+
+    @Override
+    protected void onListItemClick(int i) {
+        Intent intent = new Intent(getContext(), AppDetailActivity.class);
+        intent.putExtra("package_name", getAppList().get(i-1).getPackageName());
+        startActivity(intent);
     }
 
     @Override

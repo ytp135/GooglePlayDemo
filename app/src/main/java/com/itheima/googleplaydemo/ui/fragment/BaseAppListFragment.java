@@ -40,12 +40,15 @@ public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
         }
     }
 
+
     @Override
     protected void onListItemClick(int i) {
         Intent intent = new Intent(getContext(), AppDetailActivity.class);
         intent.putExtra("package_name", getAppList().get(i).getPackageName());
         startActivity(intent);
     }
+
+
 
     protected List<AppListItem> getAppList() {
         return mAppListItems;
