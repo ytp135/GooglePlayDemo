@@ -1,10 +1,12 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
+import android.content.Intent;
 import android.widget.BaseAdapter;
 
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.adapter.AppListAdapter;
 import com.itheima.googleplaydemo.bean.AppListItem;
+import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,13 @@ public abstract class BaseAppListFragment extends BaseLoadMoreListFragment {
         if (getAdapter() != null) {
             getAdapter().notifyDataSetChanged();
         }
+    }
+
+    @Override
+    protected void onListItemClick(int i) {
+        Intent intent = new Intent(getContext(), AppDetailActivity.class);
+        intent.putExtra("package_name", getAppList().get(i).getPackageName());
+        startActivity(intent);
     }
 
     protected List<AppListItem> getAppList() {
