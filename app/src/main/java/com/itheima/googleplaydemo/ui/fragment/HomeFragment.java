@@ -1,12 +1,15 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
 
+import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.HomeBean;
 import com.itheima.googleplaydemo.network.HeiMaRetrofit;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
-import com.itheima.googleplaydemo.widget.LoopView;
+import com.leon.loopviewpagerlib.Banner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +53,10 @@ public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected View onCreateHeaderView() {
-        LoopView loopView = new LoopView(getContext());
-        loopView.setData(mLooperDataList);
-        return loopView;
+        Banner banner = (Banner) LayoutInflater.from(getContext()).inflate(R.layout.home_header, getListView(), false);
+        banner.setImageUrlHost(Constant.URL_IMAGE);
+        banner.setImageUrls(mLooperDataList);
+        return banner;
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.util.Log;
 
 import com.itheima.googleplaydemo.bean.AppDetailBean;
 import com.itheima.googleplaydemo.bean.AppListItem;
@@ -30,9 +29,7 @@ import okhttp3.Response;
 
 public class DownloadManager{
 
-    private static final String TAG = "DownloadManager";
     private static DownloadManager sDownloadManager;
-
     private OkHttpClient mOkHttpClient;
 
     public static final int STATE_UN_DOWNLOAD = 0;//未下载
@@ -64,7 +61,6 @@ public class DownloadManager{
 
 
     public void download(DownloadInfo downloadInfo) {
-        Log.d(TAG, "download: start download");
         DownloadTask downloadTask = new DownloadTask(downloadInfo);
         downloadInfo.setDownloadStatus(STATE_WAITING);
         downloadInfo.setDownloadTask(downloadTask);
@@ -203,7 +199,6 @@ public class DownloadManager{
                 long initRange = 0;
                 boolean success = true;
                 if (file.exists()) {
-                    Log.d(TAG, "run: file exist");
                     initRange = file.length();
                     mDownloadInfo.setProgress((int) initRange);
                 } else {
@@ -213,7 +208,6 @@ public class DownloadManager{
                 Request request = new Request.Builder().url(url).get().build();
                 Response response = mOkHttpClient.newCall(request).execute();
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "run: get success response");
                     inputStream = response.body().byteStream();
                     if (success) {
                         fileOutputStream = new FileOutputStream(file, true);
@@ -221,7 +215,6 @@ public class DownloadManager{
                         int len = -1;
                         while ((len = inputStream.read(buffer)) != -1) {
                             if (mDownloadInfo.getDownloadStatus() == STATE_PAUSE) {
-                                Log.d(TAG, "run: pause, quite run" );
                                 return;
                             }
                             fileOutputStream.write(buffer, 0, len);
