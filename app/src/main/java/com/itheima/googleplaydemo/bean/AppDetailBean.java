@@ -22,7 +22,7 @@ public class AppDetailBean {
      * des : 黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员黑马程序员
      * author : 黑马程序员
      * screen : ["app/com.itheima.www/screen0.jpg","app/com.itheima.www/screen1.jpg","app/com.itheima.www/screen2.jpg","app/com.itheima.www/screen3.jpg","app/com.itheima.www/screen4.jpg"]
-     * safe : [{"safeUrl":"app/com.itheima.www/safeIcon0.jpg","safeDesUrl":"app/com.itheima.www/safeDesUrl0.jpg","safeDes":"已通过安智市场安全检测，请放心使用","safeDesColor":0},{"safeUrl":"app/com.itheima.www/safeIcon1.jpg","safeDesUrl":"app/com.itheima.www/safeDesUrl1.jpg","safeDes":"无任何形式的广告","safeDesColor":0}]
+     * safe : [{"safeUrl":"app/com.itheima.www/safeicon0.jpg","safeDesUrl":"app/com.itheima.www/safedesurl0.jpg","safeDes":"已通过安智市场安全检测，请放心使用","safeDesColor":0},{"safeUrl":"app/com.itheima.www/safeicon1.jpg","safeDesUrl":"app/com.itheima.www/safeDesUrl1.jpg","safeDes":"无任何形式的广告","safeDesColor":0}]
      */
 
     private int id;
@@ -39,8 +39,8 @@ public class AppDetailBean {
     private String author;
     private List<String> screen;
     /**
-     * safeUrl : app/com.itheima.www/safeIcon0.jpg
-     * safeDesUrl : app/com.itheima.www/safeDesUrl0.jpg
+     * safeUrl : app/com.itheima.www/safeicon0.jpg
+     * safeDesUrl : app/com.itheima.www/safedesurl0.jpg
      * safeDes : 已通过安智市场安全检测，请放心使用
      * safeDesColor : 0
      */
