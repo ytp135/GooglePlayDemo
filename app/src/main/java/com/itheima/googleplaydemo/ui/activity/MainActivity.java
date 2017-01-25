@@ -31,8 +31,6 @@ import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String TAG = "MainActivity";
-
     @BindView(R.id.main_content)
     LinearLayout mMainContent;
     @BindView(R.id.drawer_layout)
@@ -132,8 +130,6 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-//            return SimpleFragment.newInstance(position);
-//            return BaseFragment.newInstance();
             switch (position) {
                 case FRAGMENT_HOME:
                     return new HomeFragment();
