@@ -8,7 +8,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include layout="@layout/main_content"/>
-
     <!-- Drawer -->
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"
