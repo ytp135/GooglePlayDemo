@@ -7,6 +7,7 @@
     android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Content -->
     <include layout="@layout/main_content"/>
     <!-- Drawer -->
     <android.support.design.widget.NavigationView
@@ -15,6 +16,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/main_drawer"/>
+        app:menu="@menu/drawer_main"/>
 
 </android.support.v4.widget.DrawerLayout>

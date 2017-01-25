@@ -34,11 +34,39 @@
 * Git初始化
 
 # 主界面 #
-## 侧滑菜单 ##
 
+## 布局 ##
+
+	<?xml version="1.0" encoding="utf-8"?>
+	<android.support.v4.widget.DrawerLayout
+	    android:id="@+id/drawer_layout"
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:fitsSystemWindows="true"
+	    xmlns:app="http://schemas.android.com/apk/res-auto">
+		<!-- Content -->
+	    <include layout="@layout/main_content"/>
+		<!-- Drawer -->
+	    <android.support.design.widget.NavigationView
+	        android:id="@+id/navigation"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:layout_gravity="start"
+	        app:headerLayout="@layout/drawer_header"
+	        app:menu="@menu/main_drawer"/>
+	
+	</android.support.v4.widget.DrawerLayout>
+
+
+## DrawLayout ##
+![](img/drawer_layout_left.png)
+![](img/drawer_layout_right.png)
+
+在DrawerLayout出现之前，我们需要做侧滑菜单时，不得不自己实现一个或者使用Github上的开源的项目SlidingMenu，也许是Google也看到了SlidingMenu的强大之处，于是在Android的后期版本中添加了DrawerLayout来实现SlidingMenu同样功能的组件，而且为了兼容早期版本，将其添加在android,support.v4包下。
 
 ## ActionBar ##
-###介绍
+### 介绍
 * Action Bar 是Google 在Android 3.0之后推出的一种全新用户操作方式
 * 目的是用来替换掉菜单按键功能，长按操作功能，提供一种全新的操作体验
 * 统一界面.方便开发
