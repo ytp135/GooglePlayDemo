@@ -7,13 +7,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.itheima.googleplaydemo.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 创建者: Leon
@@ -21,11 +23,12 @@ import com.itheima.googleplaydemo.R;
  * 描述： TODO
  */
 public abstract class BaseFragment extends Fragment {
-    private static final String TAG = "BaseFragment";
+
+    @BindView(R.id.loading_progress)
     ProgressBar mLoadingProgress;
-    ImageView mLoadingEmpty;
-    Button mErrorBtnRetry;
+    @BindView(R.id.loading_error)
     LinearLayout mLoadingError;
+
     private FrameLayout mBaseView;
     private Handler mHandler = new Handler();
 
@@ -33,16 +36,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBaseView = (FrameLayout) inflater.inflate(R.layout.fragment_base, null);
-        mLoadingProgress = (ProgressBar) mBaseView.findViewById(R.id.loading_progress);
-        mLoadingEmpty = (ImageView) mBaseView.findViewById(R.id.loading_empty);
-        mErrorBtnRetry = (Button) mBaseView.findViewById(R.id.error_btn_retry);
-        mLoadingError = (LinearLayout) mBaseView.findViewById(R.id.loading_error);
-        mErrorBtnRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startLoadData();
-            }
-        });
+        ButterKnife.bind(this, mBaseView);
         return mBaseView;
     }
 
@@ -59,11 +53,9 @@ public abstract class BaseFragment extends Fragment {
     /**
      * 当数据加载成功后刷新UI
      */
-    protected void onDataLoadedSuccess(){
+    protected void onDataLoadedSuccess() {
         mLoadingProgress.setVisibility(View.GONE);
-        mLoadingEmpty.setVisibility(View.GONE);
         mLoadingError.setVisibility(View.GONE);
-
         mBaseView.addView(onCreateContentView());
     }
 
@@ -72,7 +64,6 @@ public abstract class BaseFragment extends Fragment {
      */
     protected void onDataLoadedError() {
         mLoadingError.setVisibility(View.VISIBLE);
-        mLoadingEmpty.setVisibility(View.GONE);
         mLoadingProgress.setVisibility(View.GONE);
     }
 
@@ -80,18 +71,23 @@ public abstract class BaseFragment extends Fragment {
      * 当数据加载为空后刷新UI
      */
     protected void onDataLoadedEmpty() {
-        mLoadingEmpty.setVisibility(View.VISIBLE);
         mLoadingProgress.setVisibility(View.GONE);
         mLoadingError.setVisibility(View.GONE);
     }
 
     /**
      * 子类必须实现该方法提供内容的视图
+     *
      * @return
      */
     protected abstract View onCreateContentView();
 
     protected void post(Runnable runnable) {
         mHandler.post(runnable);
+    }
+
+    @OnClick(R.id.error_btn_retry)
+    public void onClick() {
+        startLoadData();
     }
 }
