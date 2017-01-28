@@ -6,9 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -18,13 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.itheima.googleplaydemo.R;
-import com.itheima.googleplaydemo.ui.fragment.AppFragment;
-import com.itheima.googleplaydemo.ui.fragment.CategoryFragment;
-import com.itheima.googleplaydemo.ui.fragment.GameFragment;
-import com.itheima.googleplaydemo.ui.fragment.HomeFragment;
-import com.itheima.googleplaydemo.ui.fragment.LeaderBoardFragment;
-import com.itheima.googleplaydemo.ui.fragment.RecommendFragment;
-import com.itheima.googleplaydemo.ui.fragment.SubjectFragment;
+import com.itheima.googleplaydemo.adapter.MainPagerAdapter;
 
 import butterknife.BindView;
 
@@ -78,7 +69,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
-        mVp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        mVp.setAdapter(new MainPagerAdapter(getResources().getStringArray(R.array.main_titles), getSupportFragmentManager()));
         mTabLayout.setupWithViewPager(mVp);
     }
 
@@ -102,55 +93,6 @@ public class MainActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private class MyPagerAdapter extends FragmentPagerAdapter {
-
-        private static final int FRAGMENT_HOME = 0;
-        private static final int FRAGMENT_APP = 1;
-        private static final int FRAGMENT_GAME = 2;
-        private static final int FRAGMENT_SUBJECT = 3;
-        private static final int FRAGMENT_RECOMMEND = 4;
-        private static final int FRAGMENT_CATEGORY = 5;
-        private static final int FRAGMENT_LEADER_BOARD = 6;
-
-        public MyPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        private final String[] TITLES = getResources().getStringArray(R.array.main_titles);
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return TITLES[position];
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case FRAGMENT_HOME:
-                    return new HomeFragment();
-                case FRAGMENT_APP:
-                    return new AppFragment();
-                case FRAGMENT_GAME:
-                    return new GameFragment();
-                case FRAGMENT_SUBJECT:
-                    return new SubjectFragment();
-                case FRAGMENT_RECOMMEND:
-                    return new RecommendFragment();
-                case FRAGMENT_CATEGORY:
-                    return new CategoryFragment();
-                case FRAGMENT_LEADER_BOARD:
-                    return new LeaderBoardFragment();
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return TITLES.length;
-        }
-
     }
 
     @Override
