@@ -33,7 +33,7 @@
 * ButterKnife集成
 * Git初始化
 
-# 主界面 #
+# 侧滑菜单 #
 
 ## 布局 ##
 
@@ -45,31 +45,87 @@
 	    android:layout_height="match_parent"
 	    android:fitsSystemWindows="true"
 	    xmlns:app="http://schemas.android.com/apk/res-auto">
-		<!-- Content -->
+	
+	    <!-- Content -->
 	    <include layout="@layout/main_content"/>
-		<!-- Drawer -->
+	    <!-- Drawer -->
 	    <android.support.design.widget.NavigationView
 	        android:id="@+id/navigation"
 	        android:layout_width="wrap_content"
 	        android:layout_height="match_parent"
 	        android:layout_gravity="start"
 	        app:headerLayout="@layout/drawer_header"
-	        app:menu="@menu/main_drawer"/>
+	        app:menu="@menu/drawer_main"/>
 	
 	</android.support.v4.widget.DrawerLayout>
 
 
-## DrawLayout ##
-![](img/drawer_layout_left.png)
-![](img/drawer_layout_right.png)
 
+## DrawLayout ##
 在DrawerLayout出现之前，我们需要做侧滑菜单时，不得不自己实现一个或者使用Github上的开源的项目SlidingMenu，也许是Google也看到了SlidingMenu的强大之处，于是在Android的后期版本中添加了DrawerLayout来实现SlidingMenu同样功能的组件，而且为了兼容早期版本，将其添加在android,support.v4包下。
+
+![](img/drawer_layout_left.png)  ![](img/drawer_layout_right.png)
+
+### 布局 ###
+	<?xml version="1.0" encoding="utf-8"?>
+	<android.support.v4.widget.DrawerLayout
+	    android:id="@+id/drawer_layout"
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent">
+	
+	    <TextView
+	        android:id="@+id/content"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:gravity="center"
+	        android:text="内容"/>
+	
+	    <TextView
+	        android:id="@+id/left"
+	        android:layout_width="200dp"
+	        android:layout_height="match_parent"
+	        android:layout_gravity="start"
+	        android:textColor="@android:color/white"
+	        android:text="左侧菜单"
+	        android:gravity="center"
+	        android:background="@android:color/holo_green_dark"/>
+	
+	    <TextView
+	        android:id="@+id/right"
+	        android:layout_width="200dp"
+	        android:layout_height="match_parent"
+	        android:layout_gravity="end"
+	        android:text="右侧菜单"
+	        android:gravity="center"
+	        android:textColor="@android:color/white"
+	        android:background="@android:color/holo_blue_dark"/>
+	
+	</android.support.v4.widget.DrawerLayout>
+
+>使用layout_gravity属性来控制是左侧还是右侧菜单
+
+## NavigationView ##
+DrawerLayout里面的菜单布局我们可以自己定义，但谷歌也提供的相应的控件NavigationView，方便开发者完成菜单布局。
+>app:headerLayout="@layout/drawer_header" 定义菜单的头布局
+>
+>app:menu="@menu/drawer_main" 定义菜单选项
+
+### 设置菜单点击监听 ###
+    mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            mNavigationView.setCheckedItem(item.getItemId());
+            return false;
+        }
+    });
 
 ## ActionBar ##
 ### 介绍
 * Action Bar 是Google 在Android 3.0之后推出的一种全新用户操作方式
 * 目的是用来替换掉菜单按键功能，长按操作功能，提供一种全新的操作体验
-* 统一界面.方便开发
+* 统一界面，方便开发
 
 ![icon](img/actionbar.png)
 
@@ -89,100 +145,145 @@
 ![3.0以上默认就是actionBar](img/actionbar_compat.png)
 
 ### ActionBar基本使用
-用来显示标题和回退的相关Api的使用
-
 	// 获取ActionBar
 	mActionBar = getSupportActionBar();
-
 	mActionBar.setTitle("MainTitle");// 设置主title部分
 	mActionBar.setSubtitle("SubTitle");// 设置子title部分
-
 	mActionBar.setIcon(R.drawable.ic_launcher);// 设置应用图标
-
+	mActionBar.setLogo(R.drawable.ic_launcher);// 设置Logo
 	mActionBar.setDisplayShowTitleEnabled(true);// 设置菜单 标题是否可见
-	mActionBar.setDisplayShowHomeEnabled(true);// 设置应用图标是否
+	mActionBar.setDisplayShowHomeEnabled(true);// 设置应用图标是否可见
 	mActionBar.setDisplayUseLogoEnabled(false);// 设置是否显示Logo优先
 	mActionBar.setDisplayHomeAsUpEnabled(true);// 设置back按钮是否可见
 
-### DrawerLayout
+### ActionBar和DrawerLayout联动
+    private void initActionBar() {
+        ActionBar supportActionBar = getSupportActionBar();
+        //显示返回按钮
+        supportActionBar.setDisplayHomeAsUpEnabled(true);
+        //创建ActionBarDrawerToggle
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        //同步DrawerLayout的开关状态
+        mActionBarDrawerToggle.syncState();
+        //监听DrawerLayout的开关状态, 触发动画
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
 
-1. 添加DrawerLayout
-2. 添加ActionBarToggle
+    /**
+     * 处理ActionBarDrawerToggle的点击事件
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mActionBarDrawerToggle.onOptionsItemSelected(item);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+## ToolBar ##
+官方在某些程度上认为 ActionBar 限制了 android app 的开发与设计的弹性,
+Toolbar 是在 Android 5.0 开始推出的一个 Material Design 风格的导航控件 ，Google 非常推荐大家使用 Toolbar 
+来作为Android客户端的导航栏，以此来取代之前的 Actionbar 。与 Actionbar 相比，Toolbar 明显要灵活的多。它不像 
+Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面的任意位置。
+
+### Toolbar使用 ###
+#### 1. 将主题改为NoActionBar ####
+
+
+	<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+#### 2. 在布局中添加Toolbar ####
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    </android.support.v7.widget.Toolbar>
+
+#### 3. 替换ActionBar ####
+
+    private void initActionBar() {
+		//用Toolbar替换原来的ActionBar
+        setSupportActionBar(mToolbar);
+
+        ActionBar supportActionBar = getSupportActionBar();
+        //显示返回按钮
+        supportActionBar.setDisplayHomeAsUpEnabled(true);
+        //创建ActionBarDrawerToggle
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        //同步DrawerLayout的开关状态
+        mActionBarDrawerToggle.syncState();
+        //监听DrawerLayout的开关状态, 触发动画
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+## 状态栏配置 ##
+#### 1. 给DrawerLayout配置fitsSystemWindows ####
+    android:fitsSystemWindows="true"
+
+
+#### 2. 创建v21样式 ####
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+#### 3. 配置状态栏颜色与Toolbar背景色一致 ####
+    <item name="colorPrimaryDark">@color/colorPrimary</item>
+
+
+# 主界面 #
+## 布局 ##
+	<!--main_content.xml-->
+	<?xml version="1.0" encoding="utf-8"?>
+	<LinearLayout
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:app="http://schemas.android.com/apk/res-auto"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical">
 	
-		mToggle = new ActionBarDrawerToggle(MainActivity.this,//上下文
-					mDrawerLayout, //DrawerLayout
-					R.drawable.ic_drawer_am,//图标
-					R.string.open, //
-					R.string.close);
+	    <android.support.v7.widget.Toolbar
+	        android:id="@+id/tool_bar"
+	        android:layout_width="match_parent"
+	        android:layout_height="?attr/actionBarSize"
+	        android:background="@color/colorPrimary"
+	        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+	    </android.support.v7.widget.Toolbar>
 	
-		mToggle.syncState();
+	    <android.support.design.widget.TabLayout
+	        android:id="@+id/tab_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="48dip"
+	        app:tabBackground="@color/colorPrimary"
+	        app:tabIndicatorColor="@color/colorAccent"
+	        app:tabIndicatorHeight="3dp"
+	        app:tabMode="scrollable"
+	        app:tabSelectedTextColor="@android:color/white"
+	        app:tabTextColor="@android:color/darker_gray"/>
 	
-		mDrawerLayout.setDrawerListener(mToggle);	
-
-### PagerSlidingTabStrip ###
-
-#### Android Studio 导入PagerSlidingTabStrip项目 ####
-* 修改Gradle版本
-* 修改Build Tool 版本
-* 修改Gradle wrapper版本（参考GooglePlay配置）
-
-####PagerSlidingTabStrip源码分析####
-
-#### Google Play中集成PagerSlidingTabStrip ####
-
-#### PagerSlidingTabStrip的使用
-参考官方README.md
-
-### 开源PagerSlidingTabStripg功能拓展
-* 添加四个属性
-
-			<attr name="pstTabTextSize" format="dimension" />
-		    <attr name="pstTabTextColor" format="color" />
-		    <attr name="pstSelectedTabTextSize" format="dimension" />
-		    <attr name="pstSelectedTabTextColor" format="color" />
+	    <android.support.v4.view.ViewPager
+	        android:id="@+id/vp"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent">
+	    </android.support.v4.view.ViewPager>
 	
-			//修改源码
-			/**---------------add begin---------------**/
-			private int selectedPosition = 0;
-			
-			private int tabTextSize = 12;
-			private int tabTextColor = 0xFF666666;
-			
-			private int selectedTabTextSize = 12;
-			private int selectedTabTextColor = 0xFF666666;
-			/**---------------add end---------------**/
-	
-			/**---------------add begin---------------**/
-			tabTextSize = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_heimaTabTextSize, tabTextSize);
-			tabTextColor = a.getColor(R.styleable.PagerSlidingTabStrip_heimaTabTextColor, tabTextColor);
-	
-			selectedTabTextSize = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_heimaSelectedTabTextSize,
-					selectedTabTextSize);
-			selectedTabTextColor = a.getColor(R.styleable.PagerSlidingTabStrip_heimaSelectedTabTextColor,
-					selectedTabTextColor);
-			/**---------------add end---------------**/
-			
-			/**---------------add begin---------------**/
-					if (i == selectedPosition) {
-						tab.setTextColor(selectedTabTextColor);
-						tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, selectedTabTextSize);
-					}
-			/**---------------add end---------------**/
-	
-			/**---------------add begin---------------**/
-				selectedPosition = position;
-				updateTabStyles();
-			/**---------------add end---------------**/
+	</LinearLayout>
+
 
 
 ###FragmentPagerAdapter和FragmentStatePagerAdapter的区别
 * FragmentPagerAdapter:该类内的每一个生成的 Fragment 都将保存在内存之中，因此适用于那些`相对静态的页，数量也比较少`的那种；如果需要处理有很多页，并且数据动态性较大、占用内存较多的情况，应该使用FragmentStatePagerAdapter
 
 * FragmentStatePagerAdapter:该 PagerAdapter 的实现将只保留当前页面，当页面离开视线后，就会被消除，释放其资源；而在页面需要显示时，生成新的页面(就像 ListView 的实现一样)。这么实现的好处就是当拥有大量的页面时，不必在内存中占用大量的内存。
-
-
-###使用了FragmentAdapter,调用notifyDataChanged会无效,思考下为什么,也可以上网查查资料
-
-# 网络层 #
-## GooglePlay的网络数据 ##
-
