@@ -37,11 +37,8 @@ public class LeaderBoardFragment extends BaseFragment {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
                 mDataList = response.body();
-                if (mDataList.size() == 0) {
-                    onDataLoadedEmpty();
-                } else {
-                    onDataLoadedSuccess();
-                }
+                onDataLoadedSuccess();
+
             }
 
             @Override

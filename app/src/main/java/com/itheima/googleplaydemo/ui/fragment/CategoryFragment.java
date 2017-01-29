@@ -35,11 +35,7 @@ public class CategoryFragment extends BaseListFragment {
             @Override
             public void onResponse(Call<List<CategoryBean>> call, Response<List<CategoryBean>> response) {
                 mCategories = response.body();
-                if (mCategories.size() == 0) {
-                    onDataLoadedEmpty();
-                } else {
-                    onDataLoadedSuccess();
-                }
+                onDataLoadedSuccess();
             }
 
             @Override

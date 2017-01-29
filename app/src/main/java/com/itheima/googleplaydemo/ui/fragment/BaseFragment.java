@@ -67,13 +67,6 @@ public abstract class BaseFragment extends Fragment {
         mLoadingProgress.setVisibility(View.GONE);
     }
 
-    /**
-     * 当数据加载为空后刷新UI
-     */
-    protected void onDataLoadedEmpty() {
-        mLoadingProgress.setVisibility(View.GONE);
-        mLoadingError.setVisibility(View.GONE);
-    }
 
     /**
      * 子类必须实现该方法提供内容的视图

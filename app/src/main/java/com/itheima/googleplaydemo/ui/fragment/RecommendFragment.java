@@ -32,11 +32,7 @@ public class RecommendFragment extends BaseFragment {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
                 mData = response.body();
-                if (mData.size() == 0) {
-                    onDataLoadedEmpty();
-                } else {
-                    onDataLoadedSuccess();
-                }
+                onDataLoadedSuccess();
             }
 
             @Override
