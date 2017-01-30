@@ -347,3 +347,38 @@ Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面
 
 
 ## BaseFragment完成 ##
+BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
+### 共性 ###
+#### 布局 ####
+* 加载进度条
+* 加载出错布局
+
+#### 加载成功 ####
+    protected void onDataLoadedSuccess() {
+        mLoadingProgress.setVisibility(View.GONE);
+        mLoadingError.setVisibility(View.GONE);
+        mBaseView.addView(onCreateContentView());
+    }
+
+#### 加载失败 ####
+    protected void onDataLoadedError() {
+        mLoadingError.setVisibility(View.VISIBLE);
+        mLoadingProgress.setVisibility(View.GONE);
+    }
+
+### 特性 ###
+#### 加载数据 ####
+    /**
+     * 子类去实现自己的数据加载
+     */
+    protected abstract void startLoadData();
+
+#### 创建视图 ####
+    /**
+     * 子类必须实现该方法提供内容的视图
+     */
+    protected abstract View onCreateContentView();
+
+# Retrofit集成 #
+* [Github](https://github.com/square/retrofit)
+

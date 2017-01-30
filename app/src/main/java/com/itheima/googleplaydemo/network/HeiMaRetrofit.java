@@ -2,6 +2,7 @@ package com.itheima.googleplaydemo.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.itheima.googleplaydemo.app.Constant;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -16,8 +17,6 @@ public class HeiMaRetrofit {
 
     private final Api mApi;
 
-    public static final String HOST = "http://10.0.2.2:8080/GooglePlayServer/";
-
     private static Gson gson = new GsonBuilder()
             .setLenient()
             .create();
@@ -25,7 +24,7 @@ public class HeiMaRetrofit {
 
     private HeiMaRetrofit(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(HOST)
+                .baseUrl(Constant.HOST)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         mApi = retrofit.create(Api.class);

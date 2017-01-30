@@ -70,8 +70,6 @@ public abstract class BaseFragment extends Fragment {
 
     /**
      * 子类必须实现该方法提供内容的视图
-     *
-     * @return
      */
     protected abstract View onCreateContentView();
 

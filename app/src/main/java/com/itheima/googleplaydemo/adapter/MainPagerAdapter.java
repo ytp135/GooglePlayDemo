@@ -8,7 +8,7 @@ import com.itheima.googleplaydemo.ui.fragment.AppFragment;
 import com.itheima.googleplaydemo.ui.fragment.CategoryFragment;
 import com.itheima.googleplaydemo.ui.fragment.GameFragment;
 import com.itheima.googleplaydemo.ui.fragment.HomeFragment;
-import com.itheima.googleplaydemo.ui.fragment.LeaderBoardFragment;
+import com.itheima.googleplaydemo.ui.fragment.HotFragment;
 import com.itheima.googleplaydemo.ui.fragment.RecommendFragment;
 import com.itheima.googleplaydemo.ui.fragment.SubjectFragment;
 
@@ -50,7 +50,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
             case FRAGMENT_CATEGORY:
                 return new CategoryFragment();
             case FRAGMENT_LEADER_BOARD:
-                return new LeaderBoardFragment();
+                return new HotFragment();
         }
         return null;
     }

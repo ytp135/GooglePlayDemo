@@ -25,8 +25,8 @@ import retrofit2.Response;
  * 创建时间: 2016/9/15 13:13
  * 描述： TODO
  */
-public class LeaderBoardFragment extends BaseFragment {
-    private static final String TAG = "LeaderBoardFragment";
+public class HotFragment extends BaseFragment {
+    private static final String TAG = "HotFragment";
 
     private List<String> mDataList;
 
