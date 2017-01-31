@@ -346,7 +346,7 @@ Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面
 * 现象：每个位置getItem(position)可能走多次
 
 
-## BaseFragment完成 ##
+## BaseFragment抽取 ##
 BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
 ### 共性 ###
 #### 布局 ####
@@ -420,7 +420,7 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
     Retrofit retrofit = new Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
-# 热门 #
+# 热门页面 #
 ## 加载数据 ##
     @Override
     protected void startLoadData() {
@@ -513,3 +513,67 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
 
 ## Drawable ##
 ![](img/drawable.png)
+
+# 推荐页面 #
+## 加载数据 ##
+	public interface Api {
+	
+	    @GET("recommend")
+	    Call<List<String>> listRecommend();
+	}
+
+
+    @Override
+    protected void startLoadData() {
+        Call<List<String>> listCall = HeiMaRetrofit.getInstance().getApi().listRecommend();
+        listCall.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                mDataList = response.body();
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
+    }
+
+## 创建视图 ##
+    protected View onCreateContentView() {
+        StellarMap stellarMap = new StellarMap(getContext());
+        int padding = getResources().getDimensionPixelSize(R.dimen.padding);
+        //设置内部的padding
+        stellarMap.setInnerPadding(padding, padding, padding, padding);
+        //设置adapter
+        stellarMap.setAdapter(new RecommendAdapter(getContext(), mDataList));
+        //设置条目网格 15*20 
+        stellarMap.setRegularity(15, 20);
+        //初始化页面，不带动画
+        stellarMap.setGroup(0, false);
+        return stellarMap;
+    }
+
+## StellarMap原理 ##
+
+# BaseListFragment抽取 #
+## 共性 ##
+### 布局 ###
+都有ListView
+
+### 点击监听 ###
+    mListView.setOnItemClickListener(mOnItemClickListener);
+
+### ListView的头 ###
+    if (header != null) {
+        mListView.addHeaderView(header);
+    }
+
+## 特性 ##
+### 不同的adpater ###
+    protected abstract BaseAdapter onCreateAdapter();
+
+### 对条目点击事件的处理 ###
+    protected void onListItemClick(int i) {};
+

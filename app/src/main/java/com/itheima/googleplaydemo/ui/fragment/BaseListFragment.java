@@ -13,14 +13,13 @@ import android.widget.ListView;
  * 描述： TODO
  */
 public abstract class BaseListFragment extends BaseFragment{
-    private static final String TAG = "BaseListFragment";
 
     private ListView mListView;
 
     private BaseAdapter mBaseAdapter;
 
     @Override
-    protected View onCreateContentView() {
+    protected final View onCreateContentView() {
         mListView = new ListView(getContext());
         mBaseAdapter = onCreateAdapter();
         View header = onCreateHeaderView();
@@ -62,7 +61,7 @@ public abstract class BaseListFragment extends BaseFragment{
 
 
     public ListView getListView() {
-        return mListView;
+            return mListView;
     }
 
 }

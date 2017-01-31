@@ -49,4 +49,5 @@ public class CategoryFragment extends BaseListFragment {
     protected BaseAdapter onCreateAdapter() {
         return new CategoryListAdapter(getContext(), mCategories);
     }
+
 }

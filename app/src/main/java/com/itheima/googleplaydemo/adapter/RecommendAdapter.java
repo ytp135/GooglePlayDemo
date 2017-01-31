@@ -26,10 +26,12 @@ public class RecommendAdapter implements StellarMap.Adapter {
         mContext = context;
     }
 
+    /**
+     * 返回组(页面)的个数
+     */
     @Override
-    public int getGroupCount() {//得到一共多少组
-        //mDataSet
-        int pageCount = mDataList.size() / PAGE_SIZE;//32 15 -->2+1
+    public int getGroupCount() {
+        int pageCount = mDataList.size() / PAGE_SIZE;
 
         if (mDataList.size() % PAGE_SIZE != 0) {//有余数的时候
             pageCount++;
@@ -38,8 +40,11 @@ public class RecommendAdapter implements StellarMap.Adapter {
         return pageCount;
     }
 
+    /**
+     * 返回对应组(页面)条目的个数
+     */
     @Override
-    public int getCount(int group) {//得到每一个组的条目总数  32 15 15 2
+    public int getCount(int group) {
         if (mDataList.size() % PAGE_SIZE != 0) {//有余数
             if (group == getGroupCount() - 1) {//最后一组
                 return mDataList.size() % PAGE_SIZE;
@@ -48,10 +53,19 @@ public class RecommendAdapter implements StellarMap.Adapter {
         return PAGE_SIZE;
     }
 
+    /**
+     * 返回对应组中对应位置的view
+     *
+     * @param convertView 回收的view
+     */
     @Override
     public View getView(int group, int position, View convertView) {//返回具体的视图
-
-        TextView tv = new TextView(mContext);
+        TextView tv;
+        if (convertView == null) {
+            tv = new TextView(mContext);
+        } else {
+            tv = (TextView) convertView;
+        }
         int index = group * PAGE_SIZE + position;
         String data = mDataList.get(index);
         tv.setText(data);
@@ -75,6 +89,12 @@ public class RecommendAdapter implements StellarMap.Adapter {
         return 0;
     }
 
+    /**
+     * 返回放大或者缩小下一组的下标
+     *
+     * @param group 当前组的下标
+     * @param isZoomIn true表示放大，false表示缩小
+     */
     @Override
     public int getNextGroupOnZoom(int group, boolean isZoomIn) {
         if (isZoomIn) {
