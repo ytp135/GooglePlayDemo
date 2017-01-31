@@ -2,9 +2,10 @@ package com.itheima.googleplaydemo.ui.fragment;
 
 import android.view.View;
 
+import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.adapter.RecommendAdapter;
 import com.itheima.googleplaydemo.network.HeiMaRetrofit;
-import com.itheima.googleplaydemo.widget.stellarmap.StellarMap;
+import com.itheima.googleplaydemo.widget.StellarMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,8 @@ public class RecommendFragment extends BaseFragment {
     protected View onCreateContentView() {
         StellarMap stellarMap = new StellarMap(getContext());
         stellarMap.setAdapter(new RecommendAdapter(getContext(), mData));
+        int padding = getResources().getDimensionPixelSize(R.dimen.padding);
+        stellarMap.setInnerPadding(padding, padding, padding, padding);
         stellarMap.setRegularity(15, 20);
         stellarMap.setGroup(0, false);
         return stellarMap;

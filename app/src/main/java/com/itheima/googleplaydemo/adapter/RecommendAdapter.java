@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
-import com.itheima.googleplaydemo.widget.stellarmap.StellarMap;
+import com.itheima.googleplaydemo.widget.StellarMap;
 
 import java.util.List;
 import java.util.Random;
