@@ -19,6 +19,7 @@ import retrofit2.Response;
  * 描述： TODO
  */
 public class SubjectFragment extends BaseLoadMoreListFragment {
+    private static final String TAG = "SubjectFragment";
 
     private List<SubjectBean> mSubjects = new ArrayList<SubjectBean>();
 
@@ -46,7 +47,6 @@ public class SubjectFragment extends BaseLoadMoreListFragment {
 
     @Override
     protected void onStartLoadMore() {
-        mSubjects.clear();
         Call<List<SubjectBean>> listCall = HeiMaRetrofit.getInstance().getApi().listSubject(mSubjects.size());
         listCall.enqueue(new Callback<List<SubjectBean>>() {
             @Override
@@ -57,7 +57,6 @@ public class SubjectFragment extends BaseLoadMoreListFragment {
 
             @Override
             public void onFailure(Call<List<SubjectBean>> call, Throwable t) {
-
             }
         });
     }

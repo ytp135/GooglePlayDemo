@@ -48,35 +48,28 @@ public class CategoryItemView extends RelativeLayout {
     public void bindView(CategoryBean item) {
         mTitle.setText(item.getTitle());
         mTableLayout.removeAllViews();
-
         int widthPixels = getResources().getDisplayMetrics().widthPixels - mTableLayout.getPaddingLeft() - mTableLayout.getPaddingRight() ;
         int itemWidth = widthPixels / 3;
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
-        layoutParams.width = itemWidth;
-
+        layoutParams.width = itemWidth;//每个子条目的宽度
         List<CategoryBean.InfosBean> infos = item.getInfos();
         for (int i = 0; i < infos.size(); i++) {
             TableRow tableRow = new TableRow(getContext());
             CategoryInfoItemView infoItemView1 = new CategoryInfoItemView(getContext());
             infoItemView1.setLayoutParams(layoutParams);
-            infoItemView1.setTitle(infos.get(i).getName1());
-            infoItemView1.setIconUrl(infos.get(i).getUrl1());
+            infoItemView1.bindView(infos.get(i).getName1(), infos.get(i).getUrl1());
             tableRow.addView(infoItemView1);
-
 
             CategoryInfoItemView infoItemView2 = new CategoryInfoItemView(getContext());
             infoItemView2.setLayoutParams(layoutParams);
-            infoItemView2.setTitle(infos.get(i).getName2());
-            infoItemView2.setIconUrl(infos.get(i).getUrl2());
-
+            infoItemView2.bindView(infos.get(i).getName2(), infos.get(i).getUrl2());
             tableRow.addView(infoItemView2);
 
             String name3 = infos.get(i).getName3();
             if ( name3 != null && name3.length() > 0) {
                 CategoryInfoItemView infoItemView3 = new CategoryInfoItemView(getContext());
                 infoItemView3.setLayoutParams(layoutParams);
-                infoItemView3.setTitle(infos.get(i).getName3());
-                infoItemView3.setIconUrl(infos.get(i).getUrl3());
+                infoItemView3.bindView(infos.get(i).getName3(), infos.get(i).getUrl3());
                 tableRow.addView(infoItemView3);
             }
             mTableLayout.addView(tableRow);

@@ -14,9 +14,9 @@ import java.util.List;
  */
 public abstract class BaseListAdapter<T> extends BaseAdapter {
 
-    protected List<T> mDataList;
+    private List<T> mDataList;
 
-    protected Context mContext;
+    private Context mContext;
 
     public BaseListAdapter(Context context, List<T> dataList) {
         mDataList = dataList;
@@ -77,9 +77,5 @@ public abstract class BaseListAdapter<T> extends BaseAdapter {
 
     public void setContext(Context context) {
         mContext = context;
-    }
-
-    public void setDataList(List<T> dataList) {
-        mDataList = dataList;
     }
 }

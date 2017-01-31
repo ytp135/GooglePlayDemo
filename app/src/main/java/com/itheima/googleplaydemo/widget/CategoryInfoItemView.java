@@ -39,12 +39,9 @@ public class CategoryInfoItemView extends LinearLayout {
         ButterKnife.bind(this, this);
     }
 
-    public void setTitle(String title) {
+    public void bindView(String title, String url) {
         mTitle.setText(title);
-    }
-
-    public void setIconUrl(String iconUrl) {
-        String url = Constant.URL_IMAGE + iconUrl;
-        Glide.with(getContext()).load(url).placeholder(R.drawable.ic_default).into(mIcon);
+        String imageUrl = Constant.URL_IMAGE + url;
+        Glide.with(getContext()).load(imageUrl).placeholder(R.drawable.ic_default).into(mIcon);
     }
 }

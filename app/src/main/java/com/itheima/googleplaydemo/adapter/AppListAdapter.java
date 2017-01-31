@@ -24,16 +24,9 @@ public class AppListAdapter extends BaseLoadMoreListAdapter<AppListItem> {
         ((AppListItemView)(viewHolder.holdView)).bindView(getDataList().get(position));
     }
 
-    public class ListItemViewHolder extends ViewHolder{
-        public ListItemViewHolder(AppListItemView v) {
-            super(v);
-        }
-    }
-
-
     @Override
     protected ViewHolder onCreateNormalItemViewHolder() {
-        return new ListItemViewHolder(new AppListItemView(mContext));
+        return new ViewHolder(new AppListItemView(getContext()));
     }
 
 }

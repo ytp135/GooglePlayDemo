@@ -47,7 +47,7 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
     @Override
     protected ViewHolder onCreateViewHolder(int position) {
         if (getItemViewType(position) == ITEM_TYPE_LOAD_MORE) {
-            return new LoadMoreItemViewHolder(new LoadingListItemView(mContext));
+            return new LoadMoreItemViewHolder(new LoadingListItemView(getContext()));
         } else {
             return onCreateNormalItemViewHolder();
         }

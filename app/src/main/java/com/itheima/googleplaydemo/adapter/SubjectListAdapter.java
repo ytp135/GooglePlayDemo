@@ -1,7 +1,6 @@
 package com.itheima.googleplaydemo.adapter;
 
 import android.content.Context;
-import android.view.View;
 
 import com.itheima.googleplaydemo.bean.SubjectBean;
 import com.itheima.googleplaydemo.widget.SubjectListItemView;
@@ -21,21 +20,13 @@ public class SubjectListAdapter extends BaseLoadMoreListAdapter<SubjectBean> {
     }
 
     @Override
-    protected void onBindNormalViewHolder(ViewHolder viewHolder, int postion) {
-        ((SubjectListItemView)viewHolder.holdView).bindView(getDataList().get(postion));
+    protected void onBindNormalViewHolder(ViewHolder viewHolder, int position) {
+        ((SubjectListItemView)viewHolder.holdView).bindView(getDataList().get(position));
     }
 
     @Override
     protected ViewHolder onCreateNormalItemViewHolder() {
-        return new SubjectListItemViewHolder(new SubjectListItemView(mContext));
-    }
-
-
-    private class SubjectListItemViewHolder extends ViewHolder{
-
-        public SubjectListItemViewHolder(View v) {
-            super(v);
-        }
+        return new ViewHolder(new SubjectListItemView(getContext()));
     }
 
 }

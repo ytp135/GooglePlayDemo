@@ -577,3 +577,92 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
 ### 对条目点击事件的处理 ###
     protected void onListItemClick(int i) {};
 
+# 分类界面 #
+为了便于页面的扩展，分类界面显示采用ListView, 所以继承BaseListFragment。
+## 加载数据 ##
+    @Override
+    protected void startLoadData() {
+        Call<List<CategoryBean>> categories = HeiMaRetrofit.getInstance().getApi().categories();
+        categories.enqueue(new Callback<List<CategoryBean>>() {
+            @Override
+            public void onResponse(Call<List<CategoryBean>> call, Response<List<CategoryBean>> response) {
+                mCategories = response.body();
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<List<CategoryBean>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
+    }
+
+## 创建Adapter ##
+    @Override
+    protected BaseAdapter onCreateAdapter() {
+        return new CategoryListAdapter(getContext(), mCategories);
+    }
+
+## BaseListAdapter的抽取 ##
+### 共性 ###
+* 上下文Context
+* 数据集合
+* getCount
+* getItem
+* getItemId
+* getView
+* ViewHolder
+
+### 特性 ###
+* ViewHolder的创建
+* ViewHolder的绑定
+
+## CategoryItemView ##
+分类界面列表的每个条目为CategoryItemView，它由一个标题（TextView）和一个网格布局（TableLayout）组成，根据数据动态地向网格中添加视图。其他网格布局还可以是GridView, RecyclerView加GridLayoutMananger, GridLayout。这里根据网络返回的数据结构选择TableLayout。
+
+![](img/category_item_view.png)
+
+    public void bindView(CategoryBean item) {
+        mTitle.setText(item.getTitle());
+        mTableLayout.removeAllViews();
+        int widthPixels = getResources().getDisplayMetrics().widthPixels - mTableLayout.getPaddingLeft() - mTableLayout.getPaddingRight() ;
+        int itemWidth = widthPixels / 3;
+        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
+        layoutParams.width = itemWidth;//每个子条目的宽度
+        List<CategoryBean.InfosBean> infos = item.getInfos();
+        for (int i = 0; i < infos.size(); i++) {
+            TableRow tableRow = new TableRow(getContext());
+            CategoryInfoItemView infoItemView1 = new CategoryInfoItemView(getContext());
+            infoItemView1.setLayoutParams(layoutParams);
+            infoItemView1.bindView(infos.get(i).getName1(), infos.get(i).getUrl1());
+            tableRow.addView(infoItemView1);
+
+            CategoryInfoItemView infoItemView2 = new CategoryInfoItemView(getContext());
+            infoItemView2.setLayoutParams(layoutParams);
+            infoItemView2.bindView(infos.get(i).getName2(), infos.get(i).getUrl2());
+            tableRow.addView(infoItemView2);
+
+            String name3 = infos.get(i).getName3();
+            if ( name3 != null && name3.length() > 0) {
+                CategoryInfoItemView infoItemView3 = new CategoryInfoItemView(getContext());
+                infoItemView3.setLayoutParams(layoutParams);
+                infoItemView3.bindView(infos.get(i).getName3(), infos.get(i).getUrl3());
+                tableRow.addView(infoItemView3);
+            }
+            mTableLayout.addView(tableRow);
+        }
+    }
+
+## CategoryInfoItemView ##
+CategoryInfoItemView为CategoryItemView中一个子条目的视图。
+
+![](img/category_info_item_view.png)
+
+
+### 加载图片 ###
+	//图片url
+    public static final String URL_IMAGE = HOST + "image?name=";
+
+
+	//添加Glide依赖
+    compile 'com.github.bumptech.glide:glide:3.7.0'
