@@ -85,6 +85,7 @@ public class HotFragment extends BaseFragment {
 
             //按下去的图片
             GradientDrawable pressedBg = new GradientDrawable();
+
             pressedBg.setColor(Color.DKGRAY);
             pressedBg.setCornerRadius(10);
 
