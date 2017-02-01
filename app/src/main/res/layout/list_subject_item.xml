@@ -7,16 +7,11 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <com.itheima.googleplaydemo.widget.RatioLayout
+    <ImageView
+        android:id="@+id/subject_list_item_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/subject_list_item_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/recommend_29"/>
-    </com.itheima.googleplaydemo.widget.RatioLayout>
+        android:layout_height="150dp"
+        android:src="@drawable/recommend_29"/>
 
     <TextView
         android:id="@+id/subject_list_item_title"

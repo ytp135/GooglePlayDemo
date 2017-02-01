@@ -711,3 +711,42 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 
 
 # 专题界面 #
+## 加载数据 ##
+    @Override
+    protected void startLoadData() {
+        Call<List<SubjectBean>> listCall = HeiMaRetrofit.getInstance().getApi().listSubject(0);
+        listCall.enqueue(new Callback<List<SubjectBean>>() {
+            @Override
+            public void onResponse(Call<List<SubjectBean>> call, Response<List<SubjectBean>> response) {
+                mSubjects.addAll(response.body());
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<List<SubjectBean>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
+    }
+
+## 创建Adapter ##
+    @Override
+    protected BaseAdapter onCreateAdapter() {
+        return new SubjectListAdapter(getContext(), mSubjects);
+    }
+## 加载更多数据 ##
+    @Override
+    protected void onStartLoadMore() {
+        Call<List<SubjectBean>> listCall = HeiMaRetrofit.getInstance().getApi().listSubject(mSubjects.size());
+        listCall.enqueue(new Callback<List<SubjectBean>>() {
+            @Override
+            public void onResponse(Call<List<SubjectBean>> call, Response<List<SubjectBean>> response) {
+                mSubjects.addAll(response.body());
+                getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<SubjectBean>> call, Throwable t) {
+            }
+        });
+    }
