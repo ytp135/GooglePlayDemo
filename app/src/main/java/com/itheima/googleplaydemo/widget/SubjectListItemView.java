@@ -21,7 +21,6 @@ import butterknife.ButterKnife;
  * 描述： TODO
  */
 public class SubjectListItemView extends RelativeLayout {
-    private static final String TAG = "SubjectListItemView";
 
     @BindView(R.id.subject_list_item_image)
     ImageView mSubjectListItemImage;

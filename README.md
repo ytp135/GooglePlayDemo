@@ -577,6 +577,21 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
 ### 对条目点击事件的处理 ###
     protected void onListItemClick(int i) {};
 
+
+# BaseListAdapter的抽取 #
+## 共性 ##
+* 上下文Context
+* 数据集合
+* getCount
+* getItem
+* getItemId
+* getView
+* ViewHolder
+
+## 特性 ##
+* ViewHolder的创建
+* ViewHolder的绑定
+
 # 分类界面 #
 为了便于页面的扩展，分类界面显示采用ListView, 所以继承BaseListFragment。
 ## 加载数据 ##
@@ -603,19 +618,6 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
         return new CategoryListAdapter(getContext(), mCategories);
     }
 
-## BaseListAdapter的抽取 ##
-### 共性 ###
-* 上下文Context
-* 数据集合
-* getCount
-* getItem
-* getItemId
-* getView
-* ViewHolder
-
-### 特性 ###
-* ViewHolder的创建
-* ViewHolder的绑定
 
 ## CategoryItemView ##
 分类界面列表的每个条目为CategoryItemView，它由一个标题（TextView）和一个网格布局（TableLayout）组成，根据数据动态地向网格中添加视图。其他网格布局还可以是GridView, RecyclerView加GridLayoutMananger, GridLayout。这里根据网络返回的数据结构选择TableLayout。
@@ -662,7 +664,50 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 ### 加载图片 ###
 	//图片url
     public static final String URL_IMAGE = HOST + "image?name=";
-
-
 	//添加Glide依赖
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+
+# BaseLoadMoreListFragment的抽取 #
+## 共性 ##
+滚动到底部加载更多
+
+    @Override
+    protected void initListView() {
+        super.initListView();
+        getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == SCROLL_STATE_IDLE) {
+                    if (view.getLastVisiblePosition() == getLoadMorePosition()) {
+                        onStartLoadMore();
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
+    }
+
+## 特性 ##
+加载更多数据的实现
+
+    protected abstract void onStartLoadMore();
+
+# BaseLoadMoreListAdapter的抽取 #
+## 共性 ##
+* getCount
+* getViewTypeCount
+* getItemViewType
+* onCreateViewHolder
+* onBindViewHolder
+
+## 特性 ##
+* onCreateNormalItemViewHolder
+* onBindNormalViewHolder
+
+
+# 专题界面 #

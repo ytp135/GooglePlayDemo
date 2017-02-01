@@ -1,7 +1,6 @@
 package com.itheima.googleplaydemo.adapter;
 
 import android.content.Context;
-import android.view.View;
 
 import com.itheima.googleplaydemo.widget.LoadingListItemView;
 
@@ -21,6 +20,9 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
         super(context, dataList);
     }
 
+    /**
+     *  返回条目个数，由于多了一个进度条的条目，所以多加一个1。
+     */
     @Override
     public int getCount() {
         if (getDataList() == null) {
@@ -30,11 +32,17 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
         }
     }
 
+    /**
+     *  返回条目的类型个数，这里有两种类型的条目，一种是正常的item, 一种是进度条条目
+     */
     @Override
     public int getViewTypeCount() {
         return 2;
     }
 
+    /**
+     * 返回对应position位置的item的类型，最后一个位置为进度条类型，其他为正常item类型
+     */
     @Override
     public int getItemViewType(int position) {
         if (position == getCount() - 1) {
@@ -47,7 +55,7 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
     @Override
     protected ViewHolder onCreateViewHolder(int position) {
         if (getItemViewType(position) == ITEM_TYPE_LOAD_MORE) {
-            return new LoadMoreItemViewHolder(new LoadingListItemView(getContext()));
+            return new ViewHolder(new LoadingListItemView(getContext()));
         } else {
             return onCreateNormalItemViewHolder();
         }
@@ -55,22 +63,19 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
 
     @Override
     protected void onBindViewHolder(ViewHolder viewHolder, int position) {
-        if (viewHolder.holdView instanceof LoadingListItemView) {
-        } else {
+        if (ITEM_TYPE_NORMAL == getItemViewType(position)) {
             onBindNormalViewHolder(viewHolder, position);
         }
     }
 
-    protected abstract void onBindNormalViewHolder(ViewHolder viewHolder, int position);
-
+    /**
+     *  创建普通的item的ViewHolder
+     */
     protected abstract ViewHolder onCreateNormalItemViewHolder();
 
-
-    private class LoadMoreItemViewHolder extends ViewHolder {
-
-        public LoadMoreItemViewHolder(View v) {
-            super(v);
-        }
-    }
+    /**
+     * 绑定普通的ViewHolder
+     */
+    protected abstract void onBindNormalViewHolder(ViewHolder viewHolder, int position);
 
 }

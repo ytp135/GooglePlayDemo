@@ -1,12 +1,12 @@
 package com.itheima.googleplaydemo.widget;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
  * 创建时间: 2016/9/22 11:42
  * 描述： TODO
  */
-public class AppListItemView extends CardView {
+public class AppListItemView extends RelativeLayout {
     private static final String TAG = "AppListItemView";
     @BindView(R.id.app_icon)
     ImageView mAppIcon;

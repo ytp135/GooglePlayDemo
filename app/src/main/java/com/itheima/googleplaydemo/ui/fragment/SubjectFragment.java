@@ -19,8 +19,6 @@ import retrofit2.Response;
  * 描述： TODO
  */
 public class SubjectFragment extends BaseLoadMoreListFragment {
-    private static final String TAG = "SubjectFragment";
-
     private List<SubjectBean> mSubjects = new ArrayList<SubjectBean>();
 
     @Override
