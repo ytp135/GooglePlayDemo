@@ -58,7 +58,7 @@ public class AppListItemView extends RelativeLayout {
         mAppDes.setText(item.getDes());
         mAppSize.setText(Formatter.formatFileSize(getContext(), item.getSize()));
         mAppRating.setRating(item.getStars());
-        Glide.with(getContext()).load(Constant.URL_IMAGE + item.getIconUrl()).into(mAppIcon);
+        Glide.with(getContext()).load(Constant.URL_IMAGE + item.getIconUrl()).placeholder(R.drawable.ic_default).into(mAppIcon);
 
         //获取下载情况
         DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), item);

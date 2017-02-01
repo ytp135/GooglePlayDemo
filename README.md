@@ -709,8 +709,11 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 * onCreateNormalItemViewHolder
 * onBindNormalViewHolder
 
+## LoadingListItemView ##
+![](img/loading_list_item.png)
 
 # 专题界面 #
+![](img/subject.png)
 ## 加载数据 ##
     @Override
     protected void startLoadData() {
@@ -734,6 +737,8 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
     protected BaseAdapter onCreateAdapter() {
         return new SubjectListAdapter(getContext(), mSubjects);
     }
+
+
 ## 加载更多数据 ##
     @Override
     protected void onStartLoadMore() {
@@ -750,3 +755,42 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
             }
         });
     }
+
+
+
+# BaseAppListFragment的抽取 #
+首页，应用，游戏界面具有相同的列表，所以抽取一个BaseAppListFragment。
+## 共性 ##
+### 数据列表 ###
+    List<AppListItem> mAppListItems = new ArrayList<AppListItem>();
+
+### 相同的Adapter ###
+    @Override
+    protected BaseAdapter onCreateAdapter() {
+       return new AppListAdapter(getContext(), mAppListItems);
+    }
+
+### 相同的item的点击事件 ###
+    @Override
+    protected void onListItemClick(int i) {
+        Intent intent = new Intent(getContext(), AppDetailActivity.class);
+        intent.putExtra("package_name", getAppList().get(i).getPackageName());
+        startActivity(intent);
+    }
+
+# AppListAdapter的抽取 #
+
+## onCreateNormalItemViewHolder ##
+    @Override
+    protected ViewHolder onCreateNormalItemViewHolder() {
+        return new ViewHolder(new AppListItemView(getContext()));
+    }
+
+## onBindNormalViewHolder ##
+    @Override
+    protected void onBindNormalViewHolder(ViewHolder viewHolder, int position) {
+        ((AppListItemView)(viewHolder.holdView)).bindView(getDataList().get(position));
+    }
+
+## AppListItemView ##
+![](img/app_list_item.png)
