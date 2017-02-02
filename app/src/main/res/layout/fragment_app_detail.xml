@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/app_detail_bottom_bar"
-        layout="@layout/app_detail_bottom_bar"
+        layout="@layout/view_app_detail_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
@@ -22,9 +22,9 @@
             android:orientation="vertical">
 
             <!--应用信息-->
-            <include layout="@layout/app_detail_info"/>
+            <include layout="@layout/view_app_detail_info"/>
             <!--应用安全-->
-            <include layout="@layout/app_detail_security"
+            <include layout="@layout/view_app_detail_security"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"/>
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"/>
             <!--应用描述-->
-            <include layout="@layout/app_detail_des" />
+            <include layout="@layout/view_app_detail_des" />
 
         </LinearLayout>
 

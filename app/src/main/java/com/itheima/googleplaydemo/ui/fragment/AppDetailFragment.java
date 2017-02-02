@@ -1,34 +1,20 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.text.format.Formatter;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.TextView;
+import android.widget.ScrollView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
 import com.itheima.googleplaydemo.R;
-import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppDetailBean;
-import com.itheima.googleplaydemo.network.DownloadInfo;
 import com.itheima.googleplaydemo.network.DownloadManager;
 import com.itheima.googleplaydemo.network.HeiMaRetrofit;
-import com.itheima.googleplaydemo.widget.ProgressButton;
+import com.itheima.googleplaydemo.widget.AppDetailBottomBar;
+import com.itheima.googleplaydemo.widget.AppDetailDesView;
+import com.itheima.googleplaydemo.widget.AppDetailGalleryView;
+import com.itheima.googleplaydemo.widget.AppDetailInfoView;
+import com.itheima.googleplaydemo.widget.AppDetailSecurityView;
 
-import java.util.Observable;
-import java.util.Observer;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,46 +24,8 @@ import retrofit2.Response;
  * 创建时间: 2016/9/18 12:04
  * 描述： TODO
  */
-public class AppDetailFragment extends BaseFragment implements Observer{
+public class AppDetailFragment extends BaseFragment{
 
-    @BindView(R.id.favorite)
-    Button mFavorite;
-    @BindView(R.id.download)
-    ProgressButton mDownload;
-    @BindView(R.id.share)
-    Button mShare;
-    @BindView(R.id.app_icon)
-    ImageView mAppIcon;
-    @BindView(R.id.app_name)
-    TextView mAppName;
-    @BindView(R.id.app_rating)
-    RatingBar mAppRating;
-    @BindView(R.id.download_count)
-    TextView mDownloadCount;
-    @BindView(R.id.version_code)
-    TextView mVersionCode;
-    @BindView(R.id.time)
-    TextView mTime;
-    @BindView(R.id.app_size)
-    TextView mAppSize;
-    @BindView(R.id.app_detail_security_tags)
-    LinearLayout mAppDetailSecurityTags;
-    @BindView(R.id.app_detail_security_arrow)
-    ImageView mAppDetailSecurityArrow;
-    @BindView(R.id.app_detail_security_des)
-    LinearLayout mAppDetailSecurityDes;
-    @BindView(R.id.app_detail_pic_container)
-    LinearLayout mAppDetailPicContainer;
-    @BindView(R.id.app_detail_des)
-    TextView mAppDetailDes;
-    @BindView(R.id.app_detail_author)
-    TextView mAppDetailAuthor;
-    @BindView(R.id.app_detail_des_arrow)
-    ImageView mAppDetailDesArrow;
-
-    private boolean securityInfoOpen = false;
-    private boolean descriptionOpen = false;
-    private int mAppDetailDesOriginHeight;
     private String mPackageName;
 
     private AppDetailBean mAppDetailBean;
@@ -102,250 +50,54 @@ public class AppDetailFragment extends BaseFragment implements Observer{
 
     @Override
     protected View onCreateContentView() {
-        View content = LayoutInflater.from(getContext()).inflate(R.layout.fragment_app_detail, null);
-        ButterKnife.bind(this, content);
-        initView();
-        return content;
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        ScrollView scrollView = new ScrollView(getContext());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
+        scrollView.setLayoutParams(layoutParams);
+
+
+        LinearLayout linearLayoutInScrollView = new LinearLayout(getContext());
+        linearLayoutInScrollView.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        contentParams.topMargin = getResources().getDimensionPixelSize(R.dimen.padding);
+
+        //应用信息
+        AppDetailInfoView appDetailInfoView = new AppDetailInfoView(getContext());
+        appDetailInfoView.bindView(mAppDetailBean);
+
+        //应用安全
+        AppDetailSecurityView appDetailSecurityView = new AppDetailSecurityView(getContext());
+        appDetailSecurityView.setLayoutParams(contentParams);
+        appDetailSecurityView.bindView(mAppDetailBean);
+
+        //应用截图
+        AppDetailGalleryView appDetailGalleryView = new AppDetailGalleryView(getContext());
+        appDetailGalleryView.setLayoutParams(contentParams);
+        appDetailGalleryView.bindView(mAppDetailBean);
+
+        //应用描述
+        AppDetailDesView appDetailDesView = new AppDetailDesView(getContext());
+        appDetailDesView.setLayoutParams(contentParams);
+        appDetailDesView.bindView(mAppDetailBean);
+
+        linearLayoutInScrollView.addView(appDetailInfoView);
+        linearLayoutInScrollView.addView(appDetailSecurityView);
+        linearLayoutInScrollView.addView(appDetailGalleryView);
+        linearLayoutInScrollView.addView(appDetailDesView);
+
+        scrollView.addView(linearLayoutInScrollView);
+        linearLayout.addView(scrollView);
+
+        //底部bar
+        AppDetailBottomBar appDetailBottomBar = new AppDetailBottomBar(getContext());
+        appDetailBottomBar.bindView(mAppDetailBean);
+        linearLayout.addView(appDetailBottomBar);
+        return linearLayout;
     }
 
-    private void initView() {
-        initAppInfo();
-        initSafeInfo();
-        initPicsInfo();
-        initAppDes();
-        initDownloadButton();
-    }
-
-    private void initDownloadButton() {
-        DownloadManager.getInstance().addObserver(mAppDetailBean.getPackageName(), this);
-        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), mAppDetailBean);
-        updateDownloadButton(downloadInfo);
-    }
-
-    private void updateDownloadButton(DownloadInfo downloadInfo) {
-        mDownload.setBackgroundResource(R.drawable.selector_app_detail_bottom_normal);
-        switch (downloadInfo.getDownloadStatus()) {
-            case DownloadManager.STATE_UN_DOWNLOAD:
-                mDownload.setText(R.string.download);
-                break;
-            case DownloadManager.STATE_DOWNLOADING:
-                mDownload.setBackgroundResource(R.drawable.selector_app_detail_bottom_downloading);
-                mDownload.setMax(downloadInfo.getMax());
-                mDownload.setProgress(downloadInfo.getProgress());
-                int ration = (int) (downloadInfo.getProgress() * 1.0f / downloadInfo.getMax() * 100);
-                String progress = String.format(getString(R.string.download_progress), ration);
-                mDownload.setText(progress);
-                break;
-            case DownloadManager.STATE_DOWNLOADED:
-                mDownload.setText(R.string.install);
-                mDownload.clearProgress();
-                break;
-            case DownloadManager.STATE_PAUSE:
-                mDownload.setText(R.string.continue_download);
-                break;
-            case DownloadManager.STATE_WAITING:
-                mDownload.setText(R.string.waiting);
-                break;
-            case DownloadManager.STATE_INSTALLED:
-                mDownload.setText(R.string.open);
-                break;
-            case DownloadManager.STATE_FAILED:
-                mDownload.setText(R.string.retry);
-                break;
-        }
-    }
-
-    private void initAppDes() {
-        mAppDetailAuthor.setText(mAppDetailBean.getAuthor());
-        mAppDetailDes.setText(mAppDetailBean.getDes());
-        mAppDetailDes.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mAppDetailDes.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                mAppDetailDesOriginHeight = mAppDetailDes.getHeight();
-                mAppDetailDes.setLines(7);
-            }
-        });
-    }
-
-    private void initPicsInfo() {
-        for (int i = 0; i < mAppDetailBean.getScreen().size(); i++) {
-            String screen = mAppDetailBean.getScreen().get(i);
-            ImageView imageView = new ImageView(getContext());
-            int padding = getResources().getDimensionPixelSize(R.dimen.app_detail_pic_padding);
-            if (i != mAppDetailBean.getScreen().size() - 1) {
-                imageView.setPadding(0, 0, padding, 0);
-            }
-            Glide.with(getContext()).load(Constant.URL_IMAGE + screen).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(imageView);
-            mAppDetailPicContainer.addView(imageView);
-        }
-
-    }
-
-    private void initSafeInfo() {
-        for (int i = 0; i < mAppDetailBean.getSafe().size(); i++) {
-            AppDetailBean.SafeBean safeBean = mAppDetailBean.getSafe().get(i);
-            //Add tag
-            ImageView tag = new ImageView(getContext());
-            mAppDetailSecurityTags.addView(tag);
-            Glide.with(getContext())
-                    .load(Constant.URL_IMAGE + safeBean.getSafeUrl())
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .into(tag);
-
-            //Add one line description
-            LinearLayout line = new LinearLayout(getContext());
-            ImageView ivDes = new ImageView(getContext());
-            TextView tvDes = new TextView(getContext());
-            tvDes.setText(safeBean.getSafeDes());
-            if (safeBean.getSafeDesColor() == 0) {
-                tvDes.setTextColor(getResources().getColor(R.color.app_detail_safe_normal));
-            } else {
-                tvDes.setTextColor(getResources().getColor(R.color.app_detail_safe_warning));
-            }
-
-            line.addView(ivDes);
-            Glide.with(getContext())
-                    .load(Constant.URL_IMAGE + safeBean.getSafeDesUrl())
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .into(ivDes);
-            line.addView(tvDes);
-
-            mAppDetailSecurityDes.addView(line);
-            collapseAppDetailSecurity();
-        }
-    }
-
-    private void collapseAppDetailSecurity() {
-        ViewGroup.LayoutParams layoutParams = mAppDetailSecurityDes.getLayoutParams();
-        layoutParams.height = 0;
-        mAppDetailSecurityDes.setLayoutParams(layoutParams);
-    }
-
-    private void initAppInfo() {
-        String iconUrl = Constant.URL_IMAGE + mAppDetailBean.getIconUrl();
-        Glide.with(getContext()).load(iconUrl).into(mAppIcon);
-        mAppName.setText(mAppDetailBean.getName());
-        mAppRating.setRating(mAppDetailBean.getStars());
-
-        String downloadCount = String.format(getString(R.string.download_count), mAppDetailBean.getDownloadNum());
-        mDownloadCount.setText(downloadCount);
-
-        String versionCode = String.format(getString(R.string.version_code), mAppDetailBean.getVersion());
-        mVersionCode.setText(versionCode);
-
-        String timestamp = String.format(getString(R.string.time), mAppDetailBean.getDate());
-        mTime.setText(timestamp);
-
-        String size = String.format(getString(R.string.app_size), Formatter.formatFileSize(getContext(), mAppDetailBean.getSize()));
-        mAppSize.setText(size);
-
-    }
-
-    @OnClick({R.id.download, R.id.app_detail_security_arrow, R.id.app_detail_des_arrow})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.download:
-                handleDownloadClick();
-                break;
-            case R.id.app_detail_security_arrow:
-                toggleSecurityInfo();
-                break;
-            case R.id.app_detail_des_arrow:
-                toggleDescription();
-                break;
-        }
-    }
-
-    private void handleDownloadClick() {
-        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), mAppDetailBean);
-        switch (downloadInfo.getDownloadStatus()) {
-            case DownloadManager.STATE_UN_DOWNLOAD:
-                DownloadManager.getInstance().download(downloadInfo);
-                break;
-            case DownloadManager.STATE_DOWNLOADING:
-                DownloadManager.getInstance().pauseDownload(downloadInfo);
-                break;
-            case DownloadManager.STATE_DOWNLOADED:
-                DownloadManager.getInstance().installApk(getContext(), downloadInfo);
-                break;
-            case DownloadManager.STATE_PAUSE:
-                DownloadManager.getInstance().download(downloadInfo);
-                break;
-            case DownloadManager.STATE_WAITING:
-                DownloadManager.getInstance().cancelDownload(downloadInfo);
-                break;
-            case DownloadManager.STATE_INSTALLED:
-                DownloadManager.getInstance().openApp(getContext(), downloadInfo);
-                break;
-            case DownloadManager.STATE_FAILED:
-                DownloadManager.getInstance().download(downloadInfo);
-                break;
-        }
-    }
-
-    private void toggleDescription() {
-        if (descriptionOpen) {
-            mAppDetailDes.setLines(7);
-            mAppDetailDes.measure(0, 0);
-            int measuredHeight = mAppDetailDes.getMeasuredHeight();
-            animateViewHeight(mAppDetailDes, mAppDetailDesOriginHeight, measuredHeight);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", -180, 0);
-            objectAnimator.start();
-
-        } else {
-            int measuredHeight = mAppDetailDes.getMeasuredHeight();
-            animateViewHeight(mAppDetailDes, measuredHeight, mAppDetailDesOriginHeight);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", 0, -180);
-            objectAnimator.start();
-        }
-        descriptionOpen = !descriptionOpen;
-    }
-
-    private void toggleSecurityInfo() {
-        if (securityInfoOpen) {
-            int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
-            animateViewHeight(mAppDetailSecurityDes, measuredHeight, 0);
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", -180, 0);
-            objectAnimator.start();
-
-        } else {
-            mAppDetailSecurityDes.measure(0, 0);
-            int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
-            animateViewHeight(mAppDetailSecurityDes, 0, measuredHeight);
-
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", 0, -180);
-            objectAnimator.start();
-
-        }
-        securityInfoOpen = !securityInfoOpen;
-
-    }
-
-    private void animateViewHeight(final View view, int start, int end) {
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
-        valueAnimator.start();
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int animatedValue = (int) animation.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                layoutParams.height = animatedValue;
-                view.setLayoutParams(layoutParams);
-            }
-        });
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        final DownloadInfo downloadInfo = (DownloadInfo) arg;
-        post(new Runnable() {
-            @Override
-            public void run() {
-                updateDownloadButton(downloadInfo);
-            }
-        });
-    }
 
     @Override
     public void onPause() {
