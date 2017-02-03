@@ -56,7 +56,9 @@ public class AppDetailDesView extends RelativeLayout {
             @Override
             public void onGlobalLayout() {
                 mAppDetailDes.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                //保存全部展开后的大小
                 mAppDetailDesOriginHeight = mAppDetailDes.getHeight();
+                //设置初始显示7行
                 mAppDetailDes.setLines(7);
             }
         });
@@ -70,16 +72,23 @@ public class AppDetailDesView extends RelativeLayout {
 
     private void toggleDescription() {
         if (descriptionOpen) {
+            //关闭
             mAppDetailDes.setLines(7);
+            //获取7行时的高度
             mAppDetailDes.measure(0, 0);
             int measuredHeight = mAppDetailDes.getMeasuredHeight();
+            //动画从原始高度到7行高度
             animateViewHeight(mAppDetailDes, mAppDetailDesOriginHeight, measuredHeight);
+            //箭头逆时针旋转180度
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", -180, 0);
             objectAnimator.start();
 
         } else {
+            //打开
+            //从7行高度到原始高度
             int measuredHeight = mAppDetailDes.getMeasuredHeight();
             animateViewHeight(mAppDetailDes, measuredHeight, mAppDetailDesOriginHeight);
+            //箭头顺时针旋转180度
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", 0, -180);
             objectAnimator.start();
         }

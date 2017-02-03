@@ -32,7 +32,6 @@ public class AppFragment extends BaseAppListFragment {
                 onDataLoadedError();
             }
         });
-
     }
 
 

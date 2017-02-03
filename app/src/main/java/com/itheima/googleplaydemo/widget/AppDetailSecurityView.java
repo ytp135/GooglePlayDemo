@@ -97,23 +97,29 @@ public class AppDetailSecurityView extends RelativeLayout {
         toggleSecurityInfo();
     }
 
+    /**
+     * 打开或者关闭安全信息
+     */
     private void toggleSecurityInfo() {
         if (securityInfoOpen) {
+            //关闭
             int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
             animateViewHeight(mAppDetailSecurityDes, measuredHeight, 0);
+            //箭头顺时针旋转180度
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", -180, 0);
             objectAnimator.start();
 
         } else {
+            //打开
+            //测量模式为UNSPECIFIED
             mAppDetailSecurityDes.measure(0, 0);
+            //获取mAppDetailSecurityDes完全展开应该有的高度
             int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
             animateViewHeight(mAppDetailSecurityDes, 0, measuredHeight);
-
+            //箭头逆时针旋转180度
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", 0, -180);
             objectAnimator.start();
-
         }
         securityInfoOpen = !securityInfoOpen;
-
     }
 }

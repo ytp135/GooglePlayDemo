@@ -794,3 +794,297 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 
 ## AppListItemView ##
 ![](img/app_list_item.png)
+
+# 游戏页面 #
+## 加载数据 ##
+    @Override
+    protected void startLoadData() {
+        getAppList().clear();
+        Call<List<AppListItem>> listCall = HeiMaRetrofit.getInstance().getApi().listGames(0);
+        listCall.enqueue(new Callback<List<AppListItem>>() {
+            @Override
+            public void onResponse(Call<List<AppListItem>> call, Response<List<AppListItem>> response) {
+                getAppList().addAll(response.body());
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<List<AppListItem>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
+    }
+
+## 加载更多数据 ##
+    @Override
+    protected void onStartLoadMore() {
+        Call<List<AppListItem>> listCall = HeiMaRetrofit.getInstance().getApi().listGames(mAppListItems.size());
+        listCall.enqueue(new Callback<List<AppListItem>>() {
+            @Override
+            public void onResponse(Call<List<AppListItem>> call, Response<List<AppListItem>> response) {
+                getAppList().addAll(response.body());
+                getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<AppListItem>> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+# 应用页面 #
+## 加载数据 ##
+    @Override
+    protected void startLoadData() {
+        getAppList().clear();
+        Call<List<AppListItem>> listCall = HeiMaRetrofit.getInstance().getApi().listApps(0);
+        listCall.enqueue(new Callback<List<AppListItem>>() {
+            @Override
+            public void onResponse(Call<List<AppListItem>> call, Response<List<AppListItem>> response) {
+                getAppList().addAll(response.body());
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<List<AppListItem>> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
+    }
+
+## 加载更多数据 ##
+    @Override
+    protected void onStartLoadMore() {
+        Call<List<AppListItem>> listCall = HeiMaRetrofit.getInstance().getApi().listApps(getAppList().size());
+        listCall.enqueue(new Callback<List<AppListItem>>() {
+            @Override
+            public void onResponse(Call<List<AppListItem>> call, Response<List<AppListItem>> response) {
+                getAppList().addAll(response.body());
+                getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<AppListItem>> call, Throwable t) {
+
+            }
+        });
+    }
+
+# 首页页面 #
+## 加载数据 ##
+    @Override
+    protected void startLoadData() {
+        mLooperDataList.clear();
+        getAppList().clear();
+        Call<HomeBean> listCall = HeiMaRetrofit.getInstance().getApi().listHome(0);
+        listCall.enqueue(new Callback<HomeBean>() {
+            @Override
+            public void onResponse(Call<HomeBean> call, Response<HomeBean> response) {
+                getAppList().addAll(response.body().getList());
+                mLooperDataList.addAll(response.body().getPicture());
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<HomeBean> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
+    }
+
+## 加载更多数据 ##
+    @Override
+    protected void onStartLoadMore() {
+        Call<HomeBean> listCall = HeiMaRetrofit.getInstance().getApi().listHome(getAppList().size());
+        listCall.enqueue(new Callback<HomeBean>() {
+            @Override
+            public void onResponse(Call<HomeBean> call, Response<HomeBean> response) {
+                getAppList().addAll(response.body().getList());
+                getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<HomeBean> call, Throwable t) {
+            }
+        });
+    }
+
+
+# 应用详情页面 #
+## AppDetailActivity ##
+### 初始化ActionBar ###
+    private void initActionBar() {
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("应用详情");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+### 配置状态条颜色 ###
+    private void setStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+    }
+### 返回按钮 ###
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+## AppDetailFragment ##
+### 加载数据 ###
+    @Override
+    protected void startLoadData() {
+        mPackageName = getActivity().getIntent().getStringExtra("package_name");
+        Call<AppDetailBean> appDetailBeanCall = HeiMaRetrofit.getInstance().getApi().appDetail(mPackageName);
+        appDetailBeanCall.enqueue(new Callback<AppDetailBean>() {
+            @Override
+            public void onResponse(Call<AppDetailBean> call, Response<AppDetailBean> response) {
+                mAppDetailBean = response.body();
+                onDataLoadedSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<AppDetailBean> call, Throwable t) {
+                onDataLoadedError();
+            }
+        });
+    }
+
+### 应用信息 AppDetailInfoView ###
+![](img/app_detail_info.png)
+
+### 应用安全 AppDetailSecurityView ###
+![](img/app_detail_security.png)
+
+#### 绑定视图 ####
+    public void bindView(AppDetailBean appDetailBean) {
+        for (int i = 0; i < appDetailBean.getSafe().size(); i++) {
+            AppDetailBean.SafeBean safeBean = appDetailBean.getSafe().get(i);
+            //Add tag
+            ImageView tag = new ImageView(getContext());
+            mAppDetailSecurityTags.addView(tag);
+            Glide.with(getContext())
+                    .load(Constant.URL_IMAGE + safeBean.getSafeUrl())
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .into(tag);
+
+            //Add one line description
+            LinearLayout line = new LinearLayout(getContext());
+            ImageView ivDes = new ImageView(getContext());
+            TextView tvDes = new TextView(getContext());
+            tvDes.setText(safeBean.getSafeDes());
+            if (safeBean.getSafeDesColor() == 0) {
+                tvDes.setTextColor(getResources().getColor(R.color.app_detail_safe_normal));
+            } else {
+                tvDes.setTextColor(getResources().getColor(R.color.app_detail_safe_warning));
+            }
+
+            line.addView(ivDes);
+            Glide.with(getContext())
+                    .load(Constant.URL_IMAGE + safeBean.getSafeDesUrl())
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .into(ivDes);
+            line.addView(tvDes);
+
+            mAppDetailSecurityDes.addView(line);
+            collapseAppDetailSecurity();
+        }
+    }
+#### 打开或者关闭 ####
+    private void toggleSecurityInfo() {
+        if (securityInfoOpen) {
+            //关闭
+            int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
+            animateViewHeight(mAppDetailSecurityDes, measuredHeight, 0);
+            //箭头顺时针旋转180度
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", -180, 0);
+            objectAnimator.start();
+
+        } else {
+            //打开
+            //测量模式为UNSPECIFIED
+            mAppDetailSecurityDes.measure(0, 0);
+            //获取mAppDetailSecurityDes完全展开应该有的高度
+            int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
+            animateViewHeight(mAppDetailSecurityDes, 0, measuredHeight);
+            //箭头逆时针旋转180度
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", 0, -180);
+            objectAnimator.start();
+        }
+        securityInfoOpen = !securityInfoOpen;
+    }
+###  应用截图 AppDetailGalleryView ###
+![](img/app_detail_pic.png)
+#### 绑定视图 ####
+
+    public void bindView(AppDetailBean appDetailBean) {
+        for (int i = 0; i < appDetailBean.getScreen().size(); i++) {
+            String screen = appDetailBean.getScreen().get(i);
+            ImageView imageView = new ImageView(getContext());
+            int padding = getResources().getDimensionPixelSize(R.dimen.app_detail_pic_padding);
+            if (i != appDetailBean.getScreen().size() - 1) {
+                imageView.setPadding(0, 0, padding, 0);
+            }
+            Glide.with(getContext()).load(Constant.URL_IMAGE + screen).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(imageView);
+            mAppDetailPicContainer.addView(imageView);
+        }
+    }
+
+
+### 应用描述 AppDetailDesView ###
+![](img/app_detail_des.png)
+#### 绑定视图 ####
+    public void bindView(AppDetailBean appDetailBean) {
+        mAppDetailAuthor.setText(appDetailBean.getAuthor());
+        mAppDetailDes.setText(appDetailBean.getDes());
+        mAppDetailDes.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mAppDetailDes.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                //保存全部展开后的大小
+                mAppDetailDesOriginHeight = mAppDetailDes.getHeight();
+                //设置初始显示7行
+                mAppDetailDes.setLines(7);
+            }
+        });
+    }
+
+#### 打开或者关闭 ####
+
+    private void toggleDescription() {
+        if (descriptionOpen) {
+            //关闭
+            mAppDetailDes.setLines(7);
+            //获取7行时的高度
+            mAppDetailDes.measure(0, 0);
+            int measuredHeight = mAppDetailDes.getMeasuredHeight();
+            //动画从原始高度到7行高度
+            animateViewHeight(mAppDetailDes, mAppDetailDesOriginHeight, measuredHeight);
+            //箭头逆时针旋转180度
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", -180, 0);
+            objectAnimator.start();
+
+        } else {
+            //打开
+            //从7行高度到原始高度
+            int measuredHeight = mAppDetailDes.getMeasuredHeight();
+            animateViewHeight(mAppDetailDes, measuredHeight, mAppDetailDesOriginHeight);
+            //箭头顺时针旋转180度
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", 0, -180);
+            objectAnimator.start();
+        }
+        descriptionOpen = !descriptionOpen;
+    }
+
+

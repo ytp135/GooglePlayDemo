@@ -30,13 +30,14 @@ public class AppDetailActivity extends BaseActivity {
     protected void init() {
         super.init();
         initActionBar();
+        setStatusBarColor();
+    }
 
+    private void setStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-            //底部导航栏
-            //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
         }
     }
 

@@ -75,6 +75,8 @@ public class HomeFragment extends BaseAppListFragment {
         });
     }
 
+    /**
+     * 处理item的点击事件，由于多加了一个头，获取点击位置的数据时下标减1     */
     @Override
     protected void onListItemClick(int i) {
         Intent intent = new Intent(getContext(), AppDetailActivity.class);
@@ -82,6 +84,9 @@ public class HomeFragment extends BaseAppListFragment {
         startActivity(intent);
     }
 
+    /**
+     * 返回加载更多时的位置
+     */
     @Override
     protected int getLoadMorePosition() {
         return getAdapter().getCount();
