@@ -6,13 +6,13 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@id/title"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"/>
 
     <TableLayout
-        android:id="@id/table_layout"
+        android:id="@+id/table_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">

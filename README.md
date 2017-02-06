@@ -11,9 +11,14 @@
 	* GooglePlayServer:java ee工程,我们的服务器
 	* GooglePlayServer.war:java ee工程的war包形式
 	* WebInfos:资源文件
-	* GooglePlayServerAndroid:手机端的服务器,可以运行servlet
 
 * 搭建方式:
+ 	* 源码形式.
+		1. 用java ee 版eclipse导入工程GooglePlayServer.
+		2. 修改目录下system.properties为`dir=C:\\Users\\Leon\\Desktop\\GooglePlay\\server`(`WebInfos`所在的目录),需要注意要么用"/"或者"\\"
+		3. 部署java ee工程到tomcat,然后运行
+		4. 在pc和手机上分别验证。
+
 	* war包方式:
 		1. 把war放到tomact的webapps目录下面就可以,然后启动tomcat会自动解压war包.
 		2. 启动tomcat,自动解压war包,并运行程序 
@@ -21,15 +26,9 @@
 		4. 在pc和手机上分别验证 
 		5. `注意:tomcat必须使用7以上版本`
 
-	* 源码形式.
-		1. 用java ee 版eclipse导入工程GooglePlayServer.
-		2. 修改`webapps\GooglePlayServer\WEB-INF\classes`目录下system.properties为`dir=C:\\Users\\Leon\\Desktop\\GooglePlay\\server`(`WebInfos`所在的目录),需要注意要么用"/"或者"\\"
-		3. 部署java ee工程到tomcat,然后运行
-		4. 在pc和手机上分别验证。
-
 # 项目初始化 #
 * BaseActivity
-* ButterKnife集成
+* [ButterKnife](https://github.com/JakeWharton/butterknife)集成
 * Git初始化
 
 # 侧滑菜单 #
@@ -105,16 +104,21 @@
 >使用layout_gravity属性来控制是左侧还是右侧菜单
 
 ## NavigationView ##
+	//需添加依赖	
+	compile 'com.android.support:design:25.1.0'
+
 DrawerLayout里面的菜单布局我们可以自己定义，但谷歌也提供的相应的控件NavigationView，方便开发者完成菜单布局。
 >app:headerLayout="@layout/drawer_header" 定义菜单的头布局
 >
 >app:menu="@menu/drawer_main" 定义菜单选项
 
+
+
 ### 设置菜单点击监听 ###
     mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+            mDrawerLayout.closeDrawer(GravityCompat.START);//关闭左侧菜单
             mNavigationView.setCheckedItem(item.getItemId());
             return false;
         }
@@ -130,29 +134,44 @@ DrawerLayout里面的菜单布局我们可以自己定义，但谷歌也提供�
 
 ### ActionBar 4大部分
 ![icon](img/action_bar_basics.png)
+#### 1.App标题图片 ####
+包含了 图标，主标题，副标题，回退部分
+#### 2.视图控件 ####
+允许用户切换视图。视图切换控件的样式有`下拉菜单`或`选项卡`控件,对应了`标准`，`list`，`tab`,3种导航模式，默认为标准。
 
-1. **app 图标**：包含了 图标，主标题，副标题，回退部分
-2. **视图控件**：允许用户切换视图。视图切换控件的样式有`下拉菜单`或`选项卡`控件,d对应了,`标准`，`list`，`tab`,3种导航模式
-3. **操作按钮**：在操作栏里，展示出你的 app 中最重要的操作。不能展示在操作栏里的操作，可以自动移到“更多操作”里
-4. **更多操作**：把不常用的操作放到更多操作里
+* list模式
+
+	![](img/action_mode_list.jpg)
+* tab模式
+
+	![](img/action_mode_tab.jpg)
+
+
+#### 3.操作按钮 
+在操作栏里，展示出你的 app 中最重要的操作。不能展示在操作栏里的操作，可以自动移到“更多操作”里
+
+#### 4.更多操作 ####
+把不常用的操作放到更多操作里
 
 ### 如何支持actionbar?
 1. android sdk 3.0之后默认支持actionBar
 2. 市面上也有开源的actionbarSherlock可以支持ActionBar
 3. google 2013 i/o大会.在v7(api level 7_android2.1以上)中对actionbar进行了兼容;
-
+####3.0之前版本和3.0之后版本####
 ![3.0以上默认就是actionBar](img/actionbar_compat.png)
 
 ### ActionBar基本使用
-	// 获取ActionBar
-	mActionBar = getSupportActionBar();
+	mActionBar = getSupportActionBar();	// 获取ActionBar
+
 	mActionBar.setTitle("MainTitle");// 设置主title部分
 	mActionBar.setSubtitle("SubTitle");// 设置子title部分
+	mActionBar.setDisplayShowTitleEnabled(true);// 设置菜单 标题是否可见
+
 	mActionBar.setIcon(R.drawable.ic_launcher);// 设置应用图标
 	mActionBar.setLogo(R.drawable.ic_launcher);// 设置Logo
-	mActionBar.setDisplayShowTitleEnabled(true);// 设置菜单 标题是否可见
 	mActionBar.setDisplayShowHomeEnabled(true);// 设置应用图标是否可见
 	mActionBar.setDisplayUseLogoEnabled(false);// 设置是否显示Logo优先
+
 	mActionBar.setDisplayHomeAsUpEnabled(true);// 设置back按钮是否可见
 
 ### ActionBar和DrawerLayout联动
@@ -162,7 +181,7 @@ DrawerLayout里面的菜单布局我们可以自己定义，但谷歌也提供�
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         //创建ActionBarDrawerToggle
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-        //同步DrawerLayout的开关状态
+        //同步DrawerLayout的开关状态，如果DrawerLayout是关闭的则显示抽屉图片，如果是打开的则显示返回图片
         mActionBarDrawerToggle.syncState();
         //监听DrawerLayout的开关状态, 触发动画
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
