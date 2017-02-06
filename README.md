@@ -1086,5 +1086,6 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
         }
         descriptionOpen = !descriptionOpen;
     }
-
-
+### 底部下载条 AppDetailBottomBar ###
+![](img/app_detail_bottom_bar.png)
+#### 自定义控件ProgressButton ####
