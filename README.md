@@ -535,6 +535,10 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
 ## Drawable ##
 ![](img/drawable.png)
 
+## FlowLayout原理 ##
+FlowLayout有一个行的概念，即内部有个Line的类来描述FlowLayout中的一行。测量的时候根据孩子的宽度放入一行行中，如果一行已经放满孩子，则新建一行。
+布局时，FlowLayout会按行来布局孩子。
+
 # 推荐页面 #
 ## 加载数据 ##
 	public interface Api {

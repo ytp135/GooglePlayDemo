@@ -43,11 +43,16 @@ public class RecommendFragment extends BaseFragment {
 
     @Override
     protected View onCreateContentView() {
+        //创建星状图
         StellarMap stellarMap = new StellarMap(getContext());
+        //设置adapter
         stellarMap.setAdapter(new RecommendAdapter(getContext(), mData));
         int padding = getResources().getDimensionPixelSize(R.dimen.padding);
+        //设置星状图内部padding
         stellarMap.setInnerPadding(padding, padding, padding, padding);
+        //设置布局网格15*20，越大分布越平均
         stellarMap.setRegularity(15, 20);
+        //设置初始化组
         stellarMap.setGroup(0, false);
         return stellarMap;
     }
