@@ -157,6 +157,7 @@ DrawerLayout里面的菜单布局我们可以自己定义，但谷歌也提供�
 1. android sdk 3.0之后默认支持actionBar
 2. 市面上也有开源的actionbarSherlock可以支持ActionBar
 3. google 2013 i/o大会.在v7(api level 7_android2.1以上)中对actionbar进行了兼容;
+
 ####3.0之前版本和3.0之后版本####
 ![3.0以上默认就是actionBar](img/actionbar_compat.png)
 
@@ -204,7 +205,7 @@ DrawerLayout里面的菜单布局我们可以自己定义，但谷歌也提供�
 官方在某些程度上认为 ActionBar 限制了 android app 的开发与设计的弹性,
 Toolbar 是在 Android 5.0 开始推出的一个 Material Design 风格的导航控件 ，Google 非常推荐大家使用 Toolbar 
 来作为Android客户端的导航栏，以此来取代之前的 Actionbar 。与 Actionbar 相比，Toolbar 明显要灵活的多。它不像 
-Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面的任意位置。
+Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面的任意位置。ToolBar继承ViewGroup，内部可以摆放孩子，方便定制。
 
 ### Toolbar使用 ###
 #### 1. 将主题改为NoActionBar ####
@@ -245,6 +246,7 @@ Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面
 
 
 #### 2. 创建v21样式 ####
+在v21版本及以上可以配置状态栏颜色，所以
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
