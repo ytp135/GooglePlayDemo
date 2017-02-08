@@ -2,7 +2,7 @@ package com.itheima.googleplaydemo.adapter;
 
 import android.content.Context;
 
-import com.itheima.googleplaydemo.widget.LoadingListItemView;
+import com.itheima.googleplaydemo.widget.LoadingMoreProgressView;
 
 import java.util.List;
 
@@ -55,9 +55,9 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
     @Override
     protected ViewHolder onCreateViewHolder(int position) {
         if (getItemViewType(position) == ITEM_TYPE_LOAD_MORE) {
-            return new ViewHolder(new LoadingListItemView(getContext()));
+            return new ViewHolder(new LoadingMoreProgressView(getContext()));
         } else {
-            return onCreateNormalItemViewHolder();
+            return onCreateNormalViewHolder();
         }
     }
 
@@ -71,7 +71,7 @@ public abstract class BaseLoadMoreListAdapter<T> extends BaseListAdapter<T> {
     /**
      *  创建普通的item的ViewHolder
      */
-    protected abstract ViewHolder onCreateNormalItemViewHolder();
+    protected abstract ViewHolder onCreateNormalViewHolder();
 
     /**
      * 绑定普通的ViewHolder

@@ -25,7 +25,7 @@ public class AppListAdapter extends BaseLoadMoreListAdapter<AppListItem> {
     }
 
     @Override
-    protected ViewHolder onCreateNormalItemViewHolder() {
+    protected ViewHolder onCreateNormalViewHolder() {
         return new ViewHolder(new AppListItemView(getContext()));
     }
 

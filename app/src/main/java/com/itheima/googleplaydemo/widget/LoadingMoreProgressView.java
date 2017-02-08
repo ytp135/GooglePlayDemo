@@ -12,14 +12,14 @@ import com.itheima.googleplaydemo.R;
  * 创建时间: 2016/9/22 10:44
  * 描述： TODO
  */
-public class LoadingListItemView extends RelativeLayout {
+public class LoadingMoreProgressView extends RelativeLayout {
 
-    public LoadingListItemView(Context context, AttributeSet attrs) {
+    public LoadingMoreProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public LoadingListItemView(Context context) {
+    public LoadingMoreProgressView(Context context) {
         this(context, null);
     }
 

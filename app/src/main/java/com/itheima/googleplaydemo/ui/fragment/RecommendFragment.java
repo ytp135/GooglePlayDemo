@@ -53,7 +53,7 @@ public class RecommendFragment extends BaseFragment {
         //设置布局网格15*20，越大分布越平均
         stellarMap.setRegularity(15, 20);
         //设置初始化组
-        stellarMap.setGroup(0, false);
+        stellarMap.setGroup(0);
         return stellarMap;
     }
 }

@@ -88,7 +88,7 @@ public class StellarMap extends FrameLayout implements AnimationListener, OnTouc
     }
 
     /**
-     * 2. 设置隐藏组和显示组的x和y的规则
+     * 设置隐藏组和显示组的x和y的规则
      */
     public void setRegularity(int xRegularity, int yRegularity) {
         mHidenGroup.setRegularity(xRegularity, yRegularity);
@@ -129,7 +129,7 @@ public class StellarMap extends FrameLayout implements AnimationListener, OnTouc
     }
 
     /**
-     * 1. 设置本Adapter
+     * 设置本Adapter
      */
     public void setAdapter(Adapter adapter) {
         mAdapter = adapter;
@@ -149,7 +149,14 @@ public class StellarMap extends FrameLayout implements AnimationListener, OnTouc
     }
 
     /**
-     * 3. 给指定的Group设置动画
+     * 设置显示的group
+     */
+    public void setGroup(int groupIndex) {
+        setGroup(groupIndex, false);
+    }
+
+    /**
+     * 给指定的Group设置动画
      */
     public void setGroup(int groupIndex, boolean playAnimation) {
         switchGroup(groupIndex, playAnimation, mZoomInNearAnim, mZoomInAwayAnim);
@@ -302,6 +309,9 @@ public class StellarMap extends FrameLayout implements AnimationListener, OnTouc
 
     }
 
+    /**
+     * 在屏幕上快速滑动
+     */
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         int centerX = getMeasuredWidth() / 2;
@@ -311,10 +321,11 @@ public class StellarMap extends FrameLayout implements AnimationListener, OnTouc
         int y1 = (int) e1.getY() - centerY;
         int x2 = (int) e2.getX() - centerX;
         int y2 = (int) e2.getY() - centerY;
-
         if ((x1 * x1 + y1 * y1) > (x2 * x2 + y2 * y2)) {
+            //缩小
             zoomOut();
         } else {
+            //放大
             zoomIn();
         }
         return true;

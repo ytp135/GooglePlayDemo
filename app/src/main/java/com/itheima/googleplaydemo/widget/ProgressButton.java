@@ -51,14 +51,20 @@ public class ProgressButton extends Button {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //是否绘制进度
         if (enableProgress) {
+            //根据进度计算出drawable的右边位置
             int right = (int) ((mProgress / mMax) * getWidth());
             mDrawable.setBounds(0, 0, right, getHeight());
+            //将drawable绘制到画布上
             mDrawable.draw(canvas);
         }
         super.onDraw(canvas);
     }
 
+    /**
+     * 清空进度
+     */
     public void clearProgress() {
         enableProgress = false;
         invalidate();

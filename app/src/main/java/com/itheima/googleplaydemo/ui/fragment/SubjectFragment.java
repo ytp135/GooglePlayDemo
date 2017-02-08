@@ -6,7 +6,6 @@ import com.itheima.googleplaydemo.adapter.SubjectListAdapter;
 import com.itheima.googleplaydemo.bean.SubjectBean;
 import com.itheima.googleplaydemo.network.HeiMaRetrofit;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -19,7 +18,7 @@ import retrofit2.Response;
  * 描述： TODO
  */
 public class SubjectFragment extends BaseLoadMoreListFragment {
-    private List<SubjectBean> mSubjects = new ArrayList<SubjectBean>();
+    private List<SubjectBean> mSubjects;
 
     @Override
     protected void startLoadData() {
@@ -27,7 +26,7 @@ public class SubjectFragment extends BaseLoadMoreListFragment {
         listCall.enqueue(new Callback<List<SubjectBean>>() {
             @Override
             public void onResponse(Call<List<SubjectBean>> call, Response<List<SubjectBean>> response) {
-                mSubjects.addAll(response.body());
+                mSubjects = response.body();
                 onDataLoadedSuccess();
             }
 

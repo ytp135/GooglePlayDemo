@@ -25,7 +25,7 @@ public class SubjectListAdapter extends BaseLoadMoreListAdapter<SubjectBean> {
     }
 
     @Override
-    protected ViewHolder onCreateNormalItemViewHolder() {
+    protected ViewHolder onCreateNormalViewHolder() {
         return new ViewHolder(new SubjectListItemView(getContext()));
     }
 

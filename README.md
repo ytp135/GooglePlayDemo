@@ -540,6 +540,8 @@ FlowLayout有一个行的概念，即内部有个Line的类来描述FlowLayout�
 布局时，FlowLayout会按行来布局孩子。
 
 # 推荐页面 #
+![](img/recommend.png)
+
 ## 加载数据 ##
 	public interface Api {
 	
@@ -566,26 +568,107 @@ FlowLayout有一个行的概念，即内部有个Line的类来描述FlowLayout�
     }
 
 ## 创建视图 ##
+    @Override
     protected View onCreateContentView() {
+        //创建星状图
         StellarMap stellarMap = new StellarMap(getContext());
-        int padding = getResources().getDimensionPixelSize(R.dimen.padding);
-        //设置内部的padding
-        stellarMap.setInnerPadding(padding, padding, padding, padding);
         //设置adapter
-        stellarMap.setAdapter(new RecommendAdapter(getContext(), mDataList));
-        //设置条目网格 15*20 
+        stellarMap.setAdapter(new RecommendAdapter(getContext(), mData));
+        int padding = getResources().getDimensionPixelSize(R.dimen.padding);
+        //设置星状图内部padding
+        stellarMap.setInnerPadding(padding, padding, padding, padding);
+        //设置布局网格15*20，越大分布越平均
         stellarMap.setRegularity(15, 20);
-        //初始化页面，不带动画
+        //设置初始化组
         stellarMap.setGroup(0, false);
         return stellarMap;
     }
 
+## 创建StellarMap.Adapter ##
+    /**
+     * 返回组(页面)的个数
+     */
+    @Override
+    public int getGroupCount() {
+        int pageCount = mDataList.size() / PAGE_SIZE;
+        if (mDataList.size() % PAGE_SIZE != 0) {//有余数的时候
+            pageCount++;
+        }
+        return pageCount;
+    }
+
+    /**
+     * 返回对应组(页面)条目的个数
+     */
+    @Override
+    public int getCount(int group) {
+        if (mDataList.size() % PAGE_SIZE != 0) {//有余数
+            if (group == getGroupCount() - 1) {//最后一组
+                return mDataList.size() % PAGE_SIZE;
+            }
+        }
+        return PAGE_SIZE;
+    }
+
+    /**
+     * 返回对应组中对应位置的view
+     *
+     * @param convertView 回收的view
+     */
+    @Override
+    public View getView(int group, int position, View convertView) {
+        TextView tv;
+        if (convertView == null) {
+            tv = new TextView(mContext);
+        } else {
+            tv = (TextView) convertView;
+        }
+        int index = group * PAGE_SIZE + position;
+        String data = mDataList.get(index);
+        tv.setText(data);
+        //随机大小
+        Random random = new Random();
+        tv.setTextSize(random.nextInt(4) + 14);//14-18
+        //随机颜色
+        int alpha = 255;
+        int red = random.nextInt(190) + 30;//30-220
+        int green = random.nextInt(190) + 30;//30-220
+        int blue = random.nextInt(190) + 30;//30-220
+        int argb = Color.argb(alpha, red, green, blue);
+        tv.setTextColor(argb);
+        return tv;
+    }
+
+    /**
+     * 返回放大或者缩小下一组的下标
+     *
+     * @param group 当前组的下标
+     * @param isZoomIn true表示放大，false表示缩小
+     */
+    @Override
+    public int getNextGroupOnZoom(int group, boolean isZoomIn) {
+        if (isZoomIn) {
+            return (group + 1) % getGroupCount();
+        } else {
+            return (group - 1 + getGroupCount()) % getGroupCount();
+        }
+    }
+
+
+
 ## StellarMap原理 ##
+StellarMap内部维护两个RandomLayout, 一个显示，一个隐藏。RandomLayout随机分散摆放里面的子控件。StellarMap同时监听用户手势来动画切换两个RandomLayout。
+### RandomLayout的基本原理 ###
+![](img/stellamap_analysis.png)
+
+
+通过调用`stellarMap.setRegularity(15, 20);`将RandomLayout划分成很多的小方格，在布局子控件时，随机选取一个小方格摆放，如果小方格已经有控件摆放或者摆放时跟其他的控件发生重叠
+则再随机选取一个小方格摆放，直到找到合适的位置。
 
 # BaseListFragment抽取 #
 ## 共性 ##
 ### 布局 ###
-都有ListView
+由于首页，应用，游戏，专题，分类都是List的形式，所以可以抽取一个ListView。
 
 ### 点击监听 ###
     mListView.setOnItemClickListener(mOnItemClickListener);
@@ -618,6 +701,8 @@ FlowLayout有一个行的概念，即内部有个Line的类来描述FlowLayout�
 * ViewHolder的绑定
 
 # 分类界面 #
+![](img/category.png)
+
 为了便于页面的扩展，分类界面显示采用ListView, 所以继承BaseListFragment。
 ## 加载数据 ##
     @Override
@@ -695,7 +780,7 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 
 # BaseLoadMoreListFragment的抽取 #
 ## 共性 ##
-滚动到底部加载更多
+首页，应用，游戏，专题都能够滚动到底部加载更多，都显示一个加载进度条。
 
     @Override
     protected void initListView() {
@@ -723,18 +808,22 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
     protected abstract void onStartLoadMore();
 
 # BaseLoadMoreListAdapter的抽取 #
+
 ## 共性 ##
-* getCount
-* getViewTypeCount
-* getItemViewType
+* getCount（由于多了一个进度条，个数要加1）
+* getViewTypeCount（返回item类型的个数）
+* getItemViewType （有两种类型的item, 一种是普通的item，一种是进度条）
 * onCreateViewHolder
 * onBindViewHolder
+* 加载更多进度条 （LoadingMoreProgressView）
 
 ## 特性 ##
-* onCreateNormalItemViewHolder
+子类实现普通item的ViewHolder的创建和绑定
+
+* onCreateNormalViewHolder
 * onBindNormalViewHolder
 
-## LoadingListItemView ##
+## LoadingMoreProgressView ##
 ![](img/loading_list_item.png)
 
 # 专题界面 #
@@ -1114,3 +1203,179 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 ### 底部下载条 AppDetailBottomBar ###
 ![](img/app_detail_bottom_bar.png)
 #### 自定义控件ProgressButton ####
+![](img/progress_button.png)
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        //是否绘制进度
+        if (enableProgress) {
+            //根据进度计算出drawable的右边位置
+            int right = (int) ((mProgress / mMax) * getWidth());
+            mDrawable.setBounds(0, 0, right, getHeight());
+            //将drawable绘制到画布上
+            mDrawable.draw(canvas);
+        }
+        super.onDraw(canvas);
+    }
+
+    /**
+     * 清空进度
+     */
+    public void clearProgress() {
+        enableProgress = false;
+        invalidate();
+    }
+
+
+# 多线程下载 #
+
+##线程运行机制
+![](img/thread1.png)
+
+* 单核cpu，同一时刻只能处理一个线程，多核cpu同一时刻可以处理多个线程
+* 操作系统为每个运行线程安排一定的CPU时间----`时间片`，系统通过一种循环的方式为线程提供时间片，线程在自己的时间内运行，因为时间相当短，多个线程频繁地发生切换，因此给用户的感觉就是好像多个线程同时运行一样。
+
+
+
+## 线程池 ##
+Android中耗时的操作，都会开子线程，线程的创建和销毁是要消耗系统资源的。为了减少频繁的线程的创建和销毁带来的不必要的开销，可以使用线程池。
+线程池的优点：
+
+* 重用线程池中的线程,减少因对象创建,销毁所带来的性能开销;
+
+* 能有效的控制线程的最大并发数,提高系统资源利用率,同时避免过多的资源竞争,避免堵塞;
+
+* 能够多线程进行简单的管理,使线程的使用简单、高效。
+
+线程池的应用非常广泛，在众多的开源框架中也总能看到线程池的踪影。
+
+## 线程池涉及的类
+![](img/task.png)
+
+* Executor:Java里面线程池的顶级接口。
+* ExecutorService:真正的线程池接口。
+* ScheduledExecutorService:能和Timer/TimerTask类似，解决那些需要任务重复执行的问题。
+* ThreadPoolExecutor(重点):ExecutorService的默认实现。
+* ScheduledThreadPoolExecutor:继承ThreadPoolExecutor的ScheduledExecutorService接口实现，周期性任务调度的类实现。
+* Executors:可以一行代码创建一些常见的线程池。
+
+## Executors ##
+帮助我们方便的生成一些常用的线程池，ThreadPoolExecutor是Executors类的底层实现
+
+### newSingleThreadExecutor ###
+创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池>保证所有任务的执行顺序按照任务的提交顺序执行。
+
+### newFixedThreadPool ###
+创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
+
+### newCachedThreadPool ###
+创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。
+
+### newScheduledThreadPool###
+创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。
+
+## ThreadPoolExecutor介绍
+	//构造方法
+	public ThreadPoolExecutor(int corePoolSize，//核心池的大小
+	                              int maximumPoolSize，//线程池最大线程数
+	                              long keepAliveTime，//保持时间
+	                              TimeUnit unit，//时间单位
+	                              BlockingQueue<Runnable> workQueue，//任务队列
+	                              ThreadFactory threadFactory，//线程工厂
+	                              RejectedExecutionHandler handler) //异常的捕捉器
+###构造相关参数解释
+* corePoolSize：`核心池的大小`，这个参数跟后面讲述的线程池的实现原理有非常大的关系。在创建了线程池后，默认情况下，线程池中并没有任何线程，而是等待有任务到来才创建线程去执行任务，除非调用了prestartAllCoreThreads()或者prestartCoreThread()方法，从这2个方法的名字就可以看出，是预创建线程的意思，即在没有任务到来之前就创建corePoolSize个线程或者一个线程。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中；
+* maximumPoolSize：`线程池最大线程数`，这个参数也是一个非常重要的参数，它表示在线程池中最多能创建多少个线程；
+* keepAliveTime：`表示线程没有任务执行时最多保持多久时间会终止`。默认情况下，只有当线程池中的线程数大于corePoolSize时，keepAliveTime才会起作用，直到线程池中的线程数不大于corePoolSize，即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。但是如果调用了allowCoreThreadTimeOut(boolean)方法，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的线程数为0；
+* unit：参数keepAliveTime的`时间单位`，有7种取值
+
+		TimeUnit.DAYS;               //天
+		TimeUnit.HOURS;             //小时
+		TimeUnit.MINUTES;           //分钟
+		TimeUnit.SECONDS;           //秒
+		TimeUnit.MILLISECONDS;      //毫秒
+		TimeUnit.MICROSECONDS;      //微妙
+		TimeUnit.NANOSECONDS;       //纳秒
+* workQueue ： `任务队列`，是一个阻塞队列，用来存储等待执行的任务，这个参数的选择也很重要，会对线程池的运行过程产生重大影响，参考BlockingQueue
+
+		ArrayBlockingQueue;
+		LinkedBlockingQueue;
+		SynchronousQueue;
+* threadFactory : `线程工厂`，如何去创建线程的
+* handler ： 任务队列添加`异常的捕捉器`，参考 RejectedExecutionHandler
+		
+		ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。 
+		ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。 
+		ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
+		ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务 
+
+###基础API的介绍
+* isShutdown() ： 判断线程池是否关闭
+* isTerminated() : 判断线程池中任务是否执行完成
+* shutdown() : 调用后不再接收新任务，如果里面有任务，就执行完
+* shutdownNow() : 调用后不再接受新任务，如果有等待任务，移出队列；有正在执行的，尝试停止之
+* submit() : 提交执行任务
+* execute() : 执行任务
+
+
+###任务提交给线程池之后的处理策略
+1. 如果当前线程池中的线程数目小于corePoolSize，则每来一个任务，就会创建执行这个任务；![](img/task1.png)
+2. 如果当前线程池中的线程数目>=corePoolSize，则每来一个任务，会尝试将其添加到任务缓存队列当中
+	1. 若添加成功，则该任务会等待空闲线程将其取出去执行；![](img/task2.png)
+	2. 若添加失败（一般来说是任务缓存队列已满，针对的是有界队列），则会尝试创建新的线程去执行这个任务；![](img/task3.png)
+3. 如果当前线程池中的线程数目达到maximumPoolSize，则会采取任务拒绝策略进行处理；![](img/task4.png)
+4. 如果线程池中的线程数量大于 corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止，直至线程池中的线程数目不大于corePoolSize；如果允许为核心池中的线程设置存活时间，那么核心池中的线程空闲时间超过keepAliveTime，线程也会被终止。
+
+###任务提交给线程池之后的处理策略_比喻
+>假如有一个工厂，工厂里面有10(`corePoolSize`)个工人，每个工人同时只能做一件任务。
+
+>因此只要当10个工人中有工人是空闲的，`来了任务就分配`给空闲的工人做；
+
+>当10个工人都有任务在做时，如果还来了任务，就把任务进行排队等待(`任务队列`)；
+
+>如果说新任务数目增长的速度远远大于工人做任务的速度，那么此时工厂主管可能会想补救措施，比如重新招4个临时工人(`创建新线程`)进来；然后就将任务也分配给这4个临时工人做；
+
+>如果说着14个工人做任务的速度还是不够，此时工厂主管可能就要考虑不再接收新的任务或者抛弃前面的一些任务了(`拒绝执行`)。
+
+>当这14个工人当中有人空闲时，而且空闲超过一定时间(`空闲时间`)，新任务增长的速度又比较缓慢，工厂主管可能就考虑辞掉4个临时工了，只保持原来的10个工人，毕竟请额外的工人是要花钱的
+
+## 阻塞队列的介绍（BlockingQueue）
+阻塞队列，如果BlockingQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒，同样，如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态，直到BlockingQueue里有空间时才会被唤醒继续操作。
+
+1. 基础API介绍
+	* 往队列中加元素的方法
+		* add(E) : 非阻塞方法， 把元素加到BlockingQueue里，如果BlockingQueue可以容纳，则返回true，否则抛出异常。
+		* offer(E) : 非阻塞， 表示如果可能的话，将元素加到BlockingQueue里，即如果BlockingQueue可以容纳，则返回true，否则返回false。
+		* put(E)：阻塞方法， 把元素加到BlockingQueue里，如果BlockingQueue没有空间，则调用此方法的线程被阻断直到BlockingQueue里有空间再继续。
+	
+	* 从队列中取元素的方法
+		* poll(time)： 阻塞方法，取走BlockingQueue里排在首位的元素，若不能立即取出，则可以等time参数规定的时间，取不到时返回null。
+		* take()：取走BlockingQueue里排在首位的对象，若BlockingQueue为空，阻断进入等待状态直到BlockingQueue有新的对象被加入为止。
+
+2. 子类介绍
+	* `ArrayBlockingQueue(有界队列)`： FIFO 队列，规定大小的BlockingQueue，其构造函数必须带一个int参数来指明其大小
+	
+	* `LinkedBlockingQueue(无界队列)`：FIFO 队列，大小不定的BlockingQueue，若其构造函数带一个规定大小的参数，生成的BlockingQueue有大小限制，若不带大小参数，所生成的BlockingQueue的大小由Integer.MAX_VALUE来决定。
+
+	* `PriorityBlockingQueue`：优先级队列， 类似于LinkedBlockingQueue，但队列中元素非 FIFO， 依据对象的自然排序顺序或者是构造函数所带的Comparator决定的顺序
+
+	* `SynchronousQueue(直接提交策略)`: 交替队列，`队列中操作时必须是先放进去，接着取出来`，交替着去处理元素的添加和移除，这是一个很有意思的阻塞队列，其中每个插入操作必须等待另一个线程的移除操作，同样任何一个移除操作都等待另一个线程的插入操作。因此此队列内部其 实没有任何一个元素，或者说容量是0，严格说并不是一种容器。由于队列没有容量，因此不能调用peek操作，因为只有移除元素时才有元素。
+ 
+## RejectedExecutionHandler介绍
+###实现的子类介绍
+
+* ThreadPoolExecutor.AbortPolicy 
+	> 当添加任务出错时的策略捕获器，如果出现错误，则直接`抛出异常`
+
+* ThreadPoolExecutor.CallerRunsPolicy
+	> 当添加任务出错时的策略捕获器，如果出现错误，`直接执行`加入的任务
+
+* ThreadPoolExecutor.DiscardOldestPolicy
+	> 当添加任务出错时的策略捕获器，如果出现错误，`移除第一个任务，执行加入的任务`
+
+* ThreadPoolExecutor.DiscardPolicy
+	> 当添加任务出错时的策略捕获器，如果出现错误，`不做处理`
+
+
+
+

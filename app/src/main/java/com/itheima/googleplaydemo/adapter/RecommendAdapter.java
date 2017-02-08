@@ -32,11 +32,9 @@ public class RecommendAdapter implements StellarMap.Adapter {
     @Override
     public int getGroupCount() {
         int pageCount = mDataList.size() / PAGE_SIZE;
-
         if (mDataList.size() % PAGE_SIZE != 0) {//有余数的时候
             pageCount++;
         }
-
         return pageCount;
     }
 
@@ -59,7 +57,7 @@ public class RecommendAdapter implements StellarMap.Adapter {
      * @param convertView 回收的view
      */
     @Override
-    public View getView(int group, int position, View convertView) {//返回具体的视图
+    public View getView(int group, int position, View convertView) {
         TextView tv;
         if (convertView == null) {
             tv = new TextView(mContext);
@@ -69,11 +67,9 @@ public class RecommendAdapter implements StellarMap.Adapter {
         int index = group * PAGE_SIZE + position;
         String data = mDataList.get(index);
         tv.setText(data);
-
         //随机大小
         Random random = new Random();
         tv.setTextSize(random.nextInt(4) + 14);//14-18
-
         //随机颜色
         int alpha = 255;
         int red = random.nextInt(190) + 30;//30-220
