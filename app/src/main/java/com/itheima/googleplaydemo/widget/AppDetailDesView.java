@@ -1,6 +1,5 @@
 package com.itheima.googleplaydemo.widget;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.itheima.googleplaydemo.utils.UIUtils.animateViewHeight;
+import static com.itheima.googleplaydemo.utils.UIUtils.rotateView;
 
 /**
  * Created by Leon on 2017/2/2.
@@ -79,18 +79,14 @@ public class AppDetailDesView extends RelativeLayout {
             int measuredHeight = mAppDetailDes.getMeasuredHeight();
             //动画从原始高度到7行高度
             animateViewHeight(mAppDetailDes, mAppDetailDesOriginHeight, measuredHeight);
-            //箭头逆时针旋转180度
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", -180, 0);
-            objectAnimator.start();
+            rotateView(mAppDetailDesArrow, -180, 0);
 
         } else {
             //打开
             //从7行高度到原始高度
             int measuredHeight = mAppDetailDes.getMeasuredHeight();
             animateViewHeight(mAppDetailDes, measuredHeight, mAppDetailDesOriginHeight);
-            //箭头顺时针旋转180度
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailDesArrow, "rotation", 0, -180);
-            objectAnimator.start();
+            rotateView(mAppDetailDesArrow, 0, -180);
         }
         descriptionOpen = !descriptionOpen;
     }

@@ -1,5 +1,6 @@
 package com.itheima.googleplaydemo.utils;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,5 +23,10 @@ public class UIUtils {
                 view.setLayoutParams(layoutParams);
             }
         });
+    }
+
+    public static void rotateView(View view, int startAngle, int endAngle) {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "rotation", startAngle, endAngle);
+        objectAnimator.start();
     }
 }

@@ -1,6 +1,5 @@
 package com.itheima.googleplaydemo.widget;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -21,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.itheima.googleplaydemo.utils.UIUtils.animateViewHeight;
+import static com.itheima.googleplaydemo.utils.UIUtils.rotateView;
 
 /**
  * Created by Leon on 2017/2/2.
@@ -105,9 +105,7 @@ public class AppDetailSecurityView extends RelativeLayout {
             //关闭
             int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
             animateViewHeight(mAppDetailSecurityDes, measuredHeight, 0);
-            //箭头顺时针旋转180度
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", -180, 0);
-            objectAnimator.start();
+            rotateView(mAppDetailSecurityArrow, -180, 0);
 
         } else {
             //打开
@@ -116,9 +114,7 @@ public class AppDetailSecurityView extends RelativeLayout {
             //获取mAppDetailSecurityDes完全展开应该有的高度
             int measuredHeight = mAppDetailSecurityDes.getMeasuredHeight();
             animateViewHeight(mAppDetailSecurityDes, 0, measuredHeight);
-            //箭头逆时针旋转180度
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAppDetailSecurityArrow, "rotation", 0, -180);
-            objectAnimator.start();
+            rotateView(mAppDetailSecurityArrow, 0, -180);
         }
         securityInfoOpen = !securityInfoOpen;
     }
