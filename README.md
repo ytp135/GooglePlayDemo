@@ -873,7 +873,7 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 
 
 # BaseAppListFragment的抽取 #
-首页，应用，游戏界面具有相同的列表，所以抽取一个BaseAppListFragment。
+除了首页多了一个轮播图外，首页，应用，游戏界面具有相同的app的列表，所以抽取一个BaseAppListFragment。
 ## 共性 ##
 ### 数据列表 ###
     List<AppListItem> mAppListItems = new ArrayList<AppListItem>();
@@ -1023,6 +1023,50 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
             public void onFailure(Call<HomeBean> call, Throwable t) {
             }
         });
+    }
+
+## 添加轮播图 ##
+
+### 集成FunBanner ###
+	//项目build.gradle
+	allprojects {
+	    repositories {
+	        jcenter()
+	        maven { url 'https://jitpack.io' }
+	    }
+	}
+	//app模块build.gradle
+    compile 'com.github.uncleleonfan:funbanner:1.0.1'
+
+### 初始化FunBanner ###
+
+    @Override
+    protected View onCreateHeaderView() {
+        FunBanner banner = new FunBanner(getContext());
+        //设置图片的宽高比
+        banner.setRatio(0.377f);
+        //设置自动轮播
+        banner.setEnableAutoLoop(true);
+        banner.setImageUrlHost(Constant.URL_IMAGE);
+        banner.setImageUrls(mLooperDataList);
+        return banner;
+    }
+
+### 调整加载更多时的位置 ###
+    @Override
+    protected int getLoadMorePosition() {
+        return getAdapter().getCount();
+    }
+
+### 调整item点击的位置 ###
+    /**
+     * 处理item的点击事件，由于多加了一个头，获取点击位置的数据时下标减1      
+     */
+    @Override
+    protected void onListItemClick(int i) {
+        Intent intent = new Intent(getContext(), AppDetailActivity.class);
+        intent.putExtra("package_name", getAppList().get(i-1).getPackageName());
+        startActivity(intent);
     }
 
 

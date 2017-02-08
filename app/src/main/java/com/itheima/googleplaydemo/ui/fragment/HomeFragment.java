@@ -1,15 +1,13 @@
 package com.itheima.googleplaydemo.ui.fragment;
 
 import android.content.Intent;
-import android.view.LayoutInflater;
 import android.view.View;
 
-import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.HomeBean;
 import com.itheima.googleplaydemo.network.HeiMaRetrofit;
 import com.itheima.googleplaydemo.ui.activity.AppDetailActivity;
-import com.leon.loopviewpagerlib.Banner;
+import com.leon.loopviewpagerlib.FunBanner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +51,11 @@ public class HomeFragment extends BaseAppListFragment {
 
     @Override
     protected View onCreateHeaderView() {
-        Banner banner = (Banner) LayoutInflater.from(getContext()).inflate(R.layout.home_header, getListView(), false);
+        FunBanner banner = new FunBanner(getContext());
+        //设置图片的宽高比
+        banner.setRatio(0.377f);
+        //设置自动轮播
+        banner.setEnableAutoLoop(true);
         banner.setImageUrlHost(Constant.URL_IMAGE);
         banner.setImageUrls(mLooperDataList);
         return banner;
