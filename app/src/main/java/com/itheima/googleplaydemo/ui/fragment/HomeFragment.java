@@ -24,8 +24,6 @@ import retrofit2.Response;
  */
 public class HomeFragment extends BaseAppListFragment {
 
-    private static final String TAG = "HomeFragment";
-
     private List<String> mLooperDataList = new ArrayList<String>();
 
     @Override

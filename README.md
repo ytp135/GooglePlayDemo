@@ -910,6 +910,7 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 ![](img/app_list_item.png)
 
 # 游戏页面 #
+![](img/game.png)
 ## 加载数据 ##
     @Override
     protected void startLoadData() {
@@ -949,6 +950,7 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 
 
 # 应用页面 #
+![](img/app.png)
 ## 加载数据 ##
     @Override
     protected void startLoadData() {
@@ -987,6 +989,7 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
     }
 
 # 首页页面 #
+![](img/home.png)
 ## 加载数据 ##
     @Override
     protected void startLoadData() {
@@ -1031,12 +1034,11 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 	//项目build.gradle
 	allprojects {
 	    repositories {
-	        jcenter()
 	        maven { url 'https://jitpack.io' }
 	    }
 	}
 	//app模块build.gradle
-    compile 'com.github.uncleleonfan:funbanner:1.0.1'
+    compile 'com.github.uncleleonfan:funbanner:1.0.2'
 
 ### 初始化FunBanner ###
 
@@ -1071,6 +1073,7 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 
 
 # 应用详情页面 #
+![](img/app_detail.png)
 ## AppDetailActivity ##
 ### 初始化ActionBar ###
     private void initActionBar() {
