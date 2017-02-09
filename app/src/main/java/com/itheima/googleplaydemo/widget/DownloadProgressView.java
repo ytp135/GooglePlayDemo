@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -68,6 +69,7 @@ public class DownloadProgressView extends FrameLayout implements Observer{
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Log.d(TAG, "onDraw: ");
         if (enableProgress) {
             int left = mDownload.getLeft() -3;
             int top = mDownload.getTop() - 3;
@@ -82,10 +84,12 @@ public class DownloadProgressView extends FrameLayout implements Observer{
 
     @OnClick(R.id.download)
     public void onClick() {
-        handleDownloadClick();
+        DownloadManager.getInstance().handleDownloadAction(getContext(), mDownloadInfo.getPackageName());
     }
 
-    public void bindView(DownloadInfo downloadInfo) {
+
+    public void syncState(AppListItem item) {
+        DownloadInfo downloadInfo = DownloadManager.getInstance().initDownloadInfo(getContext(), item.getPackageName(), item.getSize(), item.getDownloadUrl());
         if (mDownloadInfo != null) {
             DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
         }
@@ -94,7 +98,9 @@ public class DownloadProgressView extends FrameLayout implements Observer{
         updateStatus(downloadInfo);
     }
 
+
     private void updateStatus(DownloadInfo downloadInfo) {
+        Log.d(TAG, "updateStatus: " + downloadInfo.getProgress());
         //当移除之前的观察者后，还有残留的runnable没有执行，这里过滤掉之前的runnable
         if (!downloadInfo.getPackageName().equals(mDownloadInfo.getPackageName())) {
             return;
@@ -113,7 +119,7 @@ public class DownloadProgressView extends FrameLayout implements Observer{
                 int progress = (int) (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getMax() * 100);
                 mDownloadText.setText(String.format(getResources().getString(R.string.download_progress), progress));
                 mDownload.setImageResource(R.drawable.ic_pause);
-                enableProgress = true;
+                updateProgress();
                 break;
             case DownloadManager.STATE_FAILED:
                 mDownloadText.setText(R.string.retry);
@@ -134,37 +140,12 @@ public class DownloadProgressView extends FrameLayout implements Observer{
         }
     }
 
-    private void handleDownloadClick() {
-        switch (mDownloadInfo.getDownloadStatus()) {
-            case DownloadManager.STATE_UN_DOWNLOAD:
-                DownloadManager.getInstance().download(mDownloadInfo);
-                break;
-            case DownloadManager.STATE_DOWNLOADING:
-                DownloadManager.getInstance().pauseDownload(mDownloadInfo);
-                break;
-            case DownloadManager.STATE_DOWNLOADED:
-                DownloadManager.getInstance().installApk(getContext(), mDownloadInfo);
-                break;
-            case DownloadManager.STATE_PAUSE:
-                DownloadManager.getInstance().download(mDownloadInfo);
-                break;
-            case DownloadManager.STATE_WAITING:
-                DownloadManager.getInstance().cancelDownload(mDownloadInfo);
-                break;
-            case DownloadManager.STATE_INSTALLED:
-                DownloadManager.getInstance().openApp(getContext(), mDownloadInfo);
-                break;
-            case DownloadManager.STATE_FAILED:
-                DownloadManager.getInstance().download(mDownloadInfo);
-                break;
-        }
+    private void updateProgress() {
+        Log.d(TAG, "updateProgress: ");
+        enableProgress = true;
+        postInvalidate();
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
-    }
 
     @Override
     public void update(Observable o, final Object arg) {
@@ -176,8 +157,4 @@ public class DownloadProgressView extends FrameLayout implements Observer{
         });
     }
 
-    public void syncState(AppListItem item) {
-        mDownloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), item.getPackageName(), item.getSize(), item.getDownloadUrl());
-        bindView(mDownloadInfo);
-    }
 }

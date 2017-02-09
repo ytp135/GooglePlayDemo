@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 
-import com.itheima.googleplaydemo.bean.AppDetailBean;
 import com.itheima.googleplaydemo.utils.ThreadPoolProxy;
 import com.itheima.googleplaydemo.utils.URLUtils;
 
@@ -39,7 +38,7 @@ public class DownloadManager{
     public static final int STATE_DOWNLOADED = 5;//下载完成
     public static final int STATE_INSTALLED = 6;//已安装
 
-    private Map<String, DownloadInfo> mStringDownloadInfoMap = new HashMap<String, DownloadInfo>();
+    private Map<String, DownloadInfo> mDownloadInfoMap = new HashMap<String, DownloadInfo>();
 
     private Map<String, Observer> mDownloadObservers = new HashMap<String, Observer>();
 
@@ -63,13 +62,14 @@ public class DownloadManager{
         DownloadTask downloadTask = new DownloadTask(downloadInfo);
         downloadInfo.setDownloadStatus(STATE_WAITING);
         downloadInfo.setDownloadTask(downloadTask);
-        mStringDownloadInfoMap.put(downloadInfo.getPackageName(), downloadInfo);
-
         notifyObservers(downloadInfo);
         ThreadPoolProxy.getInstance().execute(downloadTask);
     }
 
-    public DownloadInfo getDownloadInfo(Context context, String packageName, int size, String downloadUrl) {
+    public DownloadInfo initDownloadInfo(Context context, String packageName, int size, String downloadUrl) {
+        if (mDownloadInfoMap.get(packageName) != null) {
+            return mDownloadInfoMap.get(packageName);
+        }
         DownloadInfo downloadInfo = new DownloadInfo();
         String appFileName = packageName + ".apk";
         File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
@@ -85,20 +85,17 @@ public class DownloadManager{
 
         if (isInstalled(context, packageName)) {
             downloadInfo.setDownloadStatus(STATE_INSTALLED);
-            return downloadInfo;
-        }
-
-        if (file.exists() && file.length() == size) {
+        } else if (file.exists() && file.length() == size) {
             downloadInfo.setDownloadStatus(STATE_DOWNLOADED);
-            return downloadInfo;
+        } else {
+            downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
         }
-
-        if (mStringDownloadInfoMap.containsKey(packageName)) {
-            return mStringDownloadInfoMap.get(packageName);
-        }
-
-        downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
+        mDownloadInfoMap.put(downloadInfo.getPackageName(), downloadInfo);
         return downloadInfo;
+    }
+
+    private DownloadInfo getDownloadInfo(String packageName) {
+        return mDownloadInfoMap.get(packageName);
     }
 
     private boolean isInstalled(Context context, String packageName) {
@@ -241,33 +238,32 @@ public class DownloadManager{
         }
     }
 
-    public void handleDownloadAction(Context context, AppDetailBean appDetailBean) {
-        DownloadInfo downloadInfo = getDownloadInfo(context, appDetailBean.getPackageName(), appDetailBean.getSize(), appDetailBean.getDownloadUrl());
-        updateByStatus(context, downloadInfo);
+    public void handleDownloadAction(Context context, String packageName) {
+        processByStatus(context, getDownloadInfo(packageName));
     }
 
-    private void updateByStatus(Context context, DownloadInfo downloadInfo) {
+    private void processByStatus(Context context, DownloadInfo downloadInfo) {
         switch (downloadInfo.getDownloadStatus()) {
-            case DownloadManager.STATE_UN_DOWNLOAD:
-                DownloadManager.getInstance().download(downloadInfo);
+            case STATE_UN_DOWNLOAD:
+                download(downloadInfo);
                 break;
-            case DownloadManager.STATE_DOWNLOADING:
-                DownloadManager.getInstance().pauseDownload(downloadInfo);
+            case STATE_DOWNLOADING:
+                pauseDownload(downloadInfo);
                 break;
-            case DownloadManager.STATE_DOWNLOADED:
-                DownloadManager.getInstance().installApk(context, downloadInfo);
+            case STATE_DOWNLOADED:
+                installApk(context, downloadInfo);
                 break;
             case DownloadManager.STATE_PAUSE:
-                DownloadManager.getInstance().download(downloadInfo);
+                download(downloadInfo);
                 break;
             case DownloadManager.STATE_WAITING:
-                DownloadManager.getInstance().cancelDownload(downloadInfo);
+                cancelDownload(downloadInfo);
                 break;
             case DownloadManager.STATE_INSTALLED:
-                DownloadManager.getInstance().openApp(context, downloadInfo);
+                openApp(context, downloadInfo);
                 break;
             case DownloadManager.STATE_FAILED:
-                DownloadManager.getInstance().download(downloadInfo);
+                download(downloadInfo);
                 break;
         }
     }

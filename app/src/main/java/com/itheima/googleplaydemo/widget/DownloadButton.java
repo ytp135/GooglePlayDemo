@@ -82,7 +82,7 @@ public class DownloadButton extends Button implements Observer{
     public void syncState(AppDetailBean appDetailBean) {
         mAppDetailBean = appDetailBean;
         DownloadManager.getInstance().addObserver(appDetailBean.getPackageName(), this);
-        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), appDetailBean.getPackageName(), appDetailBean.getSize(), appDetailBean.getDownloadUrl());
+        DownloadInfo downloadInfo = DownloadManager.getInstance().initDownloadInfo(getContext(), appDetailBean.getPackageName(), appDetailBean.getSize(), appDetailBean.getDownloadUrl());
         updateDownloadButton(downloadInfo);
     }
 
@@ -129,11 +129,5 @@ public class DownloadButton extends Button implements Observer{
                 setText(R.string.retry);
                 break;
         }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        DownloadManager.getInstance().removeObserver(mAppDetailBean.getPackageName());
     }
 }

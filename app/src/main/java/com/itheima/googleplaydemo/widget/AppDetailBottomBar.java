@@ -50,6 +50,6 @@ public class AppDetailBottomBar extends RelativeLayout {
 
     @OnClick(R.id.download)
     public void onClick() {
-        DownloadManager.getInstance().handleDownloadAction(getContext(), mAppDetailBean);
+        DownloadManager.getInstance().handleDownloadAction(getContext(), mAppDetailBean.getPackageName());
     }
 }
