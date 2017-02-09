@@ -6,13 +6,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.itheima.googleplaydemo.R;
+import com.itheima.googleplaydemo.bean.AppListItem;
 import com.itheima.googleplaydemo.network.DownloadInfo;
 import com.itheima.googleplaydemo.network.DownloadManager;
 
@@ -88,7 +88,6 @@ public class DownloadProgressView extends FrameLayout implements Observer{
     public void bindView(DownloadInfo downloadInfo) {
         if (mDownloadInfo != null) {
             DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
-            Log.d(TAG, "bindView: remove previous observer");
         }
         mDownloadInfo = downloadInfo;
         DownloadManager.getInstance().addObserver(mDownloadInfo.getPackageName(), this);
@@ -96,7 +95,6 @@ public class DownloadProgressView extends FrameLayout implements Observer{
     }
 
     private void updateStatus(DownloadInfo downloadInfo) {
-        Log.d(TAG, "updateStatus: " + downloadInfo.getDownloadStatus());
         //当移除之前的观察者后，还有残留的runnable没有执行，这里过滤掉之前的runnable
         if (!downloadInfo.getPackageName().equals(mDownloadInfo.getPackageName())) {
             return;
@@ -176,5 +174,10 @@ public class DownloadProgressView extends FrameLayout implements Observer{
                 updateStatus((DownloadInfo) arg);
             }
         });
+    }
+
+    public void syncState(AppListItem item) {
+        mDownloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), item.getPackageName(), item.getSize(), item.getDownloadUrl());
+        bindView(mDownloadInfo);
     }
 }

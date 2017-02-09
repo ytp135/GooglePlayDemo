@@ -17,7 +17,7 @@
         android:textSize="14sp"
         android:text="收藏"/>
 
-    <com.itheima.googleplaydemo.widget.ProgressButton
+    <com.itheima.googleplaydemo.widget.DownloadButton
         android:id="@+id/download"
         android:layout_width="0dp"
         android:layout_height="60dp"

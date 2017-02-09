@@ -13,8 +13,6 @@ import com.bumptech.glide.Glide;
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.app.Constant;
 import com.itheima.googleplaydemo.bean.AppListItem;
-import com.itheima.googleplaydemo.network.DownloadInfo;
-import com.itheima.googleplaydemo.network.DownloadManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,9 +57,6 @@ public class AppListItemView extends RelativeLayout {
         mAppSize.setText(Formatter.formatFileSize(getContext(), item.getSize()));
         mAppRating.setRating(item.getStars());
         Glide.with(getContext()).load(Constant.URL_IMAGE + item.getIconUrl()).placeholder(R.drawable.ic_default).into(mAppIcon);
-
-        //获取下载情况
-        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(getContext(), item);
-        mDownloadProgressView.bindView(downloadInfo);
+        mDownloadProgressView.syncState(item);
     }
 }

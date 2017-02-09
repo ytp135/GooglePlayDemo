@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import com.itheima.googleplaydemo.bean.AppDetailBean;
-import com.itheima.googleplaydemo.bean.AppListItem;
 import com.itheima.googleplaydemo.utils.ThreadPoolProxy;
 import com.itheima.googleplaydemo.utils.URLUtils;
 
@@ -70,32 +69,32 @@ public class DownloadManager{
         ThreadPoolProxy.getInstance().execute(downloadTask);
     }
 
-    public DownloadInfo getDownloadInfo(Context context, AppListItem item) {
+    public DownloadInfo getDownloadInfo(Context context, String packageName, int size, String downloadUrl) {
         DownloadInfo downloadInfo = new DownloadInfo();
-        String appFileName = item.getPackageName() + ".apk";
+        String appFileName = packageName + ".apk";
         File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
         downloadInfo.setAppName(appFileName);
-        downloadInfo.setPackageName(item.getPackageName());
-        downloadInfo.setMax(item.getSize());
+        downloadInfo.setPackageName(packageName);
+        downloadInfo.setMax(size);
         long initRange = 0;
         if (file.exists()) {
             initRange = file.length();
         }
         downloadInfo.setProgress((int) initRange);
-        downloadInfo.setDownloadUrl(item.getDownloadUrl());
+        downloadInfo.setDownloadUrl(downloadUrl);
 
-        if (isInstalled(context, item.getPackageName())) {
+        if (isInstalled(context, packageName)) {
             downloadInfo.setDownloadStatus(STATE_INSTALLED);
             return downloadInfo;
         }
 
-        if (file.exists() && file.length() == item.getSize()) {
+        if (file.exists() && file.length() == size) {
             downloadInfo.setDownloadStatus(STATE_DOWNLOADED);
             return downloadInfo;
         }
 
-        if (mStringDownloadInfoMap.containsKey(item.getPackageName())) {
-            return mStringDownloadInfoMap.get(item.getPackageName());
+        if (mStringDownloadInfoMap.containsKey(packageName)) {
+            return mStringDownloadInfoMap.get(packageName);
         }
 
         downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
@@ -112,37 +111,6 @@ public class DownloadManager{
         }
     }
 
-    public DownloadInfo getDownloadInfo(Context context, AppDetailBean item) {
-        DownloadInfo downloadInfo = new DownloadInfo();
-        String appFileName = item.getPackageName() + ".apk";
-        File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
-        downloadInfo.setAppName(appFileName);
-        downloadInfo.setPackageName(item.getPackageName());
-        downloadInfo.setMax(item.getSize());
-        long initRange = 0;
-        if (file.exists()) {
-            initRange = file.length();
-        }
-        downloadInfo.setProgress((int) initRange);
-        downloadInfo.setDownloadUrl(item.getDownloadUrl());
-
-        if (isInstalled(context, item.getPackageName())) {
-            downloadInfo.setDownloadStatus(STATE_INSTALLED);
-            return downloadInfo;
-        }
-
-        if (file.exists() && file.length() == item.getSize()) {
-            downloadInfo.setDownloadStatus(STATE_DOWNLOADED);
-            return downloadInfo;
-        }
-
-        if (mStringDownloadInfoMap.containsKey(item.getPackageName())) {
-            return mStringDownloadInfoMap.get(item.getPackageName());
-        }
-
-        downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
-        return downloadInfo;
-    }
 
     public void pauseDownload(DownloadInfo downloadInfo) {
         downloadInfo.setDownloadStatus(STATE_PAUSE);
@@ -270,6 +238,37 @@ public class DownloadManager{
         Observer observer = mDownloadObservers.get(downloadInfo.getPackageName());
         if (observer != null) {
             observer.update(null, downloadInfo);
+        }
+    }
+
+    public void handleDownloadAction(Context context, AppDetailBean appDetailBean) {
+        DownloadInfo downloadInfo = getDownloadInfo(context, appDetailBean.getPackageName(), appDetailBean.getSize(), appDetailBean.getDownloadUrl());
+        updateByStatus(context, downloadInfo);
+    }
+
+    private void updateByStatus(Context context, DownloadInfo downloadInfo) {
+        switch (downloadInfo.getDownloadStatus()) {
+            case DownloadManager.STATE_UN_DOWNLOAD:
+                DownloadManager.getInstance().download(downloadInfo);
+                break;
+            case DownloadManager.STATE_DOWNLOADING:
+                DownloadManager.getInstance().pauseDownload(downloadInfo);
+                break;
+            case DownloadManager.STATE_DOWNLOADED:
+                DownloadManager.getInstance().installApk(context, downloadInfo);
+                break;
+            case DownloadManager.STATE_PAUSE:
+                DownloadManager.getInstance().download(downloadInfo);
+                break;
+            case DownloadManager.STATE_WAITING:
+                DownloadManager.getInstance().cancelDownload(downloadInfo);
+                break;
+            case DownloadManager.STATE_INSTALLED:
+                DownloadManager.getInstance().openApp(context, downloadInfo);
+                break;
+            case DownloadManager.STATE_FAILED:
+                DownloadManager.getInstance().download(downloadInfo);
+                break;
         }
     }
 
