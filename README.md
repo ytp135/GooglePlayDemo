@@ -1265,12 +1265,172 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
         super.onDraw(canvas);
     }
 
+
+# 应用下载 #
+## DownloadManager ##
+DownloadManger完成对应用下载的管理，使用单例模式。
+	public class DownloadManager{
+
+	    public static DownloadManager getInstance() {
+	        if (sDownloadManager == null) {
+	            synchronized (DownloadManager.class) {
+	                if (sDownloadManager == null) {
+	                    sDownloadManager = new DownloadManager();
+	                }
+	            }
+	        }
+	        return sDownloadManager;
+	    }
+	}
+
+## 创建APK存放目录 ##
+
+    //下载apk的存放路径，当应用被卸载时，该路径下的文件也会被删除
+    private static final String DOWNLOAD_DIRECTORY = Environment.getExternalStorageDirectory()
+		 + "/Android/data/包名/apk/";
+
+    public void createDownloadDirectory() {
+        File directoryFile = new File(DOWNLOAD_DIRECTORY);
+        if (!directoryFile.exists()) {
+            directoryFile.mkdirs();
+        }
+    }
+
+	//由于需要在磁盘上创建目录，在Android6.0上需要动态申请权限，我们在MainActivity检查权限。
+    private void checkStoragePermission() {
+        int result = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_DENIED) {
+            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            ActivityCompat.requestPermissions(this, permissions, 0);
+        }
+    }
+
+
+## 下载应用的数据结构 DownloadInfo##
+由于下载一个app的过程中会产成很多数据，包括下载app的名字，下载的进度，下载的状态等，这里构建一个描述下载一个app的数据结构。
+	
+	public class DownloadInfo {
+	    private String packageName;
+	    private String downloadUrl;
+	    private String appName;
+	    private int downloadStatus = DownloadManager.STATE_UN_DOWNLOAD;
+	    private Runnable downloadTask;
+	    private int max;
+	    private int progress;
+	}
+
+## 下载状态 ##
+    public static final int STATE_UN_DOWNLOAD = 0;//未下载
+    public static final int STATE_DOWNLOADING = 1;//下载中
+    public static final int STATE_PAUSE = 2;//暂停下载
+    public static final int STATE_WAITING = 3;//等待下载
+    public static final int STATE_FAILED = 4;//下载失败
+    public static final int STATE_DOWNLOADED = 5;//下载完成
+    public static final int STATE_INSTALLED = 6;//已安装
+
+![](img/status.png)
+
+##  ##
+
+## 初始化DownloadInfo ##
     /**
-     * 清空进度
+     * 初始化下载信息
      */
-    public void clearProgress() {
-        enableProgress = false;
-        invalidate();
+    public DownloadInfo initDownloadInfo(Context context, String packageName, int size, String downloadUrl) {
+        //如果已经初始化过对应包名的下载信息，则直接返回
+        if (mDownloadInfoMap.get(packageName) != null) {
+            return mDownloadInfoMap.get(packageName);
+        }
+
+		//创建新的DownloadInfo
+        DownloadInfo downloadInfo = new DownloadInfo();
+        downloadInfo.setPackageName(packageName);
+        downloadInfo.setMax(size);
+        downloadInfo.setDownloadUrl(downloadUrl);
+        String appFileName = packageName + ".apk";
+        downloadInfo.setAppName(appFileName);
+
+        //初始化下载进度
+        long initRange = 0;
+        File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
+        if (file.exists()) {
+            initRange = file.length();
+        }
+        downloadInfo.setProgress((int) initRange);
+
+        if (isInstalled(context, packageName)) {//是否已经安装
+            downloadInfo.setDownloadStatus(STATE_INSTALLED);
+        } else if (file.exists() && file.length() == size) {//是否已经下载
+            downloadInfo.setDownloadStatus(STATE_DOWNLOADED);
+        } else {
+			//默认状态为未下载
+            downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
+        }
+        //保存下载信息
+        mDownloadInfoMap.put(downloadInfo.getPackageName(), downloadInfo);
+        return downloadInfo;
+    }
+
+## 下载任务 ##
+
+	private class DownloadTask implements Runnable {
+
+        private DownloadInfo mDownloadInfo;
+
+        private DownloadTask(DownloadInfo downloadInfo) {
+            mDownloadInfo = downloadInfo;
+        }
+
+        @Override
+        public void run() {
+            InputStream inputStream = null;
+            FileOutputStream fileOutputStream = null;
+            try {
+                File file = new File(DOWNLOAD_DIRECTORY, mDownloadInfo.getApkName());
+                boolean success = true;
+                if (file.exists()) {
+                    success = file.createNewFile();
+                }
+                //获取下载apk的url,传入当前下载进度，用作断点续传
+                String url = URLUtils.getDownloadURL(mDownloadInfo.getDownloadUrl(), mDownloadInfo.getProgress());
+                Request request = new Request.Builder().url(url).get().build();
+                //同步请求
+                Response response = mOkHttpClient.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    inputStream = response.body().byteStream();
+                    if (success) {
+                        fileOutputStream = new FileOutputStream(file, true);//往文件后面写数据
+                        byte[] buffer = new byte[1024];
+                        int len = -1;
+                        while ((len = inputStream.read(buffer)) != -1) {
+                            //如果下载的状态变为暂停，跳出循环
+                            if (mDownloadInfo.getDownloadStatus() == STATE_PAUSE) {
+                                return;
+                            }
+                            fileOutputStream.write(buffer, 0, len);
+                            //更新下载进度
+                            int progress = mDownloadInfo.getProgress() + len;
+                            mDownloadInfo.setProgress(progress);
+                            updateStatus(STATE_DOWNLOADING);
+                            //下载完成跳出循环
+                            if (progress == mDownloadInfo.getMax()) {
+                                break;
+                            }
+                        }
+                        //更新状态已下载
+                        updateStatus(STATE_DOWNLOADED);
+                    }
+                } else {
+                    //更新状态下载失败
+                    updateStatus(STATE_FAILED);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                //更新状态下载失败
+                updateStatus(STATE_FAILED);
+				.....
+            }
+        }
     }
 
 
@@ -1373,18 +1533,11 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
 3. 如果当前线程池中的线程数目达到maximumPoolSize，则会采取任务拒绝策略进行处理；![](img/task4.png)
 4. 如果线程池中的线程数量大于 corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止，直至线程池中的线程数目不大于corePoolSize；如果允许为核心池中的线程设置存活时间，那么核心池中的线程空闲时间超过keepAliveTime，线程也会被终止。
 
-###任务提交给线程池之后的处理策略_比喻
->假如有一个工厂，工厂里面有10(`corePoolSize`)个工人，每个工人同时只能做一件任务。
-
->因此只要当10个工人中有工人是空闲的，`来了任务就分配`给空闲的工人做；
-
->当10个工人都有任务在做时，如果还来了任务，就把任务进行排队等待(`任务队列`)；
-
->如果说新任务数目增长的速度远远大于工人做任务的速度，那么此时工厂主管可能会想补救措施，比如重新招4个临时工人(`创建新线程`)进来；然后就将任务也分配给这4个临时工人做；
-
->如果说着14个工人做任务的速度还是不够，此时工厂主管可能就要考虑不再接收新的任务或者抛弃前面的一些任务了(`拒绝执行`)。
-
->当这14个工人当中有人空闲时，而且空闲超过一定时间(`空闲时间`)，新任务增长的速度又比较缓慢，工厂主管可能就考虑辞掉4个临时工了，只保持原来的10个工人，毕竟请额外的工人是要花钱的
+###任务提交给线程池之后的处理策略（比喻）
+假如有一个工厂，工厂里面有10(`corePoolSize`)个工人，每个工人同时只能做一件任务。因此只要当10个工人中有工人是空闲的，`来了任务就分配`给空闲的工人做；
+当10个工人都有任务在做时，如果还来了任务，就把任务进行排队等待(`任务队列`)；如果说新任务数目增长的速度远远大于工人做任务的速度，那么此时工厂主管可能会想补救措施，比如重新招4个临时工人(`创建新线程`)进来；然后就将任务也分配给这4个临时工人做；
+如果说着14个工人做任务的速度还是不够，此时工厂主管可能就要考虑不再接收新的任务或者抛弃前面的一些任务了(`拒绝执行`)。
+当这14个工人当中有人空闲时，而且空闲超过一定时间(`空闲时间`)，新任务增长的速度又比较缓慢，工厂主管可能就考虑辞掉4个临时工了，只保持原来的10个工人，毕竟请额外的工人是要花钱的
 
 ## 阻塞队列的介绍（BlockingQueue）
 阻塞队列，如果BlockingQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒，同样，如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态，直到BlockingQueue里有空间时才会被唤醒继续操作。
@@ -1412,7 +1565,7 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
 ###实现的子类介绍
 
 * ThreadPoolExecutor.AbortPolicy 
-	> 当添加任务出错时的策略捕获器，如果出现错误，则直接`抛出异常`
+	>当添加任务出错时的策略捕获器，如果出现错误，则直接`抛出异常`
 
 * ThreadPoolExecutor.CallerRunsPolicy
 	> 当添加任务出错时的策略捕获器，如果出现错误，`直接执行`加入的任务

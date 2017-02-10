@@ -1,29 +1,18 @@
 package com.itheima.googleplaydemo.network;
 
-import android.os.Environment;
-
 /**
  * Created by Leon on 2017/1/5.
  */
 
 public class DownloadInfo {
 
-    public static String DOWNLOAD_DIRECTORY = Environment.getExternalStorageDirectory() + "/Android/data/com.itheima.googleplaydemo/apk/";
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
     private String packageName;
     private String downloadUrl;
-    private String appName;
+    private String filePath;
     private int downloadStatus = DownloadManager.STATE_UN_DOWNLOAD;
-
-    private int max;
+    private Runnable downloadTask;
+    private int size;
+    private long progress;
 
     public Runnable getDownloadTask() {
         return downloadTask;
@@ -33,26 +22,29 @@ public class DownloadInfo {
         this.downloadTask = downloadTask;
     }
 
-    private Runnable downloadTask;
+    public String getPackageName() {
+        return packageName;
+    }
 
-    public int getProgress() {
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public long getProgress() {
         return progress;
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(long progress) {
         this.progress = progress;
     }
 
-    public int getMax() {
-        return max;
+    public int getSize() {
+        return size;
     }
 
-    public void setMax(int max) {
-        this.max = max;
+    public void setSize(int size) {
+        this.size = size;
     }
-
-    private int progress;
-
 
     public String getDownloadUrl() {
         return downloadUrl;
@@ -62,13 +54,12 @@ public class DownloadInfo {
         this.downloadUrl = downloadUrl;
     }
 
-
-    public String getApkName() {
-        return appName;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public int getDownloadStatus() {

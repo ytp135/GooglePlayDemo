@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.itheima.googleplaydemo.R;
 import com.itheima.googleplaydemo.adapter.MainPagerAdapter;
+import com.itheima.googleplaydemo.network.DownloadManager;
 
 import butterknife.BindView;
 
@@ -101,6 +102,8 @@ public class MainActivity extends BaseActivity {
             case 0:
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
+                } else {
+                    DownloadManager.getInstance().createDownloadDirectory();
                 }
                 break;
         }

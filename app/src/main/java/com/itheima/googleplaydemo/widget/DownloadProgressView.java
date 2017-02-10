@@ -76,7 +76,7 @@ public class DownloadProgressView extends FrameLayout implements Observer{
             int right = mDownload.getRight() + 3;
             int bottom = mDownload.getBottom() + 3;
             mRectF.set(left, top, right, bottom);
-            float sweepAngle = (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getMax()) * 360;
+            float sweepAngle = (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getSize()) * 360;
             canvas.drawArc(mRectF, -90, sweepAngle, false, mPaint);
         }
         super.onDraw(canvas);
@@ -116,7 +116,7 @@ public class DownloadProgressView extends FrameLayout implements Observer{
                 enableProgress = false;
                 break;
             case DownloadManager.STATE_DOWNLOADING:
-                int progress = (int) (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getMax() * 100);
+                int progress = (int) (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getSize() * 100);
                 mDownloadText.setText(String.format(getResources().getString(R.string.download_progress), progress));
                 mDownload.setImageResource(R.drawable.ic_pause);
                 updateProgress();

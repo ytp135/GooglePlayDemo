@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Environment;
 
 import com.itheima.googleplaydemo.utils.ThreadPoolProxy;
 import com.itheima.googleplaydemo.utils.URLUtils;
@@ -26,7 +27,8 @@ import okhttp3.Response;
  */
 
 public class DownloadManager{
-
+    //下载apk的存放路径，当应用被卸载时，该路径下的文件也会被删除
+    private static final String DOWNLOAD_DIRECTORY = Environment.getExternalStorageDirectory() + "/Android/data/com.itheima.googleplaydemo/apk/";
     private static DownloadManager sDownloadManager;
     private OkHttpClient mOkHttpClient;
 
@@ -46,6 +48,13 @@ public class DownloadManager{
         mOkHttpClient = new OkHttpClient();
     }
 
+    public void createDownloadDirectory() {
+        File directoryFile = new File(DOWNLOAD_DIRECTORY);
+        if (!directoryFile.exists()) {
+            directoryFile.mkdirs();
+        }
+    }
+
     public static DownloadManager getInstance() {
         if (sDownloadManager == null) {
             synchronized (DownloadManager.class) {
@@ -58,6 +67,9 @@ public class DownloadManager{
     }
 
 
+    /**
+     *  执行下载
+     */
     public void download(DownloadInfo downloadInfo) {
         DownloadTask downloadTask = new DownloadTask(downloadInfo);
         downloadInfo.setDownloadStatus(STATE_WAITING);
@@ -66,38 +78,55 @@ public class DownloadManager{
         ThreadPoolProxy.getInstance().execute(downloadTask);
     }
 
+    /**
+     * 初始化下载信息
+     */
     public DownloadInfo initDownloadInfo(Context context, String packageName, int size, String downloadUrl) {
+        //如果已经初始化过对应包名的下载信息，则直接返回
         if (mDownloadInfoMap.get(packageName) != null) {
             return mDownloadInfoMap.get(packageName);
         }
         DownloadInfo downloadInfo = new DownloadInfo();
-        String appFileName = packageName + ".apk";
-        File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, appFileName);
-        downloadInfo.setAppName(appFileName);
         downloadInfo.setPackageName(packageName);
-        downloadInfo.setMax(size);
-        long initRange = 0;
-        if (file.exists()) {
-            initRange = file.length();
-        }
-        downloadInfo.setProgress((int) initRange);
+        downloadInfo.setSize(size);
         downloadInfo.setDownloadUrl(downloadUrl);
+        String appFileName = packageName + ".apk";
+        downloadInfo.setFilePath(appFileName);
 
         if (isInstalled(context, packageName)) {
             downloadInfo.setDownloadStatus(STATE_INSTALLED);
-        } else if (file.exists() && file.length() == size) {
+        } else if (isDownloaded(downloadInfo)) {
             downloadInfo.setDownloadStatus(STATE_DOWNLOADED);
         } else {
             downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
         }
+        //保存下载信息
         mDownloadInfoMap.put(downloadInfo.getPackageName(), downloadInfo);
         return downloadInfo;
     }
 
-    private DownloadInfo getDownloadInfo(String packageName) {
-        return mDownloadInfoMap.get(packageName);
+    /**
+     * 是否已经下载
+     */
+    private boolean isDownloaded(DownloadInfo downloadInfo) {
+        String filePath = DOWNLOAD_DIRECTORY + downloadInfo.getPackageName() + ".apk";
+        downloadInfo.setFilePath(filePath);
+        File file = new File(filePath);
+        if (file.exists()) {
+            if (file.length() == downloadInfo.getSize()) {
+                return true;
+            } else {
+                //记录已经下载了多少
+                downloadInfo.setProgress(file.length());
+                return false;
+            }
+        }
+        return false;
     }
 
+    /**
+     * 判断应用是否已安装
+     */
     private boolean isInstalled(Context context, String packageName) {
         try {
             context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
@@ -108,34 +137,44 @@ public class DownloadManager{
         }
     }
 
+    private DownloadInfo getDownloadInfo(String packageName) {
+        return mDownloadInfoMap.get(packageName);
+    }
 
-    public void pauseDownload(DownloadInfo downloadInfo) {
+    /**
+     * 暂停下载
+     */
+    private void pauseDownload(DownloadInfo downloadInfo) {
         downloadInfo.setDownloadStatus(STATE_PAUSE);
         notifyObservers(downloadInfo);
     }
 
-    public void cancelDownload(DownloadInfo downloadInfo) {
+    /**
+     * 取消下载
+     */
+    private void cancelDownload(DownloadInfo downloadInfo) {
         ThreadPoolProxy.getInstance().remove(downloadInfo.getDownloadTask());
         downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
         notifyObservers(downloadInfo);
     }
 
-    public void openApp(Context context, DownloadInfo downloadInfo) {
+    /**
+     * 打开app
+     */
+    private void openApp(Context context, DownloadInfo downloadInfo) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(downloadInfo.getPackageName());
         context.startActivity(intent);
     }
 
     /**
+     *
+     * 安装apk, 在模拟器上可能失败，模拟器如果是x86而应用不支持
      * D/InstallAppProgress: Installation error code: -113
-     *
      * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.1.1_r1/android/content/pm/PackageManager.java#PackageManager.0INSTALL_FAILED_INVALID_APK
-     *
-     *
-     * @param context
-     * @param downloadInfo
+     * public static final int INSTALL_FAILED_NO_MATCHING_ABIS = -113;
      */
-    public void installApk(Context context, DownloadInfo downloadInfo) {
-        File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, downloadInfo.getApkName());
+    private void installApk(Context context, DownloadInfo downloadInfo) {
+        File file = new File(downloadInfo.getFilePath());
         if (file.exists()) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
@@ -143,11 +182,14 @@ public class DownloadManager{
         }
     }
 
-    public class DownloadTask implements Runnable {
+    /**
+     *  下载任务
+     */
+    private class DownloadTask implements Runnable {
 
         private DownloadInfo mDownloadInfo;
 
-        public DownloadTask(DownloadInfo downloadInfo) {
+        private DownloadTask(DownloadInfo downloadInfo) {
             mDownloadInfo = downloadInfo;
         }
 
@@ -156,48 +198,47 @@ public class DownloadManager{
             InputStream inputStream = null;
             FileOutputStream fileOutputStream = null;
             try {
-                File directoryFile = new File(DownloadInfo.DOWNLOAD_DIRECTORY);
-                if (!directoryFile.exists()) {
-                    directoryFile.mkdirs();
-                }
-                File file = new File(DownloadInfo.DOWNLOAD_DIRECTORY, mDownloadInfo.getApkName());
-                long initRange = 0;
+                File file = new File(mDownloadInfo.getFilePath());
                 boolean success = true;
                 if (file.exists()) {
-                    initRange = file.length();
-                    mDownloadInfo.setProgress((int) initRange);
-                } else {
                     success = file.createNewFile();
                 }
-                String url = URLUtils.getDownloadURL(mDownloadInfo.getDownloadUrl(), initRange);
+                //获取下载apk的url,传入当前下载进度，用作断点续传
+                String url = URLUtils.getDownloadURL(mDownloadInfo.getDownloadUrl(), mDownloadInfo.getProgress());
                 Request request = new Request.Builder().url(url).get().build();
+                //同步请求
                 Response response = mOkHttpClient.newCall(request).execute();
                 if (response.isSuccessful()) {
                     inputStream = response.body().byteStream();
                     if (success) {
-                        fileOutputStream = new FileOutputStream(file, true);
+                        fileOutputStream = new FileOutputStream(file, true);//往文件后面写数据
                         byte[] buffer = new byte[1024];
                         int len = -1;
                         while ((len = inputStream.read(buffer)) != -1) {
+                            //如果下载的状态变为暂停，跳出循环
                             if (mDownloadInfo.getDownloadStatus() == STATE_PAUSE) {
                                 return;
                             }
                             fileOutputStream.write(buffer, 0, len);
-                            int progress = mDownloadInfo.getProgress() + len;
+                            //更新下载进度
+                            long progress = mDownloadInfo.getProgress() + len;
                             mDownloadInfo.setProgress(progress);
                             updateStatus(STATE_DOWNLOADING);
-
-                            if (progress == mDownloadInfo.getMax()) {
+                            //下载完成跳出循环
+                            if (progress == mDownloadInfo.getSize()) {
                                 break;
                             }
                         }
+                        //更新状态已下载
                         updateStatus(STATE_DOWNLOADED);
                     }
                 } else {
+                    //更新状态下载失败
                     updateStatus(STATE_FAILED);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                //更新状态下载失败
                 updateStatus(STATE_FAILED);
                 if (inputStream != null) {
                     closeStream(inputStream);
@@ -238,6 +279,9 @@ public class DownloadManager{
         }
     }
 
+    /**
+     *  处理下载的动作
+     */
     public void handleDownloadAction(Context context, String packageName) {
         processByStatus(context, getDownloadInfo(packageName));
     }
@@ -267,5 +311,4 @@ public class DownloadManager{
                 break;
         }
     }
-
 }

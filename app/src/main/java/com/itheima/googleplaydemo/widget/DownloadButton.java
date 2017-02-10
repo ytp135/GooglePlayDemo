@@ -106,9 +106,9 @@ public class DownloadButton extends Button implements Observer{
                 break;
             case DownloadManager.STATE_DOWNLOADING:
                 setBackgroundResource(R.drawable.selector_app_detail_bottom_downloading);
-                setMax(downloadInfo.getMax());
+                setMax(downloadInfo.getSize());
                 setProgress(downloadInfo.getProgress());
-                int ration = (int) (downloadInfo.getProgress() * 1.0f / downloadInfo.getMax() * 100);
+                int ration = (int) (downloadInfo.getProgress() * 1.0f / downloadInfo.getSize() * 100);
                 String progress = String.format(getContext().getString(R.string.download_progress), ration);
                 setText(progress);
                 break;
