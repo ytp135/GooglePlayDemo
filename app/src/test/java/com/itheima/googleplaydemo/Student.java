@@ -11,6 +11,6 @@ public class Student implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.print((String)arg + "\n");
+        System.out.print(arg + "\n");
     }
 }

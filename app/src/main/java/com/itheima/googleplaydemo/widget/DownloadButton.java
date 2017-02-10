@@ -25,7 +25,6 @@ public class DownloadButton extends Button implements Observer{
     private Drawable mDrawable;
 
     private float mMax = 100;
-    private AppDetailBean mAppDetailBean;
 
     public float getProgress() {
         return mProgress;
@@ -80,10 +79,9 @@ public class DownloadButton extends Button implements Observer{
     }
 
     public void syncState(AppDetailBean appDetailBean) {
-        mAppDetailBean = appDetailBean;
         DownloadManager.getInstance().addObserver(appDetailBean.getPackageName(), this);
         DownloadInfo downloadInfo = DownloadManager.getInstance().initDownloadInfo(getContext(), appDetailBean.getPackageName(), appDetailBean.getSize(), appDetailBean.getDownloadUrl());
-        updateDownloadButton(downloadInfo);
+        updateStatus(downloadInfo);
     }
 
     @Override
@@ -92,13 +90,13 @@ public class DownloadButton extends Button implements Observer{
         post(new Runnable() {
             @Override
             public void run() {
-                updateDownloadButton(downloadInfo);
+                updateStatus(downloadInfo);
             }
         });
     }
 
 
-    private void updateDownloadButton(DownloadInfo downloadInfo) {
+    private void updateStatus(DownloadInfo downloadInfo) {
         setBackgroundResource(R.drawable.selector_app_detail_bottom_normal);
         switch (downloadInfo.getDownloadStatus()) {
             case DownloadManager.STATE_UN_DOWNLOAD:

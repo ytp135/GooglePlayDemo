@@ -35,7 +35,7 @@ public class AppListItemView extends RelativeLayout {
     @BindView(R.id.app_des)
     TextView mAppDes;
     @BindView(R.id.download_progress)
-    DownloadProgressView mDownloadProgressView;
+    CircleDownloadView mDownloadProgressView;
 
     public AppListItemView(Context context) {
         this(context, null);

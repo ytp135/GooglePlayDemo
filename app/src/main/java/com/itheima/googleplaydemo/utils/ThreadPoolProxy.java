@@ -45,6 +45,8 @@ public class ThreadPoolProxy {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
         RejectedExecutionHandler handler = new ThreadPoolExecutor.DiscardPolicy();
         mThreadPoolExecutor = new ThreadPoolExecutor(DEFAULT_CORE_POOL_SIZE, DEFAULT_MAXIMUM_POOL_SIZE, keepAliveTime, unit, workQueue, threadFactory, handler);
+        //上述代码基本等价于
+//        ExecutorService executorService = Executors.newFixedThreadPool(2);
     }
 
     /**

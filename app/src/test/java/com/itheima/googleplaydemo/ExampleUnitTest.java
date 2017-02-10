@@ -20,17 +20,10 @@ public class ExampleUnitTest {
     public void testObserverPattern() {
         Student student1 = new Student();
         Student student2 = new Student();
-        Student student3 = new Student();
-        Student student4 = new Student();
-
         Teacher teacher = new Teacher();
         teacher.addObserver(student1);
         teacher.addObserver(student2);
-        teacher.addObserver(student3);
-        teacher.addObserver(student4);
         teacher.publishMessage("放假不解释");
-
-
     }
 
 }

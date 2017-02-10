@@ -8,7 +8,6 @@ import java.util.Observable;
 
 public class Teacher extends Observable {
 
-
     public void publishMessage(String msg) {
         setChanged();
         notifyObservers(msg);

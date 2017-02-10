@@ -28,7 +28,7 @@ import butterknife.OnClick;
  * Created by Leon on 2017/1/4.
  */
 
-public class DownloadProgressView extends FrameLayout implements Observer{
+public class CircleDownloadView extends FrameLayout implements Observer{
 
     private static final String TAG = "DownloadProgressView";
 
@@ -37,7 +37,6 @@ public class DownloadProgressView extends FrameLayout implements Observer{
     @BindView(R.id.download_info)
     TextView mDownloadText;
 
-
     private Paint mPaint;
     private RectF mRectF;
 
@@ -45,11 +44,11 @@ public class DownloadProgressView extends FrameLayout implements Observer{
 
     private boolean enableProgress;
 
-    public DownloadProgressView(Context context) {
+    public CircleDownloadView(Context context) {
         this(context, null);
     }
 
-    public DownloadProgressView(Context context, AttributeSet attrs) {
+    public CircleDownloadView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
