@@ -200,7 +200,7 @@ public class DownloadManager{
             try {
                 File file = new File(mDownloadInfo.getFilePath());
                 boolean success = true;
-                if (file.exists()) {
+                if (!file.exists()) {
                     success = file.createNewFile();
                 }
                 //获取下载apk的url,传入当前下载进度，用作断点续传
