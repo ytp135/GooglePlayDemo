@@ -909,6 +909,9 @@ CategoryInfoItemView为CategoryItemView中一个子条目的视图。
 ## AppListItemView ##
 ![](img/app_list_item.png)
 
+### CircleDownloadView ###
+![](img/circle_download_view.png)
+
 # 游戏页面 #
 ![](img/game.png)
 ## 加载数据 ##
@@ -1416,6 +1419,10 @@ DownloadManger完成对应用下载的管理，使用单例模式。
         }
     }
 
+
+## 下载等待 ##
+当执行下载任务之前，先进入等待状态
+
 ## 下载App ##
 
     private class DownloadTask implements Runnable {
@@ -1556,24 +1563,28 @@ DownloadManger完成对应用下载的管理，使用单例模式。
 	    }
 	}
 
-### 观察者CircleDownloadView ###
-	public class CircleDownloadView extends FrameLayout implements Observer{
-	
-	    @Override
-	    public void update(Observable o, final Object arg) {
-	        post(new Runnable() {
-	            @Override
-	            public void run() {
-	                updateStatus((DownloadInfo) arg);
-	            }
-	        });
-	    }
-	}
+
+## 暂停下载 ##
+暂停下载只需设置下载状态为STATE_PAUSE，在下载任务while循环中判断是否为暂停状态，如果是则跳出循环。
+
+    private void pauseDownload(DownloadInfo downloadInfo) {
+        downloadInfo.setDownloadStatus(STATE_PAUSE);
+        notifyObservers(downloadInfo);
+    }
+
+    //如果下载的状态变为暂停，跳出循环
+    if (mDownloadInfo.getDownloadStatus() == STATE_PAUSE) {
+        return;
+    }
 
 
-## 暂停 ##
+## 继续下载 ##
+继续下载只需重新执行以下下载即可。
 
-## 继续 ##
+    case DownloadManager.STATE_PAUSE:
+         download(downloadInfo);
+         break;
+
 
 # 多线程下载 #
 
@@ -1607,22 +1618,7 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
 * ScheduledThreadPoolExecutor:继承ThreadPoolExecutor的ScheduledExecutorService接口实现，周期性任务调度的类实现。
 * Executors:可以一行代码创建一些常见的线程池。
 
-## Executors ##
-帮助我们方便的生成一些常用的线程池，ThreadPoolExecutor是Executors类的底层实现
-
-### newSingleThreadExecutor ###
-创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池>保证所有任务的执行顺序按照任务的提交顺序执行。
-
-### newFixedThreadPool ###
-创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
-
-### newCachedThreadPool ###
-创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。
-
-### newScheduledThreadPool###
-创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。
-
-## ThreadPoolExecutor介绍
+## ThreadPoolExecutor介绍 ##
 	//构造方法
 	public ThreadPoolExecutor(int corePoolSize，//核心池的大小
 	                              int maximumPoolSize，//线程池最大线程数
@@ -1717,7 +1713,20 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
 * ThreadPoolExecutor.DiscardPolicy
 	> 当添加任务出错时的策略捕获器，如果出现错误，`不做处理`
 
+## Executors ##
+帮助我们方便的生成一些常用的线程池，ThreadPoolExecutor是Executors类的底层实现
 
+### newSingleThreadExecutor ###
+创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池>保证所有任务的执行顺序按照任务的提交顺序执行。
+
+### newFixedThreadPool ###
+创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
+
+### newCachedThreadPool ###
+创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。
+
+### newScheduledThreadPool###
+创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。
 
 
 ## 线程池代理 ##
@@ -1741,10 +1750,7 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
 >开闭原则中“闭”，是指对于原有代码的修改是封闭的，即修改原有的代码对外部的使用是透明的。举例:DownloadButton
 
 ### 线程池代理 ###
-    /**
-     * 初始化线程池
-     */
-
+	
     private ThreadPoolProxy() {
         long keepAliveTime = 3000;
         TimeUnit unit = TimeUnit.MILLISECONDS;
@@ -1771,10 +1777,62 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
     }
 
 
-## 下载等待 ##
-
 ## 取消下载 ##
-
-
+    private void cancelDownload(DownloadInfo downloadInfo) {
+        ThreadPoolProxy.getInstance().remove(downloadInfo.getDownloadTask());
+        downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
+        notifyObservers(downloadInfo);
+    }
 
 # CircleDownloadView的实现 #
+
+
+## 同步状态
+    public void syncState(AppListItem item) {
+        //由于ListView回收的影响，如果mDownloadInfo不为空则表示CircleDownload之前监听过其他app的下载
+        if (mDownloadInfo != null) {
+            //移除之前的监听
+            DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
+        }
+        mDownloadInfo = DownloadManager.getInstance().initDownloadInfo(getContext(), item.getPackageName(), item.getSize(), item.getDownloadUrl());
+        //添加新的监听
+		DownloadManager.getInstance().addObserver(mDownloadInfo.getPackageName(), this);
+        updateStatus(mDownloadInfo);
+    }
+
+## 更新状态 ##
+
+    private void updateStatus(DownloadInfo downloadInfo) {
+        //移除掉原来的observer之后，还有一些残余的runnable没有执行，将残余的更新过滤掉
+        if (!downloadInfo.getPackageName().equals(mDownloadInfo.getPackageName())) {
+            return;
+        }
+        mDownloadInfo = downloadInfo;
+		.....
+
+    }
+
+## 初始化圆形进度条的矩形 ##
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        mRectF.left = mIcon.getLeft() - 3;
+        mRectF.top = mIcon.getTop() - 3;
+        mRectF.right = mIcon.getRight() + 3;
+        mRectF.bottom = mIcon.getBottom() + 3;
+        mRectF.set(left, top, right, bottom);
+
+    }
+
+
+## 绘制 ##
+
+    //一般情况下自定义的ViewGroup不会绘制自己，除非给它设置背景，所以我们打开绘制自定义ViewGroup的开关
+   	setWillNotDraw(false);
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (enableProgress) {
+            float sweepAngle = (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getSize()) * 360;
+            canvas.drawArc(mRectF, -90, sweepAngle, false, mPaint);
+        }
+    }

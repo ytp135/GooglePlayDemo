@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -62,23 +61,25 @@ public class CircleDownloadView extends FrameLayout implements Observer{
         mPaint.setColor(Color.BLUE);
         mPaint.setStyle(Paint.Style.STROKE);
         mRectF = new RectF();
+        //一般情况下自定义的ViewGroup不会绘制自己，除非给它设置背景，所以我们打开绘制自定义ViewGroup的开关
         setWillNotDraw(false);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        int left = mDownload.getLeft() -3;
+        int top = mDownload.getTop() - 3;
+        int right = mDownload.getRight() + 3;
+        int bottom = mDownload.getBottom() + 3;
+        mRectF.set(left, top, right, bottom);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d(TAG, "onDraw: ");
         if (enableProgress) {
-            int left = mDownload.getLeft() -3;
-            int top = mDownload.getTop() - 3;
-            int right = mDownload.getRight() + 3;
-            int bottom = mDownload.getBottom() + 3;
-            mRectF.set(left, top, right, bottom);
             float sweepAngle = (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getSize()) * 360;
             canvas.drawArc(mRectF, -90, sweepAngle, false, mPaint);
         }
-        super.onDraw(canvas);
     }
 
     @OnClick(R.id.download)
@@ -88,22 +89,23 @@ public class CircleDownloadView extends FrameLayout implements Observer{
 
 
     public void syncState(AppListItem item) {
-        DownloadInfo downloadInfo = DownloadManager.getInstance().initDownloadInfo(getContext(), item.getPackageName(), item.getSize(), item.getDownloadUrl());
+        //由于ListView回收的影响，如果mDownloadInfo不为空则表示CircleDownload之前监听过其他app的下载
         if (mDownloadInfo != null) {
+            //移除之前的监听
             DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
         }
-        mDownloadInfo = downloadInfo;
+        mDownloadInfo = DownloadManager.getInstance().initDownloadInfo(getContext(), item.getPackageName(), item.getSize(), item.getDownloadUrl());
         DownloadManager.getInstance().addObserver(mDownloadInfo.getPackageName(), this);
-        updateStatus(downloadInfo);
+        updateStatus(mDownloadInfo);
     }
 
 
     private void updateStatus(DownloadInfo downloadInfo) {
-        Log.d(TAG, "updateStatus: " + downloadInfo.getProgress());
         //当移除之前的观察者后，还有残留的runnable没有执行，这里过滤掉之前的runnable
         if (!downloadInfo.getPackageName().equals(mDownloadInfo.getPackageName())) {
             return;
         }
+        mDownloadInfo = downloadInfo;
         switch (downloadInfo.getDownloadStatus()) {
             case DownloadManager.STATE_UN_DOWNLOAD:
                 mDownloadText.setText(R.string.download);
@@ -140,11 +142,9 @@ public class CircleDownloadView extends FrameLayout implements Observer{
     }
 
     private void updateProgress() {
-        Log.d(TAG, "updateProgress: ");
         enableProgress = true;
         postInvalidate();
     }
-
 
     @Override
     public void update(Observable o, final Object arg) {

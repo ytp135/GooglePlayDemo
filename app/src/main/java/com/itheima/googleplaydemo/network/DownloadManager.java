@@ -31,7 +31,6 @@ public class DownloadManager {
     private static final String DOWNLOAD_DIRECTORY = Environment.getExternalStorageDirectory() + "/Android/data/com.itheima.googleplaydemo/apk/";
     private static DownloadManager sDownloadManager;
     private OkHttpClient mOkHttpClient;
-
     public static final int STATE_UN_DOWNLOAD = 0;//未下载
     public static final int STATE_DOWNLOADING = 1;//下载中
     public static final int STATE_PAUSE = 2;//暂停下载
