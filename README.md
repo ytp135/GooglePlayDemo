@@ -34,6 +34,7 @@
 * Git初始化
 
 # 侧滑菜单 #
+![](img/sliding_menu.png)
 
 ## 布局 ##
 
@@ -106,10 +107,14 @@
 >使用layout_gravity属性来控制是左侧还是右侧菜单
 
 ## NavigationView ##
+![](img/navigation_view.png)
+
+### NavigationView的使用 ###
+DrawerLayout里面的菜单布局我们可以自己定义，但谷歌也提供的相应的控件NavigationView，方便开发者完成菜单布局。
+
 	//需添加依赖	
 	compile 'com.android.support:design:25.1.0'
 
-DrawerLayout里面的菜单布局我们可以自己定义，但谷歌也提供的相应的控件NavigationView，方便开发者完成菜单布局。
 >app:headerLayout="@layout/drawer_header" 定义菜单的头布局
 >
 >app:menu="@menu/drawer_main" 定义菜单选项
@@ -266,6 +271,7 @@ Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面
 
 
 # 主界面 #
+![](img/main.png)
 ## 布局 ##
 	<!--main_content.xml-->
 	<?xml version="1.0" encoding="utf-8"?>
@@ -309,19 +315,9 @@ Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面
         mTabLayout.setupWithViewPager(mVp);
     }
 
-
 	public class MainPagerAdapter extends FragmentPagerAdapter {
 	
 	    private String[] mTitles;
-	
-	    private static final int FRAGMENT_HOME = 0;
-	    private static final int FRAGMENT_APP = 1;
-	    private static final int FRAGMENT_GAME = 2;
-	    private static final int FRAGMENT_SUBJECT = 3;
-	    private static final int FRAGMENT_RECOMMEND = 4;
-	    private static final int FRAGMENT_CATEGORY = 5;
-	    private static final int FRAGMENT_LEADER_BOARD = 6;
-	
 	
 	    public MainPagerAdapter(String[] titles, FragmentManager fragmentManager) {
 	        super(fragmentManager);
@@ -330,23 +326,7 @@ Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面
 	
 	    @Override
 	    public Fragment getItem(int position) {
-	        switch (position) {
-	            case FRAGMENT_HOME:
-	                return new HomeFragment();
-	            case FRAGMENT_APP:
-	                return new AppFragment();
-	            case FRAGMENT_GAME:
-	                return new GameFragment();
-	            case FRAGMENT_SUBJECT:
-	                return new SubjectFragment();
-	            case FRAGMENT_RECOMMEND:
-	                return new RecommendFragment();
-	            case FRAGMENT_CATEGORY:
-	                return new CategoryFragment();
-	            case FRAGMENT_LEADER_BOARD:
-	                return new LeaderBoardFragment();
-	        }
-	        return null;
+	        return FragmentFactory.getInstance().getFragment(position);
 	    }
 	
 	    @Override
@@ -359,6 +339,7 @@ Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面
 	        return mTitles[position];
 	    }
 	}
+
 
 ## FragmentPagerAdapter和FragmentStatePagerAdapter的区别
 ### FragmentPagerAdapter ###
