@@ -35,6 +35,8 @@ public class AppDetailDesView extends RelativeLayout {
     private boolean descriptionOpen = false;
     private int mAppDetailDesOriginHeight;
 
+    private static final int MAX_LINES = 7;
+
     public AppDetailDesView(Context context) {
         this(context, null);
     }
@@ -58,8 +60,11 @@ public class AppDetailDesView extends RelativeLayout {
                 mAppDetailDes.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 //保存全部展开后的大小
                 mAppDetailDesOriginHeight = mAppDetailDes.getHeight();
-                //设置初始显示7行
-                mAppDetailDes.setLines(7);
+                //若初始化时行数大于7行则设置高度为7
+                if (mAppDetailDes.getLineCount() > MAX_LINES) {
+                    //设置初始显示7行
+                    mAppDetailDes.setLines(7);
+                }
             }
         });
     }
@@ -73,17 +78,17 @@ public class AppDetailDesView extends RelativeLayout {
     private void toggleDescription() {
         if (descriptionOpen) {
             //关闭
-            mAppDetailDes.setLines(7);
-            //获取7行时的高度
-            mAppDetailDes.measure(0, 0);
+            if (mAppDetailDes.getLineCount() > MAX_LINES) {
+                mAppDetailDes.setLines(7);
+                //测量 获取7行时的高度
+                mAppDetailDes.measure(0, 0);
+            }
             int measuredHeight = mAppDetailDes.getMeasuredHeight();
-            //动画从原始高度到7行高度
             animateViewHeight(mAppDetailDes, mAppDetailDesOriginHeight, measuredHeight);
             rotateView(mAppDetailDesArrow, -180, 0);
 
         } else {
             //打开
-            //从7行高度到原始高度
             int measuredHeight = mAppDetailDes.getMeasuredHeight();
             animateViewHeight(mAppDetailDes, measuredHeight, mAppDetailDesOriginHeight);
             rotateView(mAppDetailDesArrow, 0, -180);
