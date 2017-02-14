@@ -425,6 +425,7 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 # 热门页面 #
+![](img/hot.png)
 ## 加载数据 ##
     @Override
     protected void startLoadData() {
