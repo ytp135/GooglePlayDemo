@@ -3,7 +3,7 @@
 
 # 学习目标 #
 * 自上而下的代码抽取
-* 网络框架Retrofit使用
+* 网络框架Retrofit使用及其缓存处理
 * 多线程下载
 
 # 服务器搭建 #
@@ -1852,4 +1852,41 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
 Cache-Control 是最重要的规则。这个字段用于指定所有缓存机制在整个请求/响应链中必须服从的指令。缓存指令是单向的，即请求中存在一个指令并不意味着响应中将存在同一个指令。
 
 * [Header Field Definitions](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
-### 配置OKhttp的缓存 ###
+### 配置OKhttp的缓存目录 ###
+    public void init(Context context) {
+		//指定缓存路径
+        String directoryPath = context.getCacheDir().getAbsolutePath() + "/responses";
+        File directory = new File(directoryPath);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .cache(new Cache(directory, DEFAULT_CACHE_SIZE))//指定缓存目录和大小
+                .addInterceptor(new LoggingInterceptor())//拦截器，打印请求头和响应头
+                .addNetworkInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.HOST)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        mApi = retrofit.create(Api.class);
+    }
+
+### 重写网络响应的Cache-Control ###
+如果服务器在网络响应头里配置了Cache-Contorol，那么其实客户端是不需要做任何事情就能使用缓存的，但如果服务器没有配置，我们可以拦截这个网络响应，加入我们自己的配置。
+
+    /**
+     * Dangerous interceptor that rewrites the server's cache-control header.
+     */
+    private static final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
+        @Override
+        public Response intercept(Interceptor.Chain chain) throws IOException {
+            Response originalResponse = chain.proceed(chain.request());
+            //设置5分钟后缓存过期
+            CacheControl.Builder builder = new CacheControl.Builder().maxAge(5, TimeUnit.MINUTES);
+            return originalResponse.newBuilder()
+                    .header(CACHE_CONTROL, builder.build().toString())
+                    .build();
+        }
+    };
+
+> [OKhttp Intercepter](https://github.com/square/okhttp/wiki/Interceptors)
+
