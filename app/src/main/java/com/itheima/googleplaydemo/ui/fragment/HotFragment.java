@@ -56,10 +56,10 @@ public class HotFragment extends BaseFragment {
         int padding = getResources().getDimensionPixelOffset(R.dimen.padding);
         fl.setPadding(padding, padding, padding, padding);
         //给fl添加应有的孩子
-
         for (int i = 0; i < mDataList.size(); i++) {
             final String data = mDataList.get(i);
             TextView tv = getTextView(padding, data);
+            //创建selector
             StateListDrawable selectorBg = getStateListDrawable();
             tv.setBackgroundDrawable(selectorBg);
             //设置tv可以点击

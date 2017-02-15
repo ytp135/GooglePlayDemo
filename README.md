@@ -447,6 +447,7 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
     }
 
 ## 创建视图 ##
+
     @Override
     protected View onCreateContentView() {
         ScrollView scrollView = new ScrollView(getContext());
@@ -455,53 +456,14 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
         int padding = getResources().getDimensionPixelOffset(R.dimen.padding);
         fl.setPadding(padding, padding, padding, padding);
         //给fl添加应有的孩子
-
         for (int i = 0; i < mDataList.size(); i++) {
             final String data = mDataList.get(i);
-
-
-            TextView tv = new TextView(getContext());
-            tv.setText(data);
-            tv.setTextColor(Color.WHITE);
-
-            tv.setGravity(Gravity.CENTER);
-            tv.setPadding(padding, padding, padding, padding);
-
-            //设置圆角背景
-            GradientDrawable normalBg = new GradientDrawable();
-
-            //设置圆角
-            normalBg.setCornerRadius(10);
-            //设置颜色
-            Random random = new Random();
-            int alpha = 255;
-            int red = random.nextInt(190) + 30;//30-220
-            int green = random.nextInt(190) + 30;//30-220
-            int blue = random.nextInt(190) + 30;//30-220
-            int argb = Color.argb(alpha, red, green, blue);
-            normalBg.setColor(argb);
-
-            //按下去的图片
-            GradientDrawable pressedBg = new GradientDrawable();
-
-            pressedBg.setColor(Color.DKGRAY);
-            pressedBg.setCornerRadius(10);
-
-            StateListDrawable selectorBg = new StateListDrawable();
-
-            //按下去的状态
-            selectorBg.addState(new int[]{android.R.attr.state_pressed}, pressedBg);
-
-            //默认状态
-            selectorBg.addState(new int[]{}, normalBg);
-
+            TextView tv = getTextView(padding, data);
+            //创建selector
+            StateListDrawable selectorBg = getStateListDrawable();
             tv.setBackgroundDrawable(selectorBg);
-
             //设置tv可以点击
             tv.setClickable(true);
-
-            fl.addView(tv);
-
             //给textView设置点击事件
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -509,11 +471,9 @@ BaseFragment抽取了所有Fragment的共性，特性交给子类去实现。
                     Toast.makeText(getContext(), data, Toast.LENGTH_SHORT).show();
                 }
             });
+            fl.addView(tv);
         }
-
-
         scrollView.addView(fl);
-
         return scrollView;
     }
 
