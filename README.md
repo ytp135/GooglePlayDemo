@@ -688,24 +688,15 @@ StellarMap内部维护两个RandomLayout, 一个显示，一个隐藏。RandomLa
         layoutParams.width = itemWidth;//每个子条目的宽度
         List<CategoryBean.InfosBean> infos = item.getInfos();
         for (int i = 0; i < infos.size(); i++) {
+            CategoryBean.InfosBean infosBean = infos.get(i);
             TableRow tableRow = new TableRow(getContext());
-            CategoryInfoItemView infoItemView1 = new CategoryInfoItemView(getContext());
-            infoItemView1.setLayoutParams(layoutParams);
-            infoItemView1.bindView(infos.get(i).getName1(), infos.get(i).getUrl1());
-            tableRow.addView(infoItemView1);
-
-            CategoryInfoItemView infoItemView2 = new CategoryInfoItemView(getContext());
-            infoItemView2.setLayoutParams(layoutParams);
-            infoItemView2.bindView(infos.get(i).getName2(), infos.get(i).getUrl2());
-            tableRow.addView(infoItemView2);
-
-            String name3 = infos.get(i).getName3();
-            if ( name3 != null && name3.length() > 0) {
-                CategoryInfoItemView infoItemView3 = new CategoryInfoItemView(getContext());
-                infoItemView3.setLayoutParams(layoutParams);
-                infoItemView3.bindView(infos.get(i).getName3(), infos.get(i).getUrl3());
-                tableRow.addView(infoItemView3);
-            }
+            //添加一行中的第一个item
+            addFirstChildItem(tableRow, layoutParams, infosBean);
+            //添加一行中的第二个item
+            addSecondChildItem(tableRow, layoutParams, infosBean);
+            //添加一行中的第三个item
+           addThirdChildItem(tableRow, layoutParams, infosBean);
+            //添加一行
             mTableLayout.addView(tableRow);
         }
     }
@@ -1836,7 +1827,7 @@ Cache-Control 是最重要的规则。这个字段用于指定所有缓存机制
 > [OKhttp Intercepter](https://github.com/square/okhttp/wiki/Interceptors)
 
 # License #
-	Copyright (c) 2016 黑马程序员.
+	Copyright (c) 2017 黑马程序员.
 	
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
