@@ -74,8 +74,4 @@ public abstract class BaseListAdapter<T> extends BaseAdapter {
     public Context getContext() {
         return mContext;
     }
-
-    public void setContext(Context context) {
-        mContext = context;
-    }
 }

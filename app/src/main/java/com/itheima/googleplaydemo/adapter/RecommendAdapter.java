@@ -71,13 +71,17 @@ public class RecommendAdapter implements StellarMap.Adapter {
         Random random = new Random();
         tv.setTextSize(random.nextInt(4) + 14);//14-18
         //随机颜色
+        int argb = getRandomColor(random);
+        tv.setTextColor(argb);
+        return tv;
+    }
+
+    private int getRandomColor(Random random) {
         int alpha = 255;
         int red = random.nextInt(190) + 30;//30-220
         int green = random.nextInt(190) + 30;//30-220
         int blue = random.nextInt(190) + 30;//30-220
-        int argb = Color.argb(alpha, red, green, blue);
-        tv.setTextColor(argb);
-        return tv;
+        return Color.argb(alpha, red, green, blue);
     }
 
     @Override

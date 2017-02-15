@@ -54,22 +54,23 @@ public class CategoryItemView extends RelativeLayout {
         layoutParams.width = itemWidth;//每个子条目的宽度
         List<CategoryBean.InfosBean> infos = item.getInfos();
         for (int i = 0; i < infos.size(); i++) {
+            CategoryBean.InfosBean infosBean = infos.get(i);
             TableRow tableRow = new TableRow(getContext());
             CategoryInfoItemView infoItemView1 = new CategoryInfoItemView(getContext());
             infoItemView1.setLayoutParams(layoutParams);
-            infoItemView1.bindView(infos.get(i).getName1(), infos.get(i).getUrl1());
+            infoItemView1.bindView(infosBean.getName1(), infosBean.getUrl1());
             tableRow.addView(infoItemView1);
 
             CategoryInfoItemView infoItemView2 = new CategoryInfoItemView(getContext());
             infoItemView2.setLayoutParams(layoutParams);
-            infoItemView2.bindView(infos.get(i).getName2(), infos.get(i).getUrl2());
+            infoItemView2.bindView(infosBean.getName2(), infosBean.getUrl2());
             tableRow.addView(infoItemView2);
 
-            String name3 = infos.get(i).getName3();
+            String name3 = infosBean.getName3();
             if ( name3 != null && name3.length() > 0) {
                 CategoryInfoItemView infoItemView3 = new CategoryInfoItemView(getContext());
                 infoItemView3.setLayoutParams(layoutParams);
-                infoItemView3.bindView(infos.get(i).getName3(), infos.get(i).getUrl3());
+                infoItemView3.bindView(infosBean.getName3(), infosBean.getUrl3());
                 tableRow.addView(infoItemView3);
             }
             mTableLayout.addView(tableRow);

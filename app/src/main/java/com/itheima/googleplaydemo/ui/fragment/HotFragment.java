@@ -27,7 +27,6 @@ import retrofit2.Response;
  * 描述： TODO
  */
 public class HotFragment extends BaseFragment {
-    private static final String TAG = "HotFragment";
 
     private List<String> mDataList;
 
@@ -79,7 +78,7 @@ public class HotFragment extends BaseFragment {
 
     @NonNull
     private StateListDrawable getStateListDrawable() {
-        //设置圆角背景
+        //创建normal圆角shape
         GradientDrawable normalBg = new GradientDrawable();
         //设置圆角
         normalBg.setCornerRadius(10);
@@ -87,15 +86,15 @@ public class HotFragment extends BaseFragment {
         int argb = getRandomColor();
         normalBg.setColor(argb);
 
-        //按下去的图片
+        //创建pressed圆角shape
         GradientDrawable pressedBg = new GradientDrawable();
         pressedBg.setColor(Color.DKGRAY);
         pressedBg.setCornerRadius(10);
 
+        //创建selector
         StateListDrawable selectorBg = new StateListDrawable();
         //按下去的状态
         selectorBg.addState(new int[]{android.R.attr.state_pressed}, pressedBg);
-
         //默认状态
         selectorBg.addState(new int[]{}, normalBg);
         return selectorBg;
@@ -115,7 +114,6 @@ public class HotFragment extends BaseFragment {
         TextView tv = new TextView(getContext());
         tv.setText(data);
         tv.setTextColor(Color.WHITE);
-
         tv.setGravity(Gravity.CENTER);
         tv.setPadding(padding, padding, padding, padding);
         return tv;
