@@ -1876,8 +1876,6 @@ Cache-Control 是最重要的规则。这个字段用于指定所有缓存机制
 > [OKhttp Intercepter](https://github.com/square/okhttp/wiki/Interceptors)
 
 # License #
-
-	GooglePlayDemo
 	Copyright (c) 2016 黑马程序员.
 	
 	Licensed under the Apache License, Version 2.0 (the "License");
