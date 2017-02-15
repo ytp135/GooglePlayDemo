@@ -17,14 +17,14 @@
 * 搭建方式:
  	* 源码形式.
 		1. 用java ee 版eclipse导入工程GooglePlayServer.
-		2. 修改目录下system.properties为`dir=C:\\Users\\Leon\\Desktop\\GooglePlay\\server`(`WebInfos`所在的目录),需要注意要么用"/"或者"\\"
+		2. 修改目录下system.properties为`dir=C:\\Users\\Leon\\Desktop\\GooglePlay\\server`(`WebInfos`所在的目录),需要注意要么用"/"或者"\\\"
 		3. 部署java ee工程到tomcat,然后运行
 		4. 在pc和手机上分别验证。
 
 	* war包方式:
 		1. 把war放到tomact的webapps目录下面就可以,然后启动tomcat会自动解压war包.
 		2. 启动tomcat,自动解压war包,并运行程序 
-		3. 修改`webapps\GooglePlayServer\WEB-INF\classes`目录下system.properties为`dir=C:\\Users\\Leon\\Desktop\\GooglePlay\\server`(`WebInfos`所在的目录),需要注意要么用"/"或者"\\"
+		3. 修改`webapps\GooglePlayServer\WEB-INF\classes`目录下system.properties为`dir=C:\\Users\\Leon\\Desktop\\GooglePlay\\server`(`WebInfos`所在的目录),需要注意要么用"/"或者"\\\"
 		4. 在pc和手机上分别验证 
 		5. `注意:tomcat必须使用7以上版本`
 
@@ -345,6 +345,7 @@ Actionbar一样，一定要固定在Activity的顶部，而是可以放到界面
 ### FragmentPagerAdapter ###
 * 该类内的每一个生成的 Fragment 都将保存在内存之中，因此适用于那些相对静态的页，数量也比较少的那种；如果需要处理有很多页，并且数据动态性较大、占用内存较多的情况，应该使用FragmentStatePagerAdapter
 * 现象：每个位置getItem(position)只走一次
+
 ### FragmentStatePagerAdapter ###
 * 当页面离开视线后，就会被消除，释放其资源；而在页面需要显示时，生成新的页面。这么实现的好处就是当拥有大量的页面时，不必消耗大量的内存。
 * 现象：每个位置getItem(position)可能走多次
