@@ -565,7 +565,7 @@ FlowLayout有一个行的概念，即内部有个Line的类来描述FlowLayout�
         //设置布局网格15*20，越大分布越平均
         stellarMap.setRegularity(15, 20);
         //设置初始化组
-        stellarMap.setGroup(0, false);
+        stellarMap.setGroup(0);
         return stellarMap;
     }
 
@@ -1875,3 +1875,19 @@ Cache-Control 是最重要的规则。这个字段用于指定所有缓存机制
 
 > [OKhttp Intercepter](https://github.com/square/okhttp/wiki/Interceptors)
 
+# License #
+
+	GooglePlayDemo
+	Copyright (c) 2016 黑马程序员.
+	
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
